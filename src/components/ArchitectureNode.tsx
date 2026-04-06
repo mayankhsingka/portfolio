@@ -27,10 +27,16 @@ export function ArchitectureNode({
   return (
     <motion.div
       layoutId={`node-${id}`}
+      drag
+      dragMomentum={false}
       className="absolute bg-white border-2 border-black flex flex-col font-sans hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer z-10"
       style={{ top, left, width: expanded ? 400 : 250 }}
+      onDragStart={(e) => {
+        // Prevent expanding when strictly dragging
+        e.stopPropagation();
+      }}
       onClick={(e) => {
-        e.stopPropagation(); // prevent drag from triggering
+        e.stopPropagation(); // prevent drag from triggering canvas
         setExpanded(!expanded);
       }}
     >

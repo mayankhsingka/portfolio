@@ -2,6 +2,7 @@ import { SystemGrid } from "@/components/SystemGrid";
 import { ArchitectureNode } from "@/components/ArchitectureNode";
 import { TerminalLogs } from "@/components/TerminalLogs";
 import { CommandPalette } from "@/components/CommandPalette";
+import { SystemShortcuts } from "@/components/SystemShortcuts";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 
 function BlueprintLines() {
@@ -55,11 +56,13 @@ export default function Home() {
 
       <TerminalLogs />
       <CommandPalette />
+      <SystemShortcuts />
       
-      <div className="fixed top-4 left-4 font-mono text-xs font-bold pointer-events-none uppercase">
+      <div className="fixed top-4 left-4 font-mono text-xs font-bold pointer-events-none uppercase z-50 bg-white/80 p-2 border-2 border-black">
         <span className="block border-b-2 border-black pb-1 mb-1">{PORTFOLIO_DATA.general.name} - System Blueprint v1.0</span>
-        [Press Ctrl+K for command access]<br />
-        [Drag grid to navigate nodes]
+        [Press Ctrl+K for commands]<br />
+        [Shift+A: About | Shift+C: Ping]<br />
+        [Drag grid or nodes to navigate]
       </div>
     </main>
   );

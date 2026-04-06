@@ -23,8 +23,8 @@ export function SystemGrid({ children }: SystemGridProps) {
         className="relative w-[300vw] h-[300vh] left-[-100vw] top-[-100vh]"
       >
         {/* Draw a subtle central crosshair as the origin point */}
-        <div className="absolute top-1/2 left-1/2 w-full h-[1px] bg-black/10 -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 w-[1px] h-full bg-black/10 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 w-full h-[1px] bg-black/20 -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 w-[1px] h-full bg-black/20 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
         
         {children}
       </motion.div>

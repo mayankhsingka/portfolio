@@ -1,10 +1,12 @@
 export const PORTFOLIO_DATA = {
   general: {
-    name: "[Your Name]",
-    role: "System Architect & Operations Engineer",
-    contactEmail: "root@yourdomain.com",
-    githubUrl: "https://github.com/yourusername",
-    linkedinUrl: "https://linkedin.com/in/yourusername",
+    name: "Mayank Himmatsingka",
+    role: "Product Builder & System Architect",
+    age: "20",
+    philosophy: "I build innovative products and ship websites real quick. No generic fluff, just scalable systems.",
+    contactEmail: "mayankhsingka@gmail.com",
+    githubUrl: "https://github.com/mankuu-10",
+    linkedinUrl: "https://linkedin.com/in/mayankhsingka",
   },
 
   nodes: [
@@ -12,7 +14,7 @@ export const PORTFOLIO_DATA = {
       id: "core",
       title: "Root Directive",
       status: "ACTIVE",
-      description: "I build systems that scale. From digital architecture to operational leverage.",
+      description: "I build systems that solve real problems. 20yo. Shipping innovative products real quick.",
       top: "calc(50vh - 60px)",
       left: "calc(50vw - 125px)",
       metrics: [
@@ -22,57 +24,56 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "exp_1",
-      title: "[Company/Project Alpha]",
-      status: "SCALING",
-      description: "Architected high-availability infrastructure mapping real-world physical ops to digital pipelines.",
+      title: "Manasya",
+      status: "ACTIVE",
+      description: "A secure digital space offering students a safe platform to heal, express, and connect with counselors.",
       top: "calc(20vh - 60px)",
       left: "calc(20vw - 125px)",
       metrics: [
-        { label: "Throughput", value: "10k req/s" },
-        { label: "Uptime", value: "99.999%" },
+        { label: "Type", value: "Wellness Platform" },
+        { label: "Focus", value: "Student Counseling" },
       ]
     },
     {
       id: "exp_2",
-      title: "[System Beta]",
-      status: "ARCHIVED",
-      description: "Automated core fulfillment logic across 3 warehouses, reducing manual dependency.",
+      title: "Producive",
+      status: "SCALING",
+      description: "Deep-focus browser extension. Comprehensive YouTube control, site blocking, and stopwatch overlays.",
       top: "calc(80vh - 60px)",
       left: "calc(30vw - 125px)",
       metrics: [
-        { label: "Automation", value: "94%" },
-        { label: "Man-hours saved", value: "400/mo" },
+        { label: "Features", value: "YT Control, Focus Clock" },
+        { label: "Core", value: "In-depth Productivity" },
       ]
     },
     {
       id: "skill_matrix",
-      title: "Skill Matrix",
+      title: "Core Stack",
       status: "ACTIVE",
-      description: "Core technical implementations and architectural frameworks.",
+      description: "Web development and system architecture tools used for rapid shipping.",
       top: "calc(30vh - 60px)",
       left: "calc(80vw - 125px)",
       metrics: [
-        { label: "Frontend", value: "Next.js, React" },
-        { label: "Backend", value: "Node, Go, PostgreSQL" },
-        { label: "Infrastructure", value: "AWS, Docker" },
+        { label: "Frontend", value: "Next.js, Tailwind" },
+        { label: "Execution", value: "Rapid Iteration" },
       ]
     }
   ],
 
   logs: [
-    { text: "[SYS_BOOT] Initializing core architecture for [Your Name]...", type: "info" },
-    { text: "[WARN] Scaling requirements detected: HIGH", type: "warn" },
-    { text: "[OK] System nodes active. Waiting for root command...", type: "ok" },
-    { text: "[METRIC] Throughput increased by 200%", type: "info", delay: 2000 },
-    { text: "[SYS_EVENT] Deployed highly concurrent e-commerce platform", type: "info", delay: 4000 },
-    { text: "[INFO] Refactoring monolith to microservices...", type: "info", delay: 6000 },
-    { text: "[OK] Operational leverage optimized.", type: "ok", delay: 8000 },
-    { text: "[METRIC] Latency reduced to < 50ms", type: "info", delay: 10000 },
+    { text: "[SYS_BOOT] Mapping identity: Mayank Himmatsingka (Age: 20)...", type: "info" },
+    { text: "[OK] Root directives established. Ready to ship.", type: "ok" },
+    { text: "[METRIC] Project 'Manasya' deployed to production environment.", type: "info", delay: 2000 },
+    { text: "[SYS_EVENT] Establishing secure counseling connections...", type: "info", delay: 4000 },
+    { text: "[METRIC] Extension 'Producive' blocking known distractions.", type: "warn", delay: 6000 },
+    { text: "[OK] YouTube controls and focus stopwatch initialized.", type: "ok", delay: 8000 },
+    { text: "[INFO] Building next innovative product...", type: "info", delay: 10000 },
   ],
   
   commands: [
-    { path: "/about-me", description: "Read core system specifications [About]" },
-    { path: "/contact", description: "Establish secure connection [Contact]" },
-    { path: "/projects/latest", description: "View recent architecture implementations" }
+    { path: "/core-identity", description: "Read core system specifications [About](Shortcut: Shift+A)" },
+    { path: "/ping", description: "Establish secure connection [Contact](Shortcut: Shift+C)" },
+    { path: "/shipped", description: "View recent architecture deployments [Projects]" },
+    { path: "/internal-memos", description: "Read operational logs and system transmissions [Blog]" }
   ]
 };
