@@ -25,6 +25,7 @@ export const PORTFOLIO_DATA = {
     {
       id: "exp_1",
       title: "Manasya",
+      slug: "manasya",
       status: "ACTIVE",
       description: "A secure digital space offering students a safe platform to heal, express, and connect with counselors.",
       top: "calc(20vh - 60px)",
@@ -37,6 +38,7 @@ export const PORTFOLIO_DATA = {
     {
       id: "exp_2",
       title: "Producive",
+      slug: "producive",
       status: "SCALING",
       description: "Deep-focus browser extension. Comprehensive YouTube control, site blocking, and stopwatch overlays.",
       top: "calc(80vh - 60px)",
@@ -74,6 +76,7 @@ export const PORTFOLIO_DATA = {
     { path: "/core-identity", description: "Read core system specifications [About](Shortcut: Shift+A)" },
     { path: "/ping", description: "Establish secure connection [Contact](Shortcut: Shift+C)" },
     { path: "/shipped", description: "View recent architecture deployments [Projects]" },
-    { path: "/internal-memos", description: "Read operational logs and system transmissions [Blog]" }
+    { path: "/internal-memos", description: "Read operational logs and system transmissions [Blog]" },
+    { path: "/engage_night_ops", description: "System visual tactical inversion [Dark Mode]" }
   ]
 };

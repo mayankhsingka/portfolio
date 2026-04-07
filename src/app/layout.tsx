@@ -13,8 +13,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "System Blueprint | Portfolio",
-  description: "Interactive system architecture map.",
+  title: "Mayank Himmatsingka | System Blueprint",
+  description: "Product Builder and System Architect. Shipping innovative products and scalable systems with extreme velocity.",
+  creator: "Mayank Himmatsingka",
+  openGraph: {
+    title: "Mayank Himmatsingka | Developer & Builder",
+    description: "I build systems that solve real problems. 20yo product builder.",
+    url: "https://mayank.system-blueprint.local", // Replace when deploying
+    siteName: "Mayank Portfolio",
+    locale: "en_US",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: "/favicon.svg",
+  }
 };
 
 export default function RootLayout({
@@ -26,7 +42,21 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('night_ops_engaged') === 'true') {
+                  document.documentElement.classList.add('dark-ops');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body className="h-full bg-grid-pattern overflow-hidden font-sans">
         {children}
       </body>

@@ -24,3 +24,13 @@ body {
     linear-gradient(to right, rgba(0, 0, 0, 0.15) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
 }
+
+.dark-ops {
+  filter: invert(1) hue-rotate(180deg);
+  background-color: black;
+}
+
+/* Ensure the inversion transition is smooth */
+html, body {
+  transition: filter 0.5s ease, background-color 0.5s ease;
+}

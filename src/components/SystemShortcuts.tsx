@@ -53,23 +53,42 @@ export function SystemShortcuts() {
           <div className="max-w-4xl tracking-tight text-xl flex-1 flex flex-col gap-6">
             {view === "ABOUT" && (
               <>
-                <p className="font-bold text-3xl">
+                <p className="font-bold text-2xl leading-relaxed">
                   {PORTFOLIO_DATA.general.philosophy}
                 </p>
-                <div className="grid grid-cols-2 gap-8 mt-8 border-t-2 border-black pt-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 border-t-4 border-black pt-8">
                   <div>
-                    <h3 className="font-bold uppercase tracking-widest border-b border-black pb-2 mb-4">Specs</h3>
-                    <ul className="font-mono text-sm space-y-2">
-                      <li>Name: {PORTFOLIO_DATA.general.name}</li>
-                      <li>Age: {PORTFOLIO_DATA.general.age}</li>
-                      <li>Role: {PORTFOLIO_DATA.general.role}</li>
+                    <h3 className="font-bold uppercase tracking-widest border-b-2 border-black pb-2 mb-4">Core Directives</h3>
+                    <ul className="font-mono text-sm space-y-4">
+                      <li className="flex flex-col">
+                        <span className="opacity-50">01 / VELOCITY</span>
+                        <span>Shipping products fast over perfect planning. Execution matters.</span>
+                      </li>
+                      <li className="flex flex-col">
+                        <span className="opacity-50">02 / UX</span>
+                        <span>Design must not just look decent; it must be functional and unique.</span>
+                      </li>
+                      <li className="flex flex-col">
+                        <span className="opacity-50">03 / SCALE</span>
+                        <span>Building digital environments that sustain actual throughput.</span>
+                      </li>
                     </ul>
                   </div>
                   <div>
-                    <h3 className="font-bold uppercase tracking-widest border-b border-black pb-2 mb-4">Operational Stack</h3>
+                    <h3 className="font-bold uppercase tracking-widest border-b-2 border-black pb-2 mb-4">System Specs</h3>
                     <ul className="font-mono text-sm space-y-2">
-                      <li>Frontend: React, Next.js, Tailwind</li>
-                      <li>Method: Rapid Iteration & System Architecture</li>
+                      <li className="flex justify-between border-b border-black/10 pb-1">
+                        <span>OPERATOR</span> <strong>{PORTFOLIO_DATA.general.name}</strong>
+                      </li>
+                      <li className="flex justify-between border-b border-black/10 pb-1">
+                        <span>LIFESPAN</span> <strong>{PORTFOLIO_DATA.general.age} YEARS</strong>
+                      </li>
+                      <li className="flex justify-between border-b border-black/10 pb-1">
+                        <span>CLASS</span> <strong>{PORTFOLIO_DATA.general.role}</strong>
+                      </li>
+                      <li className="flex justify-between pt-2">
+                        <span>BASE_TECH</span> <strong>REACT, NEXT.JS, TAILWIND</strong>
+                      </li>
                     </ul>
                   </div>
                 </div>
