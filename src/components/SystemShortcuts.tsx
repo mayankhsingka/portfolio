@@ -25,8 +25,19 @@ export function SystemShortcuts() {
       }
     };
 
+    // Listen for custom events from CommandPalette
+    const handleSystemShortcut = (e: Event) => {
+      const detail = (e as CustomEvent).detail as string;
+      if (detail === "ABOUT") setView("ABOUT");
+      if (detail === "CONTACT") setView("CONTACT");
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("system-shortcut", handleSystemShortcut);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("system-shortcut", handleSystemShortcut);
+    };
   }, []);
 
   return (
