@@ -4,8 +4,10 @@ import Link from "next/link";
 import { MEMOS_DATA } from "@/data/memos";
 import { CommandPalette } from "@/components/CommandPalette";
 import { useEffect, useState } from "react";
+import { usePageScrollable } from "@/hooks/usePageScrollable";
 
 export default function InternalMemosIndex() {
+  usePageScrollable();
   const [savedSlugs, setSavedSlugs] = useState<string[]>([]);
 
   useEffect(() => {

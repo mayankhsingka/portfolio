@@ -6,8 +6,10 @@ import { notFound } from "next/navigation";
 import { MEMOS_DATA } from "@/data/memos";
 import { CommandPalette } from "@/components/CommandPalette";
 import { useEffect, useState } from "react";
+import { usePageScrollable } from "@/hooks/usePageScrollable";
 
 export default function MemoReader({ params }: { params: Promise<{ slug: string }> }) {
+  usePageScrollable();
   const resolvedParams = use(params);
   const memo = MEMOS_DATA.find(m => m.slug === resolvedParams.slug);
   const [isSaved, setIsSaved] = useState(false);
