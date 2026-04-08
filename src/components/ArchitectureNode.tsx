@@ -6,11 +6,12 @@ import { useState } from "react";
 interface ArchitectureNodeProps {
   id: string;
   title: string;
-  status?: "ACTIVE" | "ARCHIVED" | "SCALING";
+  status?: "ACTIVE" | "ARCHIVED" | "SCALING" | "CLASSIFIED";
   description: string;
   metrics?: { label: string; value: string }[];
   top: string;
   left: string;
+  onHover?: (id: string | null) => void;
 }
 
 export function ArchitectureNode({
@@ -21,16 +22,20 @@ export function ArchitectureNode({
   metrics,
   top,
   left,
+  onHover,
 }: ArchitectureNodeProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <motion.div
+      data-node-id={id}
       layoutId={`node-${id}`}
       drag
       dragMomentum={false}
       className="absolute bg-white border-2 border-black flex flex-col font-sans hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer z-10"
       style={{ top, left, width: expanded ? 400 : 250 }}
+      onMouseEnter={() => onHover?.(id)}
+      onMouseLeave={() => onHover?.(null)}
       onDragStart={(e) => {
         // Prevent expanding when strictly dragging
         e.stopPropagation();

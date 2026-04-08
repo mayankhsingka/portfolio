@@ -1,24 +1,22 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode, useRef } from "react";
+import { ReactNode, RefObject } from "react";
 
 interface SystemGridProps {
   children: ReactNode;
+  canvasRef?: RefObject<HTMLDivElement | null>;
 }
 
-export function SystemGrid({ children }: SystemGridProps) {
-  const constraintsRef = useRef<HTMLDivElement>(null);
-
+export function SystemGrid({ children, canvasRef }: SystemGridProps) {
   // We make a huge canvas that the user can drag around inside the window
   return (
     <div 
       className="fixed inset-0 overflow-hidden cursor-grab active:cursor-grabbing"
-      ref={constraintsRef}
     >
       <motion.div
+        ref={canvasRef}
         drag
-        dragConstraints={constraintsRef}
         dragElastic={0.2}
         className="relative w-[300vw] h-[300vh] left-[-100vw] top-[-100vh]"
       >
