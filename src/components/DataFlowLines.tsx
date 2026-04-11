@@ -55,11 +55,21 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
   }, [canvasRef]);
 
   useEffect(() => {
-    const timeout = setTimeout(calculateLines, 100);
-    const interval = setInterval(calculateLines, 400);
+    // Use requestAnimationFrame for ultra-smooth 60fps tracking during momentum drags
+    let animationFrameId: number;
+    const renderLoop = () => {
+      calculateLines();
+      animationFrameId = requestAnimationFrame(renderLoop);
+    };
+    
+    // Slight delay to ensure DOM is painted before first calc
+    const timeout = setTimeout(() => {
+      renderLoop();
+    }, 100);
+
     return () => {
       clearTimeout(timeout);
-      clearInterval(interval);
+      cancelAnimationFrame(animationFrameId);
     };
   }, [calculateLines]);
 
@@ -125,18 +135,25 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
         // Speed: normal 6s per cycle, hovered 2s
         const baseDuration = isHovered ? 2 : 6;
 
+        // --- Rubber Band Tension Physics ---
+        // Base length assumes a comfortable distance around 400px.
+        // If stretched to 1000px, it turns tense thinner and more transparent.
+        const tension = Math.min(Math.max(len / 400, 0.5), 2.5);
+        const dynamicStrokeWidth = (isHovered ? 2 : 1.5) / tension;
+        const dynamicOpacity = (isHovered ? 0.9 : 0.4) / tension;
+
         return (
           <g key={i}>
             {/* The connection wire — dashed with subtle glow */}
             <path
               d={pathD}
-              stroke="black"
-              strokeWidth="1"
+              stroke={isHovered ? "#E11D48" : (tension > 1.8 ? "#880000" : "black")}
+              strokeWidth={dynamicStrokeWidth}
               strokeDasharray="6 8"
               fill="none"
-              opacity={isHovered ? 0.5 : 0.25}
-              filter="url(#wire-glow)"
-              style={{ transition: "opacity 0.3s ease" }}
+              opacity={dynamicOpacity}
+              filter={isHovered ? "url(#packet-glow)" : "url(#wire-glow)"}
+              style={{ transition: "stroke 0.3s ease" }} // only transition color, let layout be instant
             />
 
             {/* Hidden paths for animateMotion */}
