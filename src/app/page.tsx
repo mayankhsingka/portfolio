@@ -9,6 +9,8 @@ import { SystemShortcuts } from "@/components/SystemShortcuts";
 import { BootSequence } from "@/components/BootSequence";
 import { SystemBreach } from "@/components/SystemBreach";
 import { ClearanceProvider, useClearanceContext } from "@/components/ClearanceProvider";
+import { SurveillanceCamera } from "@/components/SurveillanceCamera";
+import { ScrambleText } from "@/components/ScrambleText";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,8 +19,18 @@ function HomeContent() {
   const [hasBooted, setHasBooted] = useState(true);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [breachActive, setBreachActive] = useState(false);
+  const [surveillanceActive, setSurveillanceActive] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLDivElement>(null);
   const { level, notification, clearNotification, promoteToRoot } = useClearanceContext();
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const booted = sessionStorage.getItem("system_booted");
@@ -27,11 +39,17 @@ function HomeContent() {
     }
   }, []);
 
-  // Listen for breach events from CommandPalette
+  // Listen for global events from CommandPalette
   useEffect(() => {
     const handleBreach = () => setBreachActive(true);
+    const handleSurveillance = (e: any) => setSurveillanceActive(e.detail);
+    
     window.addEventListener("system-breach", handleBreach);
-    return () => window.removeEventListener("system-breach", handleBreach);
+    window.addEventListener("system-surveillance", handleSurveillance as any);
+    return () => {
+      window.removeEventListener("system-breach", handleBreach);
+      window.removeEventListener("system-surveillance", handleSurveillance as any);
+    };
   }, []);
 
   const completeBoot = () => {
@@ -42,6 +60,10 @@ function HomeContent() {
   const handleBreachComplete = useCallback(() => {
     setBreachActive(false);
     promoteToRoot();
+    // Slight delay to allow new root-level React nodes to mount and attach their listeners
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("system-decrypt"));
+    }, 100);
   }, [promoteToRoot]);
 
   // Show nodes based on clearance
@@ -82,21 +104,49 @@ function HomeContent() {
         <TerminalLogs />
         <CommandPalette />
         <SystemShortcuts />
+
+        <AnimatePresence>
+          {surveillanceActive && (
+            <SurveillanceCamera onClose={() => setSurveillanceActive(false)} />
+          )}
+        </AnimatePresence>
         
         {/* HUD — top-left info panel */}
-        <div className="fixed top-4 left-4 font-mono text-xs font-bold pointer-events-none uppercase z-[40] bg-white/80 p-2 border-2 border-black flex flex-col gap-1">
-          <span className="block border-b-2 border-black pb-1 mb-1">{PORTFOLIO_DATA.general.name} - System Blueprint v1.0</span>
-          [Press Ctrl+K for commands]<br />
-          [Shift+A: About | Shift+C: Ping]<br />
-          [Drag grid or nodes to navigate]
-          <span className={`block border-t border-black/30 pt-1 mt-1 ${
+        <div className="fixed top-4 left-4 font-mono text-xs font-bold pointer-events-none uppercase z-[40] bg-white/80 p-3 border-2 border-black flex flex-col gap-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+          <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-1 gap-8 text-[11px] tracking-tight">
+            <span className="block italic">
+              <ScrambleText>{PORTFOLIO_DATA.general.name.toUpperCase()}</ScrambleText> / <ScrambleText>SYS_BLUEPRINT_v1.2</ScrambleText>
+            </span>
+            {/* Heartbeat Indicator */}
+            <div className="flex items-center gap-1.5 opacity-60">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full system-heartbeat" />
+              <span className="text-[10px]">LIVE</span>
+            </div>
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex justify-between gap-4">
+              <span className="opacity-70">COORD_X:</span>
+              <span className="text-black/80">{String(mousePos.x).padStart(4, '0')}</span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <span className="opacity-70">COORD_Y:</span>
+              <span className="text-black/80">{String(mousePos.y).padStart(4, '0')}</span>
+            </div>
+            <div className="flex justify-between gap-4 mt-2 border-t border-black/10 pt-1">
+              <span className="opacity-70">DIRECTIVE:</span>
+              <span className="text-black/80">CTRL+K_CMDS</span>
+            </div>
+          </div>
+
+          <span className={`block border-t-2 border-black pt-2 mt-1 ${
             level === "ROOT" 
               ? "text-red-600" 
               : level === "OPERATOR" 
                 ? "text-green-700" 
                 : "text-black/50"
           }`}>
-            [CLEARANCE: {level}]
+            [<ScrambleText>CLEARANCE_CERTIFICATE:</ScrambleText> <ScrambleText>{level}</ScrambleText>]
           </span>
         </div>
 
