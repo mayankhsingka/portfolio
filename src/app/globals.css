@@ -24,11 +24,30 @@
 
 
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  --sys-black: #000000;
+  --sys-white: #ffffff;
+  --background: var(--sys-white);
+  --foreground: var(--sys-black);
+}
+
+/* Phase 1: Advanced Phosphor Themes */
+.theme-aviation {
+  --sys-black: #0f172a;
+  --sys-white: #fef0be;
+}
+.theme-amber {
+  --sys-black: #000000;
+  --sys-white: #ffb000;
+}
+.theme-matrix {
+  --sys-black: #000000;
+  --sys-white: #00ff41;
 }
 
 @theme inline {
+  /* Override Tailwind core colors so any bg-black, border-black adapts */
+  --color-black: var(--sys-black);
+  --color-white: var(--sys-white);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-space-grotesk);
@@ -73,7 +92,7 @@ body.page-scrollable::-webkit-scrollbar-thumb {
 
 .dark-ops {
   filter: invert(1) hue-rotate(180deg);
-  background-color: black;
+  background-color: var(--sys-black);
 }
 
 /* Scanline overlay on dark mode */
@@ -245,4 +264,28 @@ html, body {
 @keyframes cursor-blink {
   0%, 100% { opacity: 1; }
   50%      { opacity: 0; }
+}
+
+/* ======================================
+   INTERNAL MEMOS: CLASSIFIED ARCHIVE
+   ====================================== */
+
+.cia-redact {
+  position: relative;
+  display: inline-block;
+}
+
+.cia-redact::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-color: var(--sys-black);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: right;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.cia-redact:hover::after {
+  transform: scaleX(0);
 }

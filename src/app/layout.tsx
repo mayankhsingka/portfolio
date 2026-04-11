@@ -49,7 +49,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                if (localStorage.getItem('night_ops_engaged') === 'true') {
+                const theme = localStorage.getItem('sys_theme');
+                if (theme) {
+                  document.documentElement.classList.add(theme);
+                } else if (localStorage.getItem('night_ops_engaged') === 'true') {
                   document.documentElement.classList.add('dark-ops');
                 }
               } catch (e) {}
