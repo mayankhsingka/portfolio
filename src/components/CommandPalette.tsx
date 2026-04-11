@@ -196,9 +196,16 @@ export function CommandPalette() {
     if (base === "help") {
       setTerminalOutput(prev => [...prev, {
         cmd,
-        output: "AVAILABLE COMMANDS:\n/shipped, /internal-memos, /core-identity, /ping, /engage_night_ops\n\nHIDDEN SHELL:\nls, cat, whoami, neofetch, clear"
+        output: "AVAILABLE COMMANDS:\n/shipped, /internal-memos, /commands, /core-identity, /ping, /engage_night_ops\n\nHIDDEN SHELL:\nls, cat, whoami, neofetch, clear\n\n[WARNING: 3 CLASSIFIED COMMANDS HIDDEN. ROOT CLEARANCE REQUIRED.]"
       }]);
       return;
+    }
+
+    if (base === "/play" || base === "/airplane_mode") {
+       setTerminalOutput(prev => [...prev, { cmd, output: "[CRITICAL] Network connection severed intentionally. Booting offline protocol..." }]);
+       setOpen(false);
+       setTimeout(() => window.dispatchEvent(new Event("offline")), 500);
+       return;
     }
 
     // ═══ Breach Easter Egg ═══
