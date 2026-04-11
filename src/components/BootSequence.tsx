@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
+import { InteractiveBios } from "@/components/InteractiveBios";
 
 export function BootSequence({ onComplete }: { onComplete: () => void }) {
   const [logs, setLogs] = useState<string[]>([]);
   const [isBooting, setIsBooting] = useState(true);
+  const [inBios, setInBios] = useState(false);
 
   // Parse accurate system data for the boot sequence
   const bootScript = [
@@ -21,6 +23,7 @@ export function BootSequence({ onComplete }: { onComplete: () => void }) {
   ];
 
   useEffect(() => {
+    if (inBios) return;
     let currentIndex = 0;
     
     // Incrementally show logs
@@ -37,18 +40,41 @@ export function BootSequence({ onComplete }: { onComplete: () => void }) {
       }
     }, 150); // Fast 150ms per line print
 
-    return () => clearInterval(interval);
-  }, []);
+    const handleKey = (e: KeyboardEvent) => {
+       if (e.key === "Delete" || e.key === "Backspace") {
+          setInBios(true);
+       }
+    };
+    window.addEventListener("keydown", handleKey);
+
+    return () => {
+        clearInterval(interval);
+        window.removeEventListener("keydown", handleKey);
+    };
+  }, [inBios, onComplete]);
 
   return (
     <AnimatePresence>
-      {isBooting && (
+      {inBios && <InteractiveBios onExit={() => {
+         setInBios(false);
+         setIsBooting(false);
+         onComplete(); 
+      }} />}
+
+      {!inBios && isBooting && (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className="fixed inset-0 z-[100] bg-black text-white flex flex-col justify-end p-8 font-mono text-sm uppercase tracking-widest pointer-events-none"
         >
+          <div 
+             className="absolute top-8 left-8 text-white font-bold cursor-pointer hover:text-red-500 transition-colors z-[200]"
+             onClick={() => setInBios(true)}
+          >
+             Press <span className="text-red-500">[DEL]</span> to enter SETUP
+          </div>
+
           <div className="flex flex-col gap-2 max-w-4xl">
             {logs.map((log, i) => (
               <motion.div 
