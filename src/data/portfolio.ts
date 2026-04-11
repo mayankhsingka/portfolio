@@ -16,6 +16,7 @@ export const PORTFOLIO_DATA = {
     "sys_metrics.log": "[08:45:01] CPU_USAGE: 12% | MEM: 4021MB / 8192MB\n[08:45:05] ACTIVE_CONNECTIONS: 1\n[08:45:12] STATUS: NOMINAL. Waiting for operator input...",
     ".classified": "[ACCESS_DENIED] Insufficient clearance. Promote to OPERATOR to read this file.",
     "reading_list.dat": "[OPERATOR_ONLY] Current reading queue:\n1. Zero to One — Peter Thiel\n2. The Mom Test — Rob Fitzpatrick\n3. Hooked — Nir Eyal\n4. Inspired — Marty Cagan\n5. The Hard Thing About Hard Things — Ben Horowitz",
+    "sys_breach.log": "[CORRUPTED] ... \nError: System vulnerable. \nAn operator could type 'breach' to disrupt architecture.\n[CLASSIFIED] Surveillance offline: /engage_surveillance \n[WARNING] Network unstable. Prepare for /play offline mode.",
   },
 
   nodes: [

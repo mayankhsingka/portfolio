@@ -10,6 +10,7 @@ import { BootSequence } from "@/components/BootSequence";
 import { SystemBreach } from "@/components/SystemBreach";
 import { ClearanceProvider, useClearanceContext } from "@/components/ClearanceProvider";
 import { SurveillanceCamera } from "@/components/SurveillanceCamera";
+import { useTelemetryTab } from "@/hooks/useTelemetryTab";
 import { ScrambleText } from "@/components/ScrambleText";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -18,6 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 function HomeContent() {
   const [hasBooted, setHasBooted] = useState(true);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+  useTelemetryTab();
   const [breachActive, setBreachActive] = useState(false);
   const [surveillanceActive, setSurveillanceActive] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -50,6 +52,25 @@ function HomeContent() {
       window.removeEventListener("system-breach", handleBreach);
       window.removeEventListener("system-surveillance", handleSurveillance as any);
     };
+  }, []);
+
+  // Method C: Dev-Tools Trap
+  useEffect(() => {
+    const css = `
+      background: #000;
+      color: #0f0;
+      font-size: 14px;
+      padding: 20px;
+      font-family: monospace;
+      border: 2px solid #0f0;
+      line-height: 1.5;
+    `;
+    setTimeout(() => {
+      console.log(
+        "%c[SYS_ARCHITECT_WARNING] ⚠️ \n\nUNSANCTIONED OPERATOR DETECTED.\n\nIF YOU ARE A RECRUITER OR DEVELOPER READING THIS:\nDO NOT EXECUTE '/breach' IN THE COMMAND PALETTE.\nDO NOT EXECUTE '/engage_surveillance'.\nDO NOT EXECUTE '/play'.\n\nTHESE ARE CLASSIFIED DIRECTIVES.",
+        css
+      );
+    }, 2000);
   }, []);
 
   const completeBoot = () => {
