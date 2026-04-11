@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { useClearanceContext } from "@/components/ClearanceProvider";
+import { useSystemAudio } from "@/hooks/useSystemAudio";
 
 const STATIC_NAV = [
   { path: "/shipped", label: "Projects", description: "View shipped deployments" },
@@ -13,7 +14,7 @@ const STATIC_NAV = [
   { path: "/ping", label: "Contact", description: "Establish connection" },
 ];
 
-const HIDDEN_COMMANDS = ["help", "ls", "cat", "whoami", "neofetch", "clear"];
+const HIDDEN_COMMANDS = ["help", "ls", "cat", "whoami", "neofetch", "clear", "/engage_surveillance"];
 
 export function CommandPalette() {
   const router = useRouter();
@@ -26,15 +27,20 @@ export function CommandPalette() {
   const [isDark, setIsDark] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const outputEndRef = useRef<HTMLDivElement>(null);
+  const { playKeystroke, playAction, playSnap } = useSystemAudio();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen(prev => !prev);
+        setOpen(prev => {
+          if (!prev) playSnap();
+          return !prev;
+        });
       }
       if (e.key === "/" && !open && document.activeElement?.tagName !== "INPUT") {
         e.preventDefault();
+        playSnap();
         setOpen(true);
       }
       if (e.key === "Escape") {
@@ -43,7 +49,7 @@ export function CommandPalette() {
     };
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, [open]);
+  }, [open, playSnap]);
 
   useEffect(() => {
     if (open) {
@@ -90,6 +96,7 @@ export function CommandPalette() {
     const cmd = cmdStr.trim();
     if (!cmd) return;
 
+    playAction();
     setHistory(prev => [cmd, ...prev.filter(h => h !== cmd)].slice(0, 30));
     setInput("");
     setHistoryIdx(-1);
@@ -132,6 +139,13 @@ export function CommandPalette() {
       document.documentElement.classList.add("dark-ops-transition");
       setTimeout(() => document.documentElement.classList.remove("dark-ops-transition"), 400);
       setTerminalOutput(prev => [...prev, { cmd, output: dark ? "Night Ops Disabled. Light Ops Engaged." : "Night Ops Engaged." }]);
+      return;
+    }
+
+    if (cmd === "/engage_surveillance") {
+      window.dispatchEvent(new CustomEvent("system-surveillance", { detail: true }));
+      setTerminalOutput(prev => [...prev, { cmd, output: "Initializing hardware optics protocol..." }]);
+      setOpen(false);
       return;
     }
 
@@ -221,6 +235,7 @@ export function CommandPalette() {
         const idx = historyIdx + 1;
         setHistoryIdx(idx);
         setInput(history[idx]);
+        playKeystroke();
       }
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -228,15 +243,22 @@ export function CommandPalette() {
         const idx = historyIdx - 1;
         setHistoryIdx(idx);
         setInput(history[idx]);
+        playKeystroke();
       } else if (historyIdx === 0) {
         setHistoryIdx(-1);
         setInput("");
+        playKeystroke();
       }
     } else if (e.key === "Tab") {
       e.preventDefault();
-      const all = [...NAV_COMMANDS.map(c => c.path), ...HIDDEN_COMMANDS];
+      const all = [...currentNav.map(c => c.path), ...HIDDEN_COMMANDS];
       const match = all.find(p => p.startsWith(query));
-      if (match) setInput(match);
+      if (match) {
+        setInput(match);
+        playKeystroke();
+      }
+    } else if (e.key.length === 1 || e.key === "Backspace") {
+      playKeystroke();
     }
   };
 
@@ -251,6 +273,9 @@ export function CommandPalette() {
           onClick={() => setOpen(false)}
         >
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="System Command Palette"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
@@ -269,12 +294,17 @@ export function CommandPalette() {
                 onKeyDown={handleKeyDown}
                 spellCheck={false}
                 autoComplete="off"
+                aria-label="Terminal Input"
               />
             </div>
 
             {/* Terminal Area (Only shows if output exists) */}
             {terminalOutput.length > 0 && (
-              <div className="max-h-[30vh] overflow-y-auto flex flex-col gap-3 p-4 bg-black/5 border-2 border-dashed border-black/20 text-sm">
+              <div 
+                className="max-h-[30vh] overflow-y-auto flex flex-col gap-3 p-4 bg-black/5 border-2 border-dashed border-black/20 text-sm"
+                aria-live="polite"
+                aria-atomic="false"
+              >
                 {terminalOutput.map((item, i) => (
                   <div key={i}>
                     <div className="opacity-40">$ {item.cmd}</div>
