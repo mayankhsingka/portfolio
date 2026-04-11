@@ -53,7 +53,7 @@ export default function InternalMemosIndex() {
                       {memo.title}
                     </Link>
                   </h2>
-                  <time className="font-mono text-xs">{memo.date}</time>
+                  <time className="font-mono text-xs cia-redact cursor-crosshair">{memo.date}</time>
                 </div>
                 
                 <p className="mb-6 font-mono text-sm">{memo.excerpt}</p>
@@ -61,7 +61,7 @@ export default function InternalMemosIndex() {
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2">
                     {memo.tags.map(tag => (
-                      <span key={tag} className="text-xs border border-black px-1 font-mono uppercase bg-black/5">
+                      <span key={tag} className="text-xs border border-black px-1 font-mono uppercase bg-black/5 cia-redact cursor-crosshair">
                         {tag}
                       </span>
                     ))}

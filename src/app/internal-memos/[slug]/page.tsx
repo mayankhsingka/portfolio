@@ -4,6 +4,7 @@ import { use } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MEMOS_DATA } from "@/data/memos";
+import { TypewriterHeading } from "@/components/TypewriterHeading";
 import { CommandPalette } from "@/components/CommandPalette";
 import { useEffect, useState } from "react";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
@@ -59,14 +60,15 @@ export default function MemoReader({ params }: { params: Promise<{ slug: string 
     <main className="w-full min-h-full text-black flex flex-col p-8 lg:p-24 overflow-y-auto">
       <div className="max-w-3xl mx-auto w-full z-10 flex flex-col gap-12 bg-white/90 p-8 lg:p-16 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
         
-        <header className="border-b-4 border-black pb-8 flex flex-col gap-6">
+        <header className="flex flex-col gap-6">
           <Link href="/internal-memos" className="font-mono text-sm hover:underline uppercase block w-fit">
             &lt; Back to Log Index
           </Link>
           <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
-            <h1 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-tight">
-              {memo.title}
-            </h1>
+            <TypewriterHeading 
+              text={memo.title} 
+              className="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-tight"
+            />
             <div className="flex gap-2 shrink-0 font-mono text-xs font-bold">
               <button 
                 onClick={copyUrl}
@@ -84,11 +86,14 @@ export default function MemoReader({ params }: { params: Promise<{ slug: string 
               </button>
             </div>
           </div>
-          <div className="flex justify-between items-center font-mono text-sm">
-            <time>FILE_DATE: {memo.date}</time>
+          <div className="flex justify-between items-center font-mono text-xs">
+            <time className="cia-redact cursor-crosshair">FILE_DATE: {memo.date}</time>
             <div className="flex gap-2">
-              {memo.tags.map(tag => <span key={tag}>#{tag}</span>)}
+              {memo.tags.map(tag => <span key={tag} className="cia-redact cursor-crosshair">#{tag}</span>)}
             </div>
+          </div>
+          <div className="w-full text-center font-mono text-[10px] md:text-xs opacity-50 select-none overflow-hidden whitespace-nowrap mt-4">
+             ╠════════════════[ DECRYPTED_LOG_FILE ]════════════════╣
           </div>
         </header>
 
@@ -107,9 +112,12 @@ export default function MemoReader({ params }: { params: Promise<{ slug: string 
           })}
         </article>
 
-        <footer className="border-t-4 border-black pt-8 mt-12 flex justify-between items-center font-mono text-xs uppercase opacity-70">
-          <span>// END OF TRANSMISSION</span>
-          <span>MAYANK_HIMMATSINGKA</span>
+        <div className="w-full text-center font-mono text-[10px] md:text-xs opacity-50 select-none overflow-hidden whitespace-nowrap mb-8">
+           ╠════════════════[ END_OF_TRANSMISSION ]════════════════╣
+        </div>
+        <footer className="flex justify-between items-center font-mono text-xs uppercase opacity-70">
+          <span className="cia-redact">// SYS_CONNECTION_TERMINATED</span>
+          <span className="cia-redact cursor-crosshair">MAYANK_HIMMATSINGKA</span>
         </footer>
       </div>
       <CommandPalette />
