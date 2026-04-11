@@ -1,5 +1,28 @@
 @import "tailwindcss";
 
+/* Tactical Text Selection - High Contrast Inversion */
+::selection {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.dark-ops ::selection {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* System Heartbeat Pulse */
+@keyframes heartbeat {
+  0% { opacity: 0.1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.1; }
+}
+
+.system-heartbeat {
+  animation: heartbeat 3s infinite ease-in-out;
+}
+
+
 :root {
   --background: #ffffff;
   --foreground: #000000;

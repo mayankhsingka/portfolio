@@ -28,7 +28,18 @@ export function TerminalLogs() {
       timeouts.push(t);
     });
 
-    return () => timeouts.forEach(clearTimeout);
+    const handleExternalLog = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && typeof detail === 'string') {
+        setLogs((prev) => [...prev, { text: detail, type: "SYSTEM" }]);
+      }
+    };
+
+    window.addEventListener("system-log", handleExternalLog);
+    return () => {
+      timeouts.forEach(clearTimeout);
+      window.removeEventListener("system-log", handleExternalLog);
+    };
   }, []);
 
   return (

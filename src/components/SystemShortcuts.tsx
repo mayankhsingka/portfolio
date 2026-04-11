@@ -14,11 +14,19 @@ export function SystemShortcuts() {
 
       if (e.shiftKey && e.key.toLowerCase() === "a") {
         e.preventDefault();
-        setView(v => v === "ABOUT" ? "NONE" : "ABOUT");
+        const newState: any = (v: string) => v === "ABOUT" ? "NONE" : "ABOUT";
+        setView(newState);
+        window.dispatchEvent(new CustomEvent("system-log", { 
+          detail: `[INFO]: Executing shortcut directive: ${view === "ABOUT" ? "CLOSE" : "OPEN"}_IDENTITY_MANIFEST` 
+        }));
       }
       if (e.shiftKey && e.key.toLowerCase() === "c") {
         e.preventDefault();
-        setView(v => v === "CONTACT" ? "NONE" : "CONTACT");
+        const newState: any = (v: string) => v === "CONTACT" ? "NONE" : "CONTACT";
+        setView(newState);
+        window.dispatchEvent(new CustomEvent("system-log", { 
+          detail: `[INFO]: Executing shortcut directive: ${view === "CONTACT" ? "CLOSE" : "OPEN"}_CORE_PING` 
+        }));
       }
       if (e.key === "Escape") {
         setView("NONE");
