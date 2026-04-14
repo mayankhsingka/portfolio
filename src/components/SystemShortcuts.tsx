@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 
 export function SystemShortcuts() {
   const [view, setView] = useState<"NONE" | "ABOUT" | "CONTACT">("NONE");
+  const viewRef = useRef(view);
+  viewRef.current = view;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -14,18 +16,18 @@ export function SystemShortcuts() {
 
       if (e.shiftKey && e.key.toLowerCase() === "a") {
         e.preventDefault();
-        const newState: any = (v: string) => v === "ABOUT" ? "NONE" : "ABOUT";
-        setView(newState);
+        const wasOpen = viewRef.current === "ABOUT";
+        setView((v) => v === "ABOUT" ? "NONE" : "ABOUT");
         window.dispatchEvent(new CustomEvent("system-log", { 
-          detail: `[INFO]: Executing shortcut directive: ${view === "ABOUT" ? "CLOSE" : "OPEN"}_IDENTITY_MANIFEST` 
+          detail: `[INFO]: Executing shortcut directive: ${wasOpen ? "CLOSE" : "OPEN"}_IDENTITY_MANIFEST` 
         }));
       }
       if (e.shiftKey && e.key.toLowerCase() === "c") {
         e.preventDefault();
-        const newState: any = (v: string) => v === "CONTACT" ? "NONE" : "CONTACT";
-        setView(newState);
+        const wasOpen = viewRef.current === "CONTACT";
+        setView((v) => v === "CONTACT" ? "NONE" : "CONTACT");
         window.dispatchEvent(new CustomEvent("system-log", { 
-          detail: `[INFO]: Executing shortcut directive: ${view === "CONTACT" ? "CLOSE" : "OPEN"}_CORE_PING` 
+          detail: `[INFO]: Executing shortcut directive: ${wasOpen ? "CLOSE" : "OPEN"}_CORE_PING` 
         }));
       }
       if (e.key === "Escape") {

@@ -8,6 +8,7 @@ const CONNECTIONS = [
   { from: "core", to: "exp_1" },
   { from: "core", to: "exp_2" },
   { from: "core", to: "skill_matrix" },
+  { from: "core", to: "reading_list" },
 ];
 
 interface LineData {

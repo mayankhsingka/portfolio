@@ -8,10 +8,13 @@ import { useClearanceContext } from "@/components/ClearanceProvider";
 import { useSystemAudio } from "@/hooks/useSystemAudio";
 
 const STATIC_NAV = [
-  { path: "/shipped", label: "Projects", description: "View shipped deployments" },
-  { path: "/internal-memos", label: "Blog", description: "Read operational memos" },
-  { path: "/core-identity", label: "About", description: "Core identity overlay" },
-  { path: "/ping", label: "Contact", description: "Establish connection" },
+  { path: "/shipped", label: "Registry", description: "View all architecture deployments" },
+  { path: "/internal-memos", label: "Archive", description: "Classified tactical intelligence" },
+  { path: "/commands", label: "Sandbox", description: "System execution laboratory" },
+  { path: "/theme", label: "Phosphor", description: "Cycle hardware hardware filters" },
+  { path: "/core-identity", label: "About", description: "Profile: Mayank Himmatsingka" },
+  { path: "/ping", label: "Contact", description: "Open signal to operator" },
+  { path: "/engage_surveillance", label: "Camera", description: "Access local visual payload" },
 ];
 
 const HIDDEN_COMMANDS = ["help", "ls", "cat", "whoami", "neofetch", "clear", "/engage_surveillance"];
@@ -65,12 +68,15 @@ export function CommandPalette() {
   }, [terminalOutput]);
 
   useEffect(() => {
-    const dark = localStorage.getItem("night_ops_engaged") === "true";
-    if (dark) {
-      document.documentElement.classList.add("dark-ops");
+    const theme = localStorage.getItem("sys_theme");
+    if (theme === "dark-ops") {
       setIsDark(true);
-    } else {
+    } else if (theme) {
+      document.documentElement.classList.add(theme);
       setIsDark(false);
+    } else if (localStorage.getItem("night_ops_engaged") === "true") {
+      setIsDark(true);
+      document.documentElement.classList.add("dark-ops");
     }
   }, []);
 
@@ -125,15 +131,33 @@ export function CommandPalette() {
       return;
     }
 
+    if (cmd.startsWith("/theme")) {
+      const themes = ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"];
+      let currentTheme = localStorage.getItem("sys_theme") || "";
+      let nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
+      const nextTheme = themes[nextIdx];
+      
+      // Remove old themes
+      themes.forEach(t => t && document.documentElement.classList.remove(t));
+      if (nextTheme) document.documentElement.classList.add(nextTheme);
+      
+      localStorage.setItem("sys_theme", nextTheme);
+      document.documentElement.classList.add("dark-ops-transition");
+      setTimeout(() => document.documentElement.classList.remove("dark-ops-transition"), 400);
+      
+      setTerminalOutput(prev => [...prev, { cmd, output: `[OK] Phosphor parameters updated: ${nextTheme === "" ? "default" : nextTheme}` }]);
+      return;
+    }
+
     if (cmd === "/engage_night_ops" || cmd === "/engage_light_ops") {
       const dark = document.documentElement.classList.contains("dark-ops");
       if (dark) {
         document.documentElement.classList.remove("dark-ops");
-        localStorage.setItem("night_ops_engaged", "false");
+        localStorage.setItem("sys_theme", "");
         setIsDark(false);
       } else {
         document.documentElement.classList.add("dark-ops");
-        localStorage.setItem("night_ops_engaged", "true");
+        localStorage.setItem("sys_theme", "dark-ops");
         setIsDark(true);
       }
       document.documentElement.classList.add("dark-ops-transition");
@@ -204,7 +228,7 @@ export function CommandPalette() {
     if (base === "/play" || base === "/airplane_mode") {
        setTerminalOutput(prev => [...prev, { cmd, output: "[CRITICAL] Network connection severed intentionally. Booting offline protocol..." }]);
        setOpen(false);
-       setTimeout(() => window.dispatchEvent(new Event("offline")), 500);
+       setTimeout(() => window.dispatchEvent(new CustomEvent("system-offline")), 500);
        return;
     }
 

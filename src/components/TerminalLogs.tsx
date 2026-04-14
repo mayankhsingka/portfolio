@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 
 export function TerminalLogs() {
-  const [logs, setLogs] = useState<{text: string, type: string}[]>([]);
+  const [logs, setLogs] = useState<{text: string, type: string, timestamp: number}[]>([]);
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -23,7 +23,7 @@ export function TerminalLogs() {
     PORTFOLIO_DATA.logs.forEach((log, index) => {
       const delay = (log as any).delay || index * 500; // default staggered
       const t = setTimeout(() => {
-        setLogs((prev) => [...prev, { text: log.text, type: log.type }]);
+        setLogs((prev) => [...prev, { text: log.text, type: log.type, timestamp: Date.now() }]);
       }, delay);
       timeouts.push(t);
     });
@@ -31,7 +31,7 @@ export function TerminalLogs() {
     const handleExternalLog = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail && typeof detail === 'string') {
-        setLogs((prev) => [...prev, { text: detail, type: "SYSTEM" }]);
+        setLogs((prev) => [...prev, { text: detail, type: "SYSTEM", timestamp: Date.now() }]);
       }
     };
 
@@ -41,6 +41,11 @@ export function TerminalLogs() {
       window.removeEventListener("system-log", handleExternalLog);
     };
   }, []);
+
+  const formatTime = (ts: number) => {
+    const d = new Date(ts);
+    return d.toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' });
+  };
 
   return (
     <div 
@@ -71,7 +76,7 @@ export function TerminalLogs() {
           {logs.map((log, i) => (
             <div key={i} className="flex gap-2">
               <span className="text-black font-bold whitespace-nowrap">
-                {new Date().toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' })}
+                {formatTime(log.timestamp)}
               </span>
               <span className="text-black">{log.text}</span>
             </div>

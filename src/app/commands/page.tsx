@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CommandPalette } from "@/components/CommandPalette";
 import { TypewriterHeading } from "@/components/TypewriterHeading";
@@ -62,6 +63,7 @@ const COMMANDS = [
 
 export default function CommandsSandbox() {
   usePageScrollable();
+  const router = useRouter();
   const [activeCmd, setActiveCmd] = useState(COMMANDS[0]);
   const [glitchTrigger, setGlitchTrigger] = useState(0);
 
@@ -71,30 +73,37 @@ export default function CommandsSandbox() {
   };
 
   const handleExecute = () => {
-    // We can simulate opening the palette and typing it, 
-    // or just trigger the global custom event. We'll use custom events or routing.
     if (activeCmd.link) {
-      window.location.href = activeCmd.link;
+      router.push(activeCmd.link);
       return;
     }
     
     if (activeCmd.cmd === "/theme") {
-      // Simulate theme cycle
       const themes = ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"];
-      let currentTheme = localStorage.getItem("sys_theme") || "";
-      let nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
+      const currentTheme = localStorage.getItem("sys_theme") || "";
+      const nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
       const nextTheme = themes[nextIdx];
       themes.forEach(t => t && document.documentElement.classList.remove(t));
       if (nextTheme) document.documentElement.classList.add(nextTheme);
       localStorage.setItem("sys_theme", nextTheme);
       document.documentElement.classList.add("dark-ops-transition");
       setTimeout(() => document.documentElement.classList.remove("dark-ops-transition"), 400);
-    } else if (activeCmd.cmd === "/engage_surveillance") {
-      window.dispatchEvent(new CustomEvent("system-surveillance", { detail: true }));
-    } else if (activeCmd.cmd === "/play") {
-      window.dispatchEvent(new Event("offline"));
-    } else if (activeCmd.cmd === "/breach") {
-      window.dispatchEvent(new CustomEvent("system-breach"));
+    } else if (activeCmd.cmd === "/engage_surveillance" || activeCmd.cmd === "/breach" || activeCmd.cmd === "/play") {
+      // These events only have listeners on the home page — navigate there first
+      const eventName = activeCmd.cmd === "/engage_surveillance" 
+        ? "system-surveillance" 
+        : activeCmd.cmd === "/breach" 
+          ? "system-breach" 
+          : "system-offline";
+      const eventDetail = activeCmd.cmd === "/engage_surveillance" ? true : undefined;
+      router.push("/");
+      setTimeout(() => {
+        window.dispatchEvent(
+          eventDetail !== undefined 
+            ? new CustomEvent(eventName, { detail: eventDetail })
+            : new CustomEvent(eventName)
+        );
+      }, 800);
     }
   };
 
