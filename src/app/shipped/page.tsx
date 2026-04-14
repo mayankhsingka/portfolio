@@ -3,23 +3,18 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
+import { isProjectNode } from "@/data/types";
 import { CommandPalette } from "@/components/CommandPalette";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 
 export default function ShippedIndex() {
   usePageScrollable();
 
-  const shippedProjects = PORTFOLIO_DATA.nodes.filter(
-    (n) => "slug" in n && n.slug
-  );
+  const shippedProjects = PORTFOLIO_DATA.nodes.filter(isProjectNode);
 
   // Build ticker string from project telemetry
   const tickerText = shippedProjects
-    .map((p) => {
-      const telemetry = (p as any).telemetry;
-      return telemetry ? `▸ ${p.title.toUpperCase()}: ${telemetry}` : null;
-    })
-    .filter(Boolean)
+    .map((p) => `▸ ${p.title.toUpperCase()}: ${p.telemetry}`)
     .join("   ");
   const doubledTicker = `${tickerText}   ${tickerText}`;
 
@@ -61,12 +56,12 @@ export default function ShippedIndex() {
               transition={{ duration: 0.3, delay: 0.1 + i * 0.1 }}
             >
               <Link
-                href={`/shipped/${(project as any).slug}`}
+                href={`/shipped/${project.slug}`}
                 className="group border-2 border-black p-6 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all bg-white relative block"
               >
                 {/* File tab */}
                 <div className="absolute -top-[1px] left-6 bg-black text-white font-mono text-[10px] px-3 py-0.5 uppercase tracking-widest">
-                  {(project as any).fileId || `CASE_${String(i + 1).padStart(3, "0")}`}
+                  {project.fileId}
                 </div>
 
                 <div className="flex justify-between items-start mb-4 mt-2">
@@ -78,9 +73,9 @@ export default function ShippedIndex() {
                   </div>
                   <span className="font-mono text-xs opacity-50 uppercase shrink-0 mt-2 group-hover:opacity-100 transition-opacity">CASE_FILE →</span>
                 </div>
-                {(project as any).liveUrl && (project as any).liveUrl !== "#" && (
+                {project.liveUrl && project.liveUrl !== "#" && (
                   <span className="font-mono text-[10px] opacity-30 group-hover:opacity-60 transition-opacity block mb-1">
-                    → {((project as any).liveUrl as string).replace(/^https?:\/\//, "")}
+                    → {project.liveUrl.replace(/^https?:\/\//, "")}
                   </span>
                 )}
 

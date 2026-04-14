@@ -1,4 +1,6 @@
-export const PORTFOLIO_DATA = {
+import type { PortfolioData } from "./types";
+
+export const PORTFOLIO_DATA: PortfolioData = {
   general: {
     name: "Mayank Himmatsingka",
     role: "Product Builder & System Architect",
@@ -8,6 +10,7 @@ export const PORTFOLIO_DATA = {
     githubUrl: "https://github.com/mankuu-10",
     linkedinUrl: "https://linkedin.com/in/mayankhsingka",
     launchDate: "2026-04-01",
+    resumeUrl: "/resume.pdf",
   },
 
   fileSystem: {
@@ -21,6 +24,7 @@ export const PORTFOLIO_DATA = {
 
   nodes: [
     {
+      kind: "info",
       id: "core",
       title: "Root Directive",
       status: "ACTIVE",
@@ -33,6 +37,7 @@ export const PORTFOLIO_DATA = {
       ]
     },
     {
+      kind: "project",
       id: "exp_1",
       title: "Manasya",
       slug: "manasya",
@@ -40,8 +45,8 @@ export const PORTFOLIO_DATA = {
       description: "A secure digital space offering students a safe platform to heal, express, and connect with counselors.",
       top: "calc(20vh - 60px)",
       left: "calc(20vw - 125px)",
-      sourceUrl: "#",
-      liveUrl: "#",
+      sourceUrl: "https://github.com/mayankhsingka/manasya",
+      liveUrl: "https://manasya.in",
       fileId: "CASE_001",
       created: "2026-01-15",
       modified: "2026-04-01",
@@ -74,6 +79,7 @@ export const PORTFOLIO_DATA = {
       ]
     },
     {
+      kind: "project",
       id: "exp_2",
       title: "Producive",
       slug: "producive",
@@ -81,8 +87,8 @@ export const PORTFOLIO_DATA = {
       description: "Deep-focus browser extension. Comprehensive YouTube control, site blocking, and stopwatch overlays.",
       top: "calc(80vh - 60px)",
       left: "calc(30vw - 125px)",
-      sourceUrl: "#",
-      liveUrl: "#",
+      sourceUrl: "https://github.com/mayankhsingka/producive",
+      liveUrl: "https://chromewebstore.google.com/detail/producive",
       fileId: "CASE_002",
       created: "2026-03-01",
       modified: "2026-04-05",
@@ -115,6 +121,7 @@ export const PORTFOLIO_DATA = {
       ]
     },
     {
+      kind: "info",
       id: "skill_matrix",
       title: "Core Stack",
       status: "ACTIVE",
@@ -127,6 +134,7 @@ export const PORTFOLIO_DATA = {
       ]
     },
     {
+      kind: "info",
       id: "reading_list",
       title: "Reading Queue",
       status: "CLASSIFIED",

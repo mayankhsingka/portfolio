@@ -9,7 +9,7 @@ import { ScrambleText } from "@/components/ScrambleText";
 interface ArchitectureNodeProps {
   id: string;
   title: string;
-  status?: "ACTIVE" | "ARCHIVED" | "SCALING" | "CLASSIFIED";
+  status?: "ACTIVE" | "ARCHIVED" | "SCALING" | "CLASSIFIED" | "LOCKED";
   description: string;
   metrics?: { label: string; value: string }[];
   top: string;
