@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ShortcutOverlay } from "@/components/ShortcutOverlay";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -12,25 +13,54 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mayankhsingka.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Mayank Himmatsingka | System Blueprint",
-  description: "Product Builder and System Architect. Shipping innovative products and scalable systems with extreme velocity.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Mayank Himmatsingka | System Blueprint",
+    template: "%s | Mayank Himmatsingka",
+  },
+  description: "Product Builder & System Architect. Shipping innovative products and scalable systems with extreme velocity. Explore the blueprint.",
+  keywords: ["Mayank Himmatsingka", "product builder", "system architect", "portfolio", "Next.js", "developer", "Manasya", "Producive"],
   creator: "Mayank Himmatsingka",
+  authors: [{ name: "Mayank Himmatsingka", url: SITE_URL }],
   openGraph: {
-    title: "Mayank Himmatsingka | Developer & Builder",
-    description: "I build systems that solve real problems. 20yo product builder.",
-    url: "https://mayank.system-blueprint.local", // Replace when deploying
-    siteName: "Mayank Portfolio",
+    title: "Mayank Himmatsingka | System Blueprint",
+    description: "I build systems that solve real problems. 20yo product builder & system architect.",
+    url: SITE_URL,
+    siteName: "System Blueprint",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Mayank Himmatsingka — System Blueprint Portfolio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mayank Himmatsingka | System Blueprint",
+    description: "Product Builder & System Architect. Explore the blueprint.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   icons: {
     icon: "/favicon.svg",
-  }
+  },
 };
 
 export default function RootLayout({
@@ -62,6 +92,7 @@ export default function RootLayout({
       </head>
       <body className="h-full bg-grid-pattern overflow-hidden font-sans">
         {children}
+        <ShortcutOverlay />
       </body>
     </html>
   );
