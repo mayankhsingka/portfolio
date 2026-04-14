@@ -10,6 +10,8 @@ import { BootSequence } from "@/components/BootSequence";
 import { SystemBreach } from "@/components/SystemBreach";
 import { ClearanceProvider, useClearanceContext } from "@/components/ClearanceProvider";
 import { SurveillanceCamera } from "@/components/SurveillanceCamera";
+import { InteractiveBios } from "@/components/InteractiveBios";
+import { OfflineGame } from "@/components/OfflineGame";
 import { useTelemetryTab } from "@/hooks/useTelemetryTab";
 import { ScrambleText } from "@/components/ScrambleText";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
@@ -22,16 +24,30 @@ function HomeContent() {
   useTelemetryTab();
   const [breachActive, setBreachActive] = useState(false);
   const [surveillanceActive, setSurveillanceActive] = useState(false);
+  const [biosActive, setBiosActive] = useState(false);
+  const [offlineActive, setOfflineActive] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLDivElement>(null);
+  const mousePosRef = useRef({ x: 0, y: 0 });
+  const rafIdRef = useRef<number | null>(null);
+  const delTimestamps = useRef<number[]>([]);
   const { level, notification, clearNotification, promoteToRoot } = useClearanceContext();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+      mousePosRef.current = { x: e.clientX, y: e.clientY };
+      if (rafIdRef.current === null) {
+        rafIdRef.current = requestAnimationFrame(() => {
+          setMousePos(mousePosRef.current);
+          rafIdRef.current = null;
+        });
+      }
     };
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -41,16 +57,39 @@ function HomeContent() {
     }
   }, []);
 
+  // DEL key spam opens BIOS — like real hardware POST
+  useEffect(() => {
+    const handleDelKey = (e: KeyboardEvent) => {
+      if (e.key !== "Delete" || document.activeElement?.tagName === "INPUT") return;
+      const now = Date.now();
+      delTimestamps.current.push(now);
+      // Keep only presses within the last 2 seconds
+      delTimestamps.current = delTimestamps.current.filter(t => now - t < 2000);
+      if (delTimestamps.current.length >= 5) {
+        delTimestamps.current = [];
+        setBiosActive(true);
+        window.dispatchEvent(new CustomEvent("system-log", {
+          detail: "[BIOS] Intercepted POST sequence — entering BIOS Setup Utility"
+        }));
+      }
+    };
+    window.addEventListener("keydown", handleDelKey);
+    return () => window.removeEventListener("keydown", handleDelKey);
+  }, []);
+
   // Listen for global events from CommandPalette
   useEffect(() => {
     const handleBreach = () => setBreachActive(true);
-    const handleSurveillance = (e: any) => setSurveillanceActive(e.detail);
+    const handleSurveillance = (e: Event) => setSurveillanceActive((e as CustomEvent).detail);
+    const handleOffline = () => setOfflineActive(true);
     
     window.addEventListener("system-breach", handleBreach);
-    window.addEventListener("system-surveillance", handleSurveillance as any);
+    window.addEventListener("system-surveillance", handleSurveillance);
+    window.addEventListener("system-offline", handleOffline);
     return () => {
       window.removeEventListener("system-breach", handleBreach);
-      window.removeEventListener("system-surveillance", handleSurveillance as any);
+      window.removeEventListener("system-surveillance", handleSurveillance);
+      window.removeEventListener("system-offline", handleOffline);
     };
   }, []);
 
@@ -89,10 +128,9 @@ function HomeContent() {
 
   // Show nodes based on clearance
   const visibleNodes = PORTFOLIO_DATA.nodes.filter((n) => {
-    const clearance = (n as any).clearance;
-    if (!clearance) return true;
-    if (clearance === "OPERATOR" && (level === "OPERATOR" || level === "ROOT")) return true;
-    if (clearance === "ROOT" && level === "ROOT") return true;
+    if (!n.clearance) return true;
+    if (n.clearance === "OPERATOR" && (level === "OPERATOR" || level === "ROOT")) return true;
+    if (n.clearance === "ROOT" && level === "ROOT") return true;
     return false;
   });
 
@@ -103,6 +141,12 @@ function HomeContent() {
       {/* System Breach Overlay */}
       <SystemBreach active={breachActive} onComplete={handleBreachComplete} />
 
+      {/* BIOS Overlay — triggered by spamming DEL */}
+      {biosActive && <InteractiveBios onExit={() => setBiosActive(false)} />}
+
+      {/* Offline Game Overlay — triggered by /play command */}
+      {offlineActive && <OfflineGame onExit={() => setOfflineActive(false)} />}
+
       <div style={{ opacity: hasBooted ? 1 : 0, transition: 'opacity 0.5s ease' }} className="w-full h-full">
         <SystemGrid canvasRef={canvasRef}>
           <DataFlowLines canvasRef={canvasRef} hoveredNodeId={hoveredNodeId} />
@@ -112,7 +156,7 @@ function HomeContent() {
               key={node.id}
               id={node.id}
               title={node.title}
-              status={node.status as any}
+              status={node.status}
               description={node.description}
               metrics={node.metrics}
               top={node.top}

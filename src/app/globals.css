@@ -289,3 +289,69 @@ html, body {
 .cia-redact:hover::after {
   transform: scaleX(0);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SIGNAL_LOST — Offline Game Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+.signal-lost-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 65, 0.03) 2px,
+    rgba(0, 255, 65, 0.03) 4px
+  );
+  animation: signal-lost-flicker 0.15s infinite;
+}
+
+@keyframes signal-lost-flicker {
+  0% { opacity: 0.97; }
+  50% { opacity: 1; }
+  100% { opacity: 0.98; }
+}
+
+.signal-lost-entry {
+  animation: signal-lost-slide-in 0.2s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+@keyframes signal-lost-slide-in {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.signal-lost-death {
+  animation: signal-lost-death-in 0.3s ease-out;
+}
+
+@keyframes signal-lost-death-in {
+  0% { opacity: 0; backdrop-filter: blur(0px); }
+  100% { opacity: 1; backdrop-filter: blur(2px); }
+}
+
+.signal-lost-glitch {
+  animation: signal-lost-glitch-text 0.3s ease-out 3;
+}
+
+@keyframes signal-lost-glitch-text {
+  0% { transform: translate(0); }
+  20% { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
+  40% { transform: translate(3px, -2px); }
+  60% { transform: translate(-1px, 1px); filter: hue-rotate(0deg); }
+  80% { transform: translate(2px, -1px); }
+  100% { transform: translate(0); }
+}
+
+.signal-lost-packet-msg {
+  animation: signal-lost-packet-flash 0.3s ease-out;
+}
+
+@keyframes signal-lost-packet-flash {
+  0% { opacity: 0; transform: translateY(4px); }
+  50% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); }
+}
