@@ -10,7 +10,7 @@ export const PORTFOLIO_DATA: PortfolioData = {
     githubUrl: "https://github.com/mankuu-10",
     linkedinUrl: "https://linkedin.com/in/mayankhsingka",
     launchDate: "2026-04-01",
-    resumeUrl: "/resume.pdf",
+    builderArchiveUrl: "/resume.pdf",
   },
 
   fileSystem: {
@@ -29,8 +29,8 @@ export const PORTFOLIO_DATA: PortfolioData = {
       title: "Root Directive",
       status: "ACTIVE",
       description: "I build systems that solve real problems. 20yo. Shipping innovative products real quick.",
-      top: "calc(50vh - 60px)",
-      left: "calc(50vw - 125px)",
+      top: "calc(150vh - 60px)",
+      left: "calc(150vw - 125px)",
       metrics: [
         { label: "Role", value: "System Architect" },
         { label: "Focus", value: "Scale & Operations" },
@@ -43,8 +43,8 @@ export const PORTFOLIO_DATA: PortfolioData = {
       slug: "manasya",
       status: "ACTIVE",
       description: "A secure digital space offering students a safe platform to heal, express, and connect with counselors.",
-      top: "calc(20vh - 60px)",
-      left: "calc(20vw - 125px)",
+      top: "calc(120vh - 60px)",
+      left: "calc(120vw - 125px)",
       sourceUrl: "https://github.com/mayankhsingka/manasya",
       liveUrl: "https://manasya.in",
       fileId: "CASE_001",
@@ -75,7 +75,12 @@ export const PORTFOLIO_DATA: PortfolioData = {
       ],
       metrics: [
         { label: "Type", value: "Wellness Platform" },
-        { label: "Focus", value: "Student Counseling" },
+        { label: "Counselors", value: "20" },
+        { label: "Students", value: "50" },
+      ],
+      gallery: [
+        { type: "image", url: "/media/manasya/dashboard.png", caption: "SYS_VIEW: Counselor orchestration dashboard." },
+        { type: "image", url: "/media/manasya/chat.png", caption: "SECURE_COMM: End-to-end encrypted student interface." },
       ]
     },
     {
@@ -85,8 +90,8 @@ export const PORTFOLIO_DATA: PortfolioData = {
       slug: "producive",
       status: "SCALING",
       description: "Deep-focus browser extension. Comprehensive YouTube control, site blocking, and stopwatch overlays.",
-      top: "calc(80vh - 60px)",
-      left: "calc(30vw - 125px)",
+      top: "calc(180vh - 60px)",
+      left: "calc(130vw - 125px)",
       sourceUrl: "https://github.com/mayankhsingka/producive",
       liveUrl: "https://chromewebstore.google.com/detail/producive",
       fileId: "CASE_002",
@@ -117,7 +122,11 @@ export const PORTFOLIO_DATA: PortfolioData = {
       ],
       metrics: [
         { label: "Features", value: "YT Control, Focus Clock" },
-        { label: "Core", value: "In-depth Productivity" },
+        { label: "Status", value: "Manifest V3 Compliant" },
+      ],
+      gallery: [
+        { type: "image", url: "/media/producive/yt_controls.png", caption: "DOM_MOD: Granular YouTube interface manipulation." },
+        { type: "image", url: "/media/producive/focus_timer.png", caption: "UI_OVERLAY: Persistent stopwatch tracking." },
       ]
     },
     {
@@ -126,8 +135,8 @@ export const PORTFOLIO_DATA: PortfolioData = {
       title: "Core Stack",
       status: "ACTIVE",
       description: "Web development and system architecture tools used for rapid shipping.",
-      top: "calc(30vh - 60px)",
-      left: "calc(80vw - 125px)",
+      top: "calc(130vh - 60px)",
+      left: "calc(180vw - 125px)",
       metrics: [
         { label: "Frontend", value: "Next.js, Tailwind" },
         { label: "Execution", value: "Rapid Iteration" },
@@ -139,8 +148,8 @@ export const PORTFOLIO_DATA: PortfolioData = {
       title: "Reading Queue",
       status: "CLASSIFIED",
       description: "Curated reading list for product thinking, execution frameworks, and system design.",
-      top: "calc(70vh - 60px)",
-      left: "calc(75vw - 125px)",
+      top: "calc(170vh - 60px)",
+      left: "calc(175vw - 125px)",
       clearance: "OPERATOR",
       metrics: [
         { label: "Books", value: "5 Queued" },
@@ -152,11 +161,12 @@ export const PORTFOLIO_DATA: PortfolioData = {
   logs: [
     { text: "[SYS_BOOT] Mapping identity: Mayank Himmatsingka (Age: 20)...", type: "info" },
     { text: "[OK] Root directives established. Ready to ship.", type: "ok" },
-    { text: "[METRIC] Project 'Manasya' deployed to production environment.", type: "info", delay: 2000 },
-    { text: "[SYS_EVENT] Establishing secure counseling connections...", type: "info", delay: 4000 },
-    { text: "[METRIC] Extension 'Producive' blocking known distractions.", type: "warn", delay: 6000 },
-    { text: "[OK] YouTube controls and focus stopwatch initialized.", type: "ok", delay: 8000 },
-    { text: "[INFO] Building next innovative product...", type: "info", delay: 10000 },
+    { text: "[HINT] Establish a directive. Press Ctrl+K or type '/' to open Command Palette.", type: "warn", delay: 1500 },
+    { text: "[METRIC] Project 'Manasya' deployed to production environment.", type: "info", delay: 3000 },
+    { text: "[SYS_EVENT] Establishing secure counseling connections...", type: "info", delay: 5000 },
+    { text: "[METRIC] Extension 'Producive' blocking known distractions.", type: "warn", delay: 7000 },
+    { text: "[OK] YouTube controls and focus stopwatch initialized.", type: "ok", delay: 9000 },
+    { text: "[INFO] Building next innovative product...", type: "info", delay: 11000 },
   ],
 
   commands: [

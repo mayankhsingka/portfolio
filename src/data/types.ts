@@ -26,7 +26,8 @@ export interface ProjectNode extends BaseNode {
   architectureDecisions: string[];
   challenges: { title: string; detail: string }[];
   impact: string;
-  techStack: { label: string; value: string; reason: string }[];
+  techStack: { label: string; value: string; reason?: string }[];
+  gallery?: { type: "image" | "video"; url: string; caption?: string }[];
 }
 
 export interface InfoNode extends BaseNode {
@@ -60,7 +61,7 @@ export interface GeneralInfo {
   githubUrl: string;
   linkedinUrl: string;
   launchDate: string;
-  resumeUrl: string;
+  builderArchiveUrl: string;
 }
 
 export interface PortfolioData {
