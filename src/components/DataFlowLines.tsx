@@ -83,6 +83,21 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
       style={{ overflow: "visible" }}
     >
       <defs>
+        {/* Animated line flow effect */}
+        <style>
+          {`
+            @keyframes wire-flow {
+              from { stroke-dashoffset: 28; }
+              to { stroke-dashoffset: 0; }
+            }
+            .wire-path {
+              animation: wire-flow 1.5s linear infinite;
+            }
+            .wire-path-hovered {
+              animation: wire-flow 0.5s linear infinite;
+            }
+          `}
+        </style>
         {/* Deep terminal glow filter — creates the space-navigation particle feel */}
         <filter id="packet-glow" x="-100%" y="-100%" width="300%" height="300%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" />
@@ -140,21 +155,22 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
         // Base length assumes a comfortable distance around 400px.
         // If stretched to 1000px, it turns tense thinner and more transparent.
         const tension = Math.min(Math.max(len / 400, 0.5), 2.5);
-        const dynamicStrokeWidth = (isHovered ? 2 : 1.5) / tension;
+        const dynamicStrokeWidth = (isHovered ? 2.5 : 2) / tension;
         const dynamicOpacity = (isHovered ? 0.9 : 0.4) / tension;
 
         return (
           <g key={i}>
-            {/* The connection wire — dashed with subtle glow */}
+            {/* The connection wire — dashed with subtle glow and animated flow */}
             <path
               d={pathD}
               stroke={isHovered ? "#E11D48" : (tension > 1.8 ? "#880000" : "black")}
               strokeWidth={dynamicStrokeWidth}
-              strokeDasharray="6 8"
+              strokeDasharray="14 14"
               fill="none"
               opacity={dynamicOpacity}
               filter={isHovered ? "url(#packet-glow)" : "url(#wire-glow)"}
-              style={{ transition: "stroke 0.3s ease" }} // only transition color, let layout be instant
+              className={isHovered ? "wire-path-hovered" : "wire-path"}
+              style={{ transition: "stroke 0.3s ease" }}
             />
 
             {/* Hidden paths for animateMotion */}
