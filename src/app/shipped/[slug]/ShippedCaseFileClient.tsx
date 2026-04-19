@@ -8,6 +8,7 @@ import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { isProjectNode } from "@/data/types";
 import { CommandPalette } from "@/components/CommandPalette";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
+import { TerminalMediaFrame } from "@/components/TerminalMediaFrame";
 
 // Typewriter — first visit only, then instant
 function useTypewriter(text: string, speed = 18) {
@@ -56,7 +57,7 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
   const [hoveredTech, setHoveredTech] = useState<number | null>(null);
 
   return (
-    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 bg-black">
+    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 bg-black md:pl-[19rem]">
       <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-12 bg-white/90 p-8 lg:p-16 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
         
         {/* HEADER */}
@@ -130,6 +131,30 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
             </ul>
           </div>
         </motion.section>
+
+        {/* VISUAL EVIDENCE GALLERY */}
+        {node.gallery && node.gallery.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.35 }}
+            className="flex flex-col gap-8 border-b-2 border-black pb-12"
+          >
+            <h3 className="font-bold text-2xl uppercase tracking-tighter">Visual Evidence</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {node.gallery.map((media, i) => (
+                <TerminalMediaFrame
+                  key={i}
+                  index={i}
+                  type={media.type}
+                  url={media.url}
+                  caption={media.caption}
+                />
+              ))}
+            </div>
+          </motion.section>
+        )}
 
         {/* ARCHITECTURE DECISIONS */}
         {archDecisions && archDecisions.length > 0 && (
