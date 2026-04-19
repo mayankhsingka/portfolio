@@ -51,8 +51,20 @@ function HomeContent() {
   }, []);
 
   useEffect(() => {
-    const booted = sessionStorage.getItem("system_booted");
-    if (!booted) {
+    const sessionBooted = sessionStorage.getItem("system_booted");
+    
+    let hasHighClearance = false;
+    try {
+      const raw = localStorage.getItem("clearance_data");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.level === "OPERATOR" || parsed.level === "ROOT") {
+          hasHighClearance = true;
+        }
+      }
+    } catch {}
+
+    if (!sessionBooted && !hasHighClearance) {
       setHasBooted(false);
     }
   }, []);
@@ -151,6 +163,15 @@ function HomeContent() {
         <SystemGrid canvasRef={canvasRef}>
           <DataFlowLines canvasRef={canvasRef} hoveredNodeId={hoveredNodeId} />
           
+          {/* Giant Personal Watermark on the Canvas Floor */}
+          <div 
+            className="absolute top-[150vh] left-[150vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col font-sans font-black uppercase text-black/20 select-none z-[-1] leading-[0.85] tracking-tighter mix-blend-multiply"
+            style={{ fontSize: "clamp(6rem, 12vw, 16rem)" }}
+          >
+            <span>MAYANK</span>
+            <span>HIMMATSINGKA</span>
+          </div>
+
           {visibleNodes.map((node) => (
             <ArchitectureNode
               key={node.id}
