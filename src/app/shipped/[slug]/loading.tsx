@@ -1,6 +1,6 @@
 export default function CaseFileLoading() {
   return (
-    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 bg-black">
+    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 bg-black md:pl-[19rem]">
       <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-12 bg-white p-10 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
         {/* File tab skeleton */}
         <div className="flex justify-between items-start border-b-4 border-black pb-8">
