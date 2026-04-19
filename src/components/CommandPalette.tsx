@@ -27,6 +27,7 @@ export function CommandPalette() {
   const [history, setHistory] = useState<string[]>([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
   const [terminalOutput, setTerminalOutput] = useState<{cmd: string, output: string}[]>([]);
+  const [isTerminalExpanded, setIsTerminalExpanded] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const outputEndRef = useRef<HTMLDivElement>(null);
@@ -120,14 +121,14 @@ export function CommandPalette() {
     }
 
     if (cmd === "/core-identity") {
-      window.dispatchEvent(new CustomEvent("system-shortcut", { detail: "ABOUT" }));
       setOpen(false);
+      router.push("/core-identity");
       return;
     }
 
     if (cmd === "/ping") {
-      window.dispatchEvent(new CustomEvent("system-shortcut", { detail: "CONTACT" }));
       setOpen(false);
+      router.push("/ping");
       return;
     }
 
@@ -311,10 +312,10 @@ export function CommandPalette() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl bg-white border-2 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6 flex flex-col gap-6 font-mono"
+            className="w-full max-w-2xl bg-white border-2 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6 flex flex-col gap-6 font-mono max-h-[85vh] overflow-hidden"
           >
             {/* Input Header */}
-            <div className="flex items-center gap-4 border-b-4 border-black pb-4 text-2xl font-bold">
+            <div className="flex items-center gap-4 border-b-4 border-black pb-4 text-2xl font-bold shrink-0">
               <span>{">"}</span>
               <input
                 ref={inputRef}
@@ -332,12 +333,21 @@ export function CommandPalette() {
             {/* Terminal Area (Only shows if output exists) */}
             {terminalOutput.length > 0 && (
               <div 
-                className="max-h-[30vh] overflow-y-auto flex flex-col gap-3 p-4 bg-black/5 border-2 border-dashed border-black/20 text-sm"
+                className="max-h-[30vh] overflow-y-auto flex flex-col gap-3 p-4 bg-black/5 border-2 border-dashed border-black/20 text-sm relative"
                 aria-live="polite"
                 aria-atomic="false"
               >
-                {terminalOutput.map((item, i) => (
-                  <div key={i}>
+                {terminalOutput.length > 1 && (
+                  <button 
+                    onClick={() => setIsTerminalExpanded(!isTerminalExpanded)}
+                    className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-50 hover:opacity-100 flex items-center justify-between mb-2 pb-2 border-b border-black/10"
+                  >
+                    <span>[ {isTerminalExpanded ? "COLLAPSE_HISTORY" : `EXPAND_HISTORY (${terminalOutput.length - 1} PREVIOUS)`} ]</span>
+                  </button>
+                )}
+                
+                {(isTerminalExpanded ? terminalOutput : [terminalOutput[terminalOutput.length - 1]]).map((item, i) => (
+                  <div key={isTerminalExpanded ? i : 'last-cmd'} className={!isTerminalExpanded ? "animate-pulse-once" : ""}>
                     <div className="opacity-40">$ {item.cmd}</div>
                     <div className="whitespace-pre-wrap">{item.output}</div>
                   </div>
@@ -347,8 +357,8 @@ export function CommandPalette() {
             )}
 
             {/* Navigation List */}
-            <div className="flex flex-col gap-2 min-h-[250px]">
-              <div className="text-xs font-bold uppercase tracking-widest border-b-2 border-black/10 pb-1 mb-2">
+            <div className="flex flex-col gap-2 overflow-y-auto max-h-[40vh] pr-2">
+              <div className="text-xs font-bold uppercase tracking-widest border-b-2 border-black/10 pb-1 mb-2 sticky top-0 bg-white z-10 pt-1">
                 Available System Directories
               </div>
               
