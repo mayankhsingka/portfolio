@@ -1,25 +1,26 @@
 "use client";
 
-import { useState, useRef } from "react";
-
 import { motion } from "framer-motion";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 
 const SOCIAL_LINKS = [
   {
-    label: "GITHUB",
-    url: PORTFOLIO_DATA.general.githubUrl,
+    label: "EMAIL",
+    url: `mailto:${PORTFOLIO_DATA.general.contactEmail}`,
+    isExternal: false,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.28 1.15-.28 2.35 0 3.5-1 1.25-1.11 2.69-1 4 .09 1.4.52 2.76 1 4 0 3.5 3 5.5 6 5.5a4.8 4.8 0 0 0-1 3.5v4" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+        <rect width="20" height="16" x="2" y="4" rx="2" />
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
       </svg>
     )
   },
   {
     label: "LINKEDIN",
     url: PORTFOLIO_DATA.general.linkedinUrl,
+    isExternal: true,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
         <rect width="4" height="12" x="2" y="9" />
         <circle cx="4" cy="4" r="2" />
@@ -27,80 +28,59 @@ const SOCIAL_LINKS = [
     )
   },
   {
-    label: "X_ARCHIVE",
-    url: "https://x.com/mayankhsingka", // Assuming standard handle
+    label: "GITHUB",
+    url: PORTFOLIO_DATA.general.githubUrl,
+    isExternal: true,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
-        <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.28 1.15-.28 2.35 0 3.5-1 1.25-1.11 2.69-1 4 .09 1.4.52 2.76 1 4 0 3.5 3 5.5 6 5.5a4.8 4.8 0 0 0-1 3.5v4" />
       </svg>
     )
-  }
+  },
+  {
+    label: "CALL",
+    url: `tel:${PORTFOLIO_DATA.general.phone || ""}`,
+    isExternal: false,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+      </svg>
+    )
+  },
 ];
-
-function SidebarLink({ link }: { link: typeof SOCIAL_LINKS[0] }) {
-  const [coords, setCoords] = useState("X: --.-- | Y: --.--");
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const startCycling = () => {
-    intervalRef.current = setInterval(() => {
-      const x = (Math.random() * 100).toFixed(2).padStart(5, '0');
-      const y = (Math.random() * 100).toFixed(2).padStart(5, '0');
-      setCoords(`X: ${x} | Y: ${y}`);
-    }, 50);
-  };
-
-  const stopCycling = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setCoords("X: --.-- | Y: --.--");
-  };
-
-  return (
-    <motion.a
-      href={link.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      whileHover={{ x: 4, color: "#000" }}
-      className="group flex items-center gap-4 text-black/30 hover:text-black transition-colors"
-      title={link.label}
-      onMouseEnter={startCycling}
-      onMouseLeave={stopCycling}
-    >
-      <div className="relative">
-        {link.icon}
-        {/* Hover ripple */}
-        <motion.div 
-          className="absolute inset-0 bg-black/5 rounded-full scale-0 group-hover:scale-150 transition-transform duration-300" 
-        />
-      </div>
-      <span className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap w-24">
-        {coords}
-      </span>
-    </motion.a>
-  );
-}
 
 export function SocialSidebar() {
   return (
     <motion.div 
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ delay: 0.8, duration: 0.5 }}
-      className="fixed left-6 bottom-12 z-[100] flex flex-col gap-8"
+      transition={{ delay: 1, duration: 0.5 }}
+      className="fixed left-5 bottom-8 z-[45] flex flex-col gap-1 pointer-events-auto"
     >
-      {/* Connector line */}
-      <div className="absolute left-1/2 -top-12 w-[1px] h-full bg-black/10 -z-10" />
-      
-      {SOCIAL_LINKS.map((link) => (
-        <SidebarLink key={link.label} link={link} />
-      ))}
-
-      {/* Origin indicator */}
-      <div className="pt-4 border-t border-black/10 flex flex-col items-center">
-        <div className="w-1.5 h-1.5 bg-black rounded-full" />
-        <span className="font-mono text-[8px] text-black/20 uppercase tracking-tighter mt-1 rotate-90 origin-left translate-x-[4px] translate-y-[15px] whitespace-nowrap">
-          Connectivity_Fixed
-        </span>
+      {/* Container */}
+      <div className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+        {/* Header */}
+        <div className="bg-black text-white font-mono text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 text-center">
+          Channels
+        </div>
+        
+        {SOCIAL_LINKS.map((link) => (
+          <a
+            key={link.label}
+            href={link.url}
+            target={link.isExternal ? "_blank" : undefined}
+            rel={link.isExternal ? "noopener noreferrer" : undefined}
+            className="group flex items-center gap-3 px-3 py-2.5 text-black/50 hover:text-black hover:bg-black/5 transition-all border-b border-black/10 last:border-b-0"
+            title={link.label}
+          >
+            <div className="shrink-0 group-hover:scale-110 transition-transform">
+              {link.icon}
+            </div>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest group-hover:tracking-[0.3em] transition-all">
+              {link.label}
+            </span>
+          </a>
+        ))}
       </div>
     </motion.div>
   );
