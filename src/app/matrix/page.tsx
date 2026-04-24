@@ -2,11 +2,43 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Copy, ArrowUpRight, Github, Linkedin, Twitter, Calendar, Mail } from "lucide-react";
 import { useState } from "react";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { ScrambleText } from "@/components/ScrambleText";
+import { SkillConsole } from "./SkillConsole";
+
+// Inline SVG icons — replaces lucide-react dependency
+const IconCopy = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+  </svg>
+);
+const IconArrowUpRight = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M7 17 17 7" /><path d="M7 7h10v10" />
+  </svg>
+);
+const IconGithub = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.28 1.15-.28 2.35 0 3.5-1 1.25-1.11 2.69-1 4 .09 1.4.52 2.76 1 4 0 3.5 3 5.5 6 5.5a4.8 4.8 0 0 0-1 3.5v4" />
+  </svg>
+);
+const IconLinkedin = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" />
+  </svg>
+);
+const IconTwitter = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+  </svg>
+);
+const IconCalendar = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" />
+  </svg>
+);
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -102,7 +134,7 @@ export default function MatrixPage() {
           onClick={() => window.open(`mailto:${PORTFOLIO_DATA.general.contactEmail}`, '_blank')}
         >
           <div className="flex items-center gap-3 mb-2">
-            <Calendar className="w-8 h-8" />
+            <IconCalendar className="w-8 h-8" />
             <span className="font-mono text-xl font-bold uppercase tracking-widest">SCHEDULE_UPLINK</span>
           </div>
           <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-center group-hover:scale-105 transition-transform">
@@ -114,15 +146,15 @@ export default function MatrixPage() {
         {/* 3. Socials Grid (Spans 1 col, 1 row) */}
         <motion.div variants={itemVariants} className="col-span-1 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white grid grid-cols-2 grid-rows-2">
           <a href={PORTFOLIO_DATA.general.githubUrl} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 border-r-2 border-b-2 border-black hover:bg-black hover:text-white transition-colors group">
-            <Github className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
+            <IconGithub className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
             <span className="font-mono text-[10px] font-bold tracking-widest">GITHUB</span>
           </a>
           <a href={PORTFOLIO_DATA.general.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 border-b-2 border-black hover:bg-black hover:text-white transition-colors group">
-            <Linkedin className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
+            <IconLinkedin className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
             <span className="font-mono text-[10px] font-bold tracking-widest">LINKEDIN</span>
           </a>
           <a href="https://x.com/mayankhsingka" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 border-r-2 border-black hover:bg-black hover:text-white transition-colors group">
-            <Twitter className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
+            <IconTwitter className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
             <span className="font-mono text-[10px] font-bold tracking-widest">TWITTER</span>
           </a>
           <button onClick={handleCopyEmail} className="flex flex-col items-center justify-center p-4 hover:bg-black hover:text-white transition-colors group relative">
@@ -130,7 +162,7 @@ export default function MatrixPage() {
               <span className="font-mono text-xs font-bold text-[#00ff41] uppercase">Copied!</span>
             ) : (
               <>
-                <Copy className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
+                <IconCopy className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
                 <span className="font-mono text-[10px] font-bold tracking-widest">COPY_EMAIL</span>
               </>
             )}
@@ -142,7 +174,7 @@ export default function MatrixPage() {
           <Link href="/core-identity" className="h-full bg-black text-white border-4 border-black p-6 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,0.5)] transition-all group">
             <div className="flex justify-between items-start">
               <span className="font-mono text-xs font-bold uppercase tracking-widest opacity-60">Deep Dive</span>
-              <ArrowUpRight className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              <IconArrowUpRight className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </div>
             <div>
               <h3 className="text-2xl font-black uppercase tracking-tighter block">OPERATOR<br/>DOSSIER</h3>
@@ -151,24 +183,8 @@ export default function MatrixPage() {
         </motion.div>
 
         {/* 5. Capability Matrix Expansion (Spans full width) */}
-        <motion.div variants={itemVariants} className="col-span-1 md:col-span-4 bg-white border-4 border-black p-6 md:p-8 mt-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <h3 className="font-mono text-sm font-bold uppercase tracking-[0.2em] border-b-2 border-black pb-4 mb-6">
-            Capability Execution Array
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-4 border-2 border-black border-dashed hover:border-solid hover:bg-black hover:text-white transition-all cursor-crosshair">
-              <h4 className="font-bold text-xl uppercase tracking-tighter mb-2">Frontend Architecture</h4>
-              <p className="font-mono text-xs opacity-70">Next.js 15 • React • Framer Motion • Tailwind CSS</p>
-            </div>
-            <div className="p-4 border-2 border-black border-dashed hover:border-solid hover:bg-black hover:text-white transition-all cursor-crosshair">
-              <h4 className="font-bold text-xl uppercase tracking-tighter mb-2">Systems & Backend</h4>
-              <p className="font-mono text-xs opacity-70">Node.js • Edge Functions • WebSockets • API Design</p>
-            </div>
-            <div className="p-4 border-2 border-black border-dashed hover:border-solid hover:bg-black hover:text-white transition-all cursor-crosshair">
-              <h4 className="font-bold text-xl uppercase tracking-tighter mb-2">Data & Operations</h4>
-              <p className="font-mono text-xs opacity-70">PostgreSQL • Supabase • Redis • CI/CD • Vercel</p>
-            </div>
-          </div>
+        <motion.div variants={itemVariants} className="col-span-1 md:col-span-4 mt-4">
+          <SkillConsole />
         </motion.div>
 
         {/* 6. Projects Router (Spans full width) */}
@@ -176,7 +192,7 @@ export default function MatrixPage() {
           <Link href="/shipped/manasya" className="bg-white border-4 border-black p-6 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all group">
              <div className="flex justify-between items-start mb-4">
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1">CASE_001</span>
-              <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              <IconArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </div>
             <h3 className="text-3xl font-black uppercase tracking-tighter">Manasya</h3>
             <p className="font-mono text-xs font-bold opacity-60 mt-2">Secure Mental Health Architecture</p>
@@ -184,7 +200,7 @@ export default function MatrixPage() {
           <Link href="/shipped/producive" className="bg-white border-4 border-black p-6 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all group">
              <div className="flex justify-between items-start mb-4">
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1">CASE_002</span>
-              <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              <IconArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </div>
             <h3 className="text-3xl font-black uppercase tracking-tighter">Producive</h3>
             <p className="font-mono text-xs font-bold opacity-60 mt-2">Deep Focus Browser Extension</p>
