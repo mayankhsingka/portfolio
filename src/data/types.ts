@@ -58,6 +58,7 @@ export interface GeneralInfo {
   age: string;
   philosophy: string;
   contactEmail: string;
+  phone?: string;
   githubUrl: string;
   linkedinUrl: string;
   launchDate: string;

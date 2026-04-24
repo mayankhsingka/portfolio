@@ -12,11 +12,16 @@ import { ClearanceProvider, useClearanceContext } from "@/components/ClearancePr
 import { SurveillanceCamera } from "@/components/SurveillanceCamera";
 import { InteractiveBios } from "@/components/InteractiveBios";
 import { OfflineGame } from "@/components/OfflineGame";
+import { ReadingListModal } from "@/components/ReadingListModal";
+import { SocialSidebar } from "@/components/SocialSidebar";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { CanvasHint } from "@/components/CanvasHint";
 import { useTelemetryTab } from "@/hooks/useTelemetryTab";
-import { ScrambleText } from "@/components/ScrambleText";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
+import { isProjectNode } from "@/data/types";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 function HomeContent() {
   const [hasBooted, setHasBooted] = useState(true);
@@ -26,29 +31,11 @@ function HomeContent() {
   const [surveillanceActive, setSurveillanceActive] = useState(false);
   const [biosActive, setBiosActive] = useState(false);
   const [offlineActive, setOfflineActive] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [readingListActive, setReadingListActive] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
-  const mousePosRef = useRef({ x: 0, y: 0 });
-  const rafIdRef = useRef<number | null>(null);
   const delTimestamps = useRef<number[]>([]);
   const { level, notification, clearNotification, promoteToRoot } = useClearanceContext();
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mousePosRef.current = { x: e.clientX, y: e.clientY };
-      if (rafIdRef.current === null) {
-        rafIdRef.current = requestAnimationFrame(() => {
-          setMousePos(mousePosRef.current);
-          rafIdRef.current = null;
-        });
-      }
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
-    };
-  }, []);
 
   useEffect(() => {
     const sessionBooted = sessionStorage.getItem("system_booted");
@@ -94,14 +81,17 @@ function HomeContent() {
     const handleBreach = () => setBreachActive(true);
     const handleSurveillance = (e: Event) => setSurveillanceActive((e as CustomEvent).detail);
     const handleOffline = () => setOfflineActive(true);
+    const handleReadingList = () => setReadingListActive(true);
     
     window.addEventListener("system-breach", handleBreach);
     window.addEventListener("system-surveillance", handleSurveillance);
     window.addEventListener("system-offline", handleOffline);
+    window.addEventListener("system-open-reading-list", handleReadingList);
     return () => {
       window.removeEventListener("system-breach", handleBreach);
       window.removeEventListener("system-surveillance", handleSurveillance);
       window.removeEventListener("system-offline", handleOffline);
+      window.removeEventListener("system-open-reading-list", handleReadingList);
     };
   }, []);
 
@@ -159,6 +149,11 @@ function HomeContent() {
       {/* Offline Game Overlay — triggered by /play command */}
       {offlineActive && <OfflineGame onExit={() => setOfflineActive(false)} />}
 
+      {/* Classified Reading List Modal */}
+      <AnimatePresence>
+        {readingListActive && <ReadingListModal onClose={() => setReadingListActive(false)} />}
+      </AnimatePresence>
+
       <div style={{ opacity: hasBooted ? 1 : 0, transition: 'opacity 0.5s ease' }} className="w-full h-full">
         <SystemGrid canvasRef={canvasRef}>
           <DataFlowLines canvasRef={canvasRef} hoveredNodeId={hoveredNodeId} />
@@ -182,6 +177,7 @@ function HomeContent() {
               metrics={node.metrics}
               top={node.top}
               left={node.left}
+              slug={isProjectNode(node) ? node.slug : undefined}
               onHover={setHoveredNodeId}
             />
           ))}
@@ -190,51 +186,16 @@ function HomeContent() {
         <TerminalLogs />
         <CommandPalette />
         <SystemShortcuts />
+        <SocialSidebar />
+        <ThemeToggle />
+        <CanvasHint />
 
         <AnimatePresence>
           {surveillanceActive && (
             <SurveillanceCamera onClose={() => setSurveillanceActive(false)} />
           )}
         </AnimatePresence>
-        
-        {/* HUD — top-left info panel */}
-        <div className="fixed top-4 left-4 font-mono text-xs font-bold pointer-events-none uppercase z-[40] bg-white/80 p-3 border-2 border-black flex flex-col gap-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-          <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-1 gap-8 text-[11px] tracking-tight">
-            <span className="block italic">
-              <ScrambleText>{PORTFOLIO_DATA.general.name.toUpperCase()}</ScrambleText> / <ScrambleText>SYS_BLUEPRINT_v1.2</ScrambleText>
-            </span>
-            {/* Heartbeat Indicator */}
-            <div className="flex items-center gap-1.5 opacity-60">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full system-heartbeat" />
-              <span className="text-[10px]">LIVE</span>
-            </div>
-          </div>
-          
-          <div className="space-y-1">
-            <div className="flex justify-between gap-4">
-              <span className="opacity-70">COORD_X:</span>
-              <span className="text-black/80">{String(mousePos.x).padStart(4, '0')}</span>
-            </div>
-            <div className="flex justify-between gap-4">
-              <span className="opacity-70">COORD_Y:</span>
-              <span className="text-black/80">{String(mousePos.y).padStart(4, '0')}</span>
-            </div>
-            <div className="flex justify-between gap-4 mt-2 border-t border-black/10 pt-1">
-              <span className="opacity-70">DIRECTIVE:</span>
-              <span className="text-black/80">CTRL+K_CMDS</span>
-            </div>
-          </div>
 
-          <span className={`block border-t-2 border-black pt-2 mt-1 ${
-            level === "ROOT" 
-              ? "text-red-600" 
-              : level === "OPERATOR" 
-                ? "text-green-700" 
-                : "text-black/50"
-          }`}>
-            [<ScrambleText>CLEARANCE_CERTIFICATE:</ScrambleText> <ScrambleText>{level}</ScrambleText>]
-          </span>
-        </div>
 
         {/* Clearance Promotion Notification */}
         <AnimatePresence>

@@ -7,6 +7,7 @@ export const PORTFOLIO_DATA: PortfolioData = {
     age: "20",
     philosophy: "I build innovative products and ship websites real quick. No generic fluff, just scalable systems.",
     contactEmail: "mayankhsingka@gmail.com",
+    phone: "+919082841949",
     githubUrl: "https://github.com/mankuu-10",
     linkedinUrl: "https://linkedin.com/in/mayankhsingka",
     launchDate: "2026-04-01",
@@ -79,8 +80,8 @@ export const PORTFOLIO_DATA: PortfolioData = {
         { label: "Students", value: "50" },
       ],
       gallery: [
-        { type: "image", url: "/media/manasya/dashboard.png", caption: "SYS_VIEW: Counselor orchestration dashboard." },
-        { type: "image", url: "/media/manasya/chat.png", caption: "SECURE_COMM: End-to-end encrypted student interface." },
+        { type: "image", url: "/media/manasya/dashboard.svg", caption: "SYS_VIEW: Counselor orchestration dashboard." },
+        { type: "image", url: "/media/manasya/chat.svg", caption: "SECURE_COMM: End-to-end encrypted student interface." },
       ]
     },
     {
@@ -125,8 +126,8 @@ export const PORTFOLIO_DATA: PortfolioData = {
         { label: "Status", value: "Manifest V3 Compliant" },
       ],
       gallery: [
-        { type: "image", url: "/media/producive/yt_controls.png", caption: "DOM_MOD: Granular YouTube interface manipulation." },
-        { type: "image", url: "/media/producive/focus_timer.png", caption: "UI_OVERLAY: Persistent stopwatch tracking." },
+        { type: "image", url: "/media/producive/yt_controls.svg", caption: "DOM_MOD: Granular YouTube interface manipulation." },
+        { type: "image", url: "/media/producive/focus_timer.svg", caption: "UI_OVERLAY: Persistent stopwatch tracking." },
       ]
     },
     {
