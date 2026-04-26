@@ -1,204 +1,190 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { CommandPalette } from "@/components/CommandPalette";
-import { TypewriterHeading } from "@/components/TypewriterHeading";
-import { usePageScrollable } from "@/hooks/usePageScrollable";
 
-const COMMANDS = [
-  {
-    btnLabel: "[ /theme ]",
-    cmd: "/theme",
-    desc: "Rotates the system's hardware phosphor filters.",
-    syntax: "/theme",
-    status: "ACTIVE",
-    isRedacted: false,
-    executeEvent: "system-shortcut", // or just dispatch exact string in terminal
-  },
-  {
-    btnLabel: "[ /engage_surveillance ]",
-    cmd: "/engage_surveillance",
-    desc: "Activates local camera payload with real-time ASCII conversion filter.",
-    syntax: "/engage_surveillance",
-    status: "SECURE",
-    isRedacted: false,
-  },
-  {
-    btnLabel: "[ /internal-memos ]",
-    cmd: "/internal-memos",
-    desc: "Access the Classified Intelligence Archive (Blog).",
-    syntax: "/internal-memos",
-    status: "PUBLIC",
-    isRedacted: false,
-    link: "/internal-memos"
-  },
-  {
-    btnLabel: "[ /shipped ]",
-    cmd: "/shipped",
-    desc: "View the deployment registry of active System Architecture nodes.",
-    syntax: "/shipped",
-    status: "PUBLIC",
-    isRedacted: false,
-    link: "/shipped"
-  },
-  {
-    btnLabel: "[ /??????? ]",
-    cmd: "/play",
-    desc: "Sever network connection instantly. Boot Offline Game Protocol.",
-    syntax: "/play",
-    status: "CLASSIFIED",
-    isRedacted: true,
-  },
-  {
-    btnLabel: "[ /?????? ]",
-    cmd: "/breach",
-    desc: "Unsanctioned payload. Do not execute.",
-    syntax: "sudo rm -rf /",
-    status: "CRITICAL",
-    isRedacted: true,
-  }
-];
+type Log = { text: string; type: "input" | "output" | "system" | "error" };
 
 export default function CommandsSandbox() {
-  usePageScrollable();
+  const defaultLogs: Log[] = [
+    { text: "SYSTEM BOOT SEQUENCE INITIATED...", type: "system" },
+    { text: "KERNEL VERSION 4.2.0-secure", type: "system" },
+    { text: "MOUNTING VIRTUAL FILESYSTEM... [OK]", type: "system" },
+    { text: "Type 'help' for available commands.", type: "output" }
+  ];
+
+  const [logs, setLogs] = useState<Log[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [input, setInput] = useState("");
+  const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const [activeCmd, setActiveCmd] = useState(COMMANDS[0]);
-  const [glitchTrigger, setGlitchTrigger] = useState(0);
 
-  const handleSelect = (cmd: typeof COMMANDS[0]) => {
-    setActiveCmd(cmd);
-    setGlitchTrigger(prev => prev + 1); // trigger re-animation on CRT
-  };
+  useEffect(() => {
+    const saved = localStorage.getItem("terminal_sandbox_logs");
+    if (saved) {
+      try {
+        setLogs(JSON.parse(saved));
+      } catch (e) {
+        setLogs(defaultLogs);
+      }
+    } else {
+      setLogs(defaultLogs);
+    }
+    setIsLoaded(true);
+  }, []);
 
-  const handleExecute = () => {
-    if (activeCmd.link) {
-      router.push(activeCmd.link);
-      return;
+  useEffect(() => {
+    if (isLoaded) {
+      // Keep only last 100 logs to prevent localStorage bloat
+      const logsToSave = logs.length > 100 ? logs.slice(logs.length - 100) : logs;
+      localStorage.setItem("terminal_sandbox_logs", JSON.stringify(logsToSave));
     }
-    
-    if (activeCmd.cmd === "/theme") {
-      const themes = ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"];
-      const currentTheme = localStorage.getItem("sys_theme") || "";
-      const nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
-      const nextTheme = themes[nextIdx];
-      themes.forEach(t => t && document.documentElement.classList.remove(t));
-      if (nextTheme) document.documentElement.classList.add(nextTheme);
-      localStorage.setItem("sys_theme", nextTheme);
-      document.documentElement.classList.add("dark-ops-transition");
-      setTimeout(() => document.documentElement.classList.remove("dark-ops-transition"), 400);
-    } else if (activeCmd.cmd === "/engage_surveillance" || activeCmd.cmd === "/breach" || activeCmd.cmd === "/play") {
-      // These events only have listeners on the home page — navigate there first
-      const eventName = activeCmd.cmd === "/engage_surveillance" 
-        ? "system-surveillance" 
-        : activeCmd.cmd === "/breach" 
-          ? "system-breach" 
-          : "system-offline";
-      const eventDetail = activeCmd.cmd === "/engage_surveillance" ? true : undefined;
-      router.push("/");
-      setTimeout(() => {
-        window.dispatchEvent(
-          eventDetail !== undefined 
-            ? new CustomEvent(eventName, { detail: eventDetail })
-            : new CustomEvent(eventName)
-        );
-      }, 800);
-    }
+  }, [logs, isLoaded]);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [logs]);
+
+  const handleCommand = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    const cmd = input.trim();
+    setLogs(prev => [...prev, { text: `> ${cmd}`, type: "input" }]);
+    setInput("");
+
+    const args = cmd.toLowerCase().split(" ");
+    const baseCmd = args[0];
+
+    setTimeout(() => {
+      switch (baseCmd) {
+        case "help":
+          setLogs(prev => [...prev, 
+            { text: "AVAILABLE COMMANDS:", type: "output" },
+            { text: "  whoami                 - Display operator info", type: "output" },
+            { text: "  /shipped               - Navigate to Deployment Registry", type: "output" },
+            { text: "  /matrix                - Navigate to Uplink Hub", type: "output" },
+            { text: "  /internal-memos        - Access Intelligence Archive", type: "output" },
+            { text: "  /theme                 - Cycle system phosphor filters", type: "output" },
+            { text: "  /engage_surveillance   - Activate local camera payload", type: "output" },
+            { text: "  /play                  - Enter offline protocol", type: "output" },
+            { text: "  clear                  - Clear terminal output", type: "output" },
+            { text: "  sudo                   - Execute with elevated privileges", type: "output" },
+          ]);
+          break;
+        case "whoami":
+          setLogs(prev => [...prev, { text: "OPERATOR: Mayank Himmatsingka. ROLE: System Architect.", type: "output" }]);
+          break;
+        case "clear":
+          setLogs([]);
+          break;
+        case "/shipped":
+        case "/matrix":
+        case "/internal-memos":
+        case "shipped":
+        case "matrix":
+          const route = baseCmd.startsWith('/') ? baseCmd : `/${baseCmd}`;
+          setLogs(prev => [...prev, { text: `Initiating jump to ${route}...`, type: "system" }]);
+          setTimeout(() => router.push(route), 800);
+          break;
+        case "/theme":
+          const themes = ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"];
+          const currentTheme = localStorage.getItem("sys_theme") || "";
+          const nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
+          const nextTheme = themes[nextIdx];
+          themes.forEach(t => t && document.documentElement.classList.remove(t));
+          if (nextTheme) document.documentElement.classList.add(nextTheme);
+          localStorage.setItem("sys_theme", nextTheme);
+          setLogs(prev => [...prev, { text: `Theme shifted to: ${nextTheme || 'DEFAULT_LIGHT'}`, type: "system" }]);
+          break;
+        case "/engage_surveillance":
+        case "/play":
+        case "/breach":
+          const eventName = baseCmd === "/engage_surveillance" 
+            ? "system-surveillance" 
+            : baseCmd === "/breach" 
+              ? "system-breach" 
+              : "system-offline";
+          const eventDetail = baseCmd === "/engage_surveillance" ? true : undefined;
+          setLogs(prev => [...prev, { text: `Deploying payload: ${baseCmd}`, type: "system" }]);
+          setTimeout(() => {
+            router.push("/");
+            setTimeout(() => {
+              window.dispatchEvent(
+                eventDetail !== undefined 
+                  ? new CustomEvent(eventName, { detail: eventDetail })
+                  : new CustomEvent(eventName)
+              );
+            }, 800);
+          }, 500);
+          break;
+        case "sudo":
+          setLogs(prev => [...prev, { text: "ACCESS DENIED. This incident will be reported.", type: "error" }]);
+          break;
+        default:
+          setLogs(prev => [...prev, { text: `Command not found: ${baseCmd}`, type: "error" }]);
+      }
+    }, 200);
   };
 
   return (
-    <main className="w-full min-h-full text-black flex flex-col p-4 lg:p-12 overflow-y-auto bg-grid-pattern">
-      <div className="max-w-6xl mx-auto w-full z-10 flex flex-col gap-8 bg-white/95 p-6 lg:p-12 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
-        
-        <header className="border-b-4 border-black pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+    <main className="fixed inset-0 bg-black text-white p-4 md:p-8 font-mono text-sm sm:text-base selection:bg-white selection:text-black cursor-text z-50" onClick={() => inputRef.current?.focus()}>
+      <div className="max-w-4xl mx-auto w-full h-full flex flex-col gap-2 relative z-10">
+        {/* Header */}
+        <div className="border-b border-white/30 pb-4 mb-4 flex justify-between">
           <div>
-            <TypewriterHeading 
-              text="/commands" 
-              className="text-5xl lg:text-7xl font-bold uppercase tracking-tighter" 
-            />
-            <p className="font-mono mt-2 text-sm uppercase opacity-70">
-              Interactive System Control Dashboard
-            </p>
+            <h1 className="text-xl font-bold uppercase tracking-widest text-white">SECURE_SHELL // SANDBOX</h1>
           </div>
-          <Link href="/" className="font-mono text-sm hover:bg-black hover:text-white px-3 py-2 transition-colors border-2 border-black uppercase tracking-widest shrink-0">
-            [RETURN TO ROOT]
-          </Link>
-        </header>
-
-        {/* 2-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 min-h-[500px]">
-          
-          {/* Left Column: Command Buttons */}
-          <div className="flex flex-col gap-4 border-r-0 lg:border-r-4 border-black lg:pr-8">
-            <h3 className="font-mono text-xs font-bold uppercase mb-2 border-b-2 border-black pb-2">
-              Select Execution Parameter
-            </h3>
-            <div className="flex flex-col gap-3">
-              {COMMANDS.map((c, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSelect(c)}
-                  className={`text-left font-mono p-4 border-2 transition-all uppercase tracking-widest text-sm lg:text-base ${
-                    activeCmd.cmd === c.cmd 
-                      ? "bg-black text-white border-black scale-[1.02] shadow-[4px_4px_0_0_rgba(0,0,0,0.2)]" 
-                      : "bg-white text-black border-black/50 hover:border-black hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-                  }`}
-                >
-                  {c.btnLabel}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Column: execution sandbox */}
-          <div className="flex flex-col relative bg-black p-6 border-4 border-black text-white font-mono shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]">
-            <div className="absolute top-0 w-full left-0 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-50 scanline-anim" />
-            
-            <div className="flex justify-between items-center border-b border-white/20 pb-4 mb-6">
-              <span className="text-xs opacity-50 uppercase tracking-widest">Sandbox_Terminal</span>
-              <span className="text-[10px] bg-white text-black px-2 py-0.5">{activeCmd.status}</span>
-            </div>
-
-            <div key={glitchTrigger} className="flex flex-col gap-4 flex-grow animate-pulse-fast">
-              <div className="flex gap-4">
-                <span className="opacity-50">&gt; COMMAND:</span>
-                <span className={`font-bold ${activeCmd.isRedacted ? "text-red-500" : "text-[#00ff41]"}`}>
-                  {activeCmd.cmd}
-                </span>
-              </div>
-              <div className="flex gap-4">
-                <span className="opacity-50 break-words">&gt; PURPOSE:</span>
-                <span className="max-w-[70%]">{activeCmd.desc}</span>
-              </div>
-              <div className="flex gap-4">
-                <span className="opacity-50">&gt; SYNTAX:</span>
-                <span>{activeCmd.syntax}</span>
-              </div>
-            </div>
-
-            {/* Execute Button */}
-            <button 
-              onClick={handleExecute}
-              className="mt-12 w-full py-4 border-2 border-[#00ff41] text-[#00ff41] hover:bg-[#00ff41] hover:text-black transition-colors uppercase tracking-widest font-bold text-lg group relative overflow-hidden"
-            >
-              <span className="relative z-10 block group-hover:scale-105 transition-transform duration-75">
-                [ EXECUTE PAYLOAD ]
-              </span>
-            </button>
-          </div>
-
+          <button onClick={() => router.push("/")} className="text-xs border border-white/50 px-2 py-1 hover:bg-white hover:text-black transition-colors uppercase tracking-widest text-white">
+            [ EXIT ]
+          </button>
         </div>
+
+        {/* Logs */}
+        <div className="flex flex-col gap-2 flex-1 overflow-y-auto pb-24">
+          {logs.map((log, i) => (
+            <motion.div 
+              key={i} 
+              initial={{ opacity: 0, x: -10 }} 
+              animate={{ opacity: 1, x: 0 }}
+              className={`
+                ${log.type === "input" ? "font-bold text-white mt-2" : ""}
+                ${log.type === "system" ? "opacity-70 italic" : ""}
+                ${log.type === "error" ? "text-red-500 font-bold" : ""}
+              `}
+            >
+              {log.text}
+            </motion.div>
+          ))}
+          <div ref={endRef} />
+        </div>
+
+        {/* Input */}
+        <form onSubmit={handleCommand} className="absolute bottom-0 left-0 right-0 py-6 bg-black border-t border-white/30 flex items-center gap-2">
+          <div className="w-full flex items-center gap-3 text-lg font-bold">
+            <span className="text-white">sys@root:~$</span>
+            <input 
+              ref={inputRef}
+              type="text" 
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-white/20 font-mono"
+              placeholder="_"
+              autoFocus
+              spellCheck={false}
+              autoComplete="off"
+            />
+          </div>
+        </form>
       </div>
-      <CommandPalette />
+
+      {/* CRT Scanline */}
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]" />
       
-      {/* Small inject for CRT scanline anim just for this component */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes scanline-drop { 0% { top: -10px; } 100% { top: 100%; } }
-        .scanline-anim { animation: scanline-drop 4s linear infinite; }
-        @keyframes pulse-fast { 0% { opacity: 1; } 50% { opacity: 0.9; } 100% { opacity: 1; } }
-        .animate-pulse-fast { animation: pulse-fast 0.1s infinite; }
-      `}} />
+      <CommandPalette />
     </main>
   );
 }
