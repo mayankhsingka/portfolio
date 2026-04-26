@@ -29,7 +29,7 @@ export default function CoreIdentityPage() {
   }, []);
 
   return (
-    <main className="w-full min-h-screen bg-black text-white flex flex-col p-4 lg:p-12 overflow-hidden relative selection:bg-white selection:text-black md:pl-[19rem]">
+    <main className="w-full min-h-screen bg-black text-white flex flex-col p-4 lg:p-12 overflow-visible relative selection:bg-white selection:text-black md:pl-[19rem]">
       {/* Background static / scanline */}
       <div className="absolute inset-0 pointer-events-none z-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiI+CjxwYXRoIGQ9Ik0wIDBoNDJ2NDJIMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+')] mix-blend-overlay" />
       
@@ -37,7 +37,7 @@ export default function CoreIdentityPage() {
         
         <header className="border-b-4 border-white pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mt-8 md:mt-0">
           <div>
-            <h4 className="font-mono text-sm uppercase tracking-widest opacity-50 mb-2 text-[#00ff41]">// OPERATOR_DOSSIER</h4>
+            <h4 className="font-mono text-sm uppercase tracking-widest opacity-50 mb-2 text-white">// OPERATOR_DOSSIER</h4>
             <TypewriterHeading 
               text="/core-identity" 
               className="text-5xl lg:text-7xl font-bold uppercase tracking-tighter" 
@@ -49,10 +49,10 @@ export default function CoreIdentityPage() {
         </header>
 
         {decrypting ? (
-          <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] font-mono text-[#00ff41]">
-            <div className="w-64 h-8 border-2 border-[#00ff41] relative overflow-hidden mb-4">
+          <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] font-mono text-white">
+            <div className="w-64 h-8 border-2 border-white relative overflow-hidden mb-4">
               <motion.div 
-                className="absolute inset-0 bg-[#00ff41]" 
+                className="absolute inset-0 bg-white" 
                 initial={{ width: "0%" }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 1.5, ease: "linear" }}
@@ -72,13 +72,17 @@ export default function CoreIdentityPage() {
             <div className="col-span-1 border-2 border-white p-6 font-mono relative group hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-shadow">
               <div className="absolute top-0 right-0 bg-white text-black text-[10px] px-2 py-1 font-bold uppercase">SEC_LEVEL: ALPHA</div>
               
-              <div className="w-full aspect-square border-2 border-white/20 mb-6 flex items-center justify-center bg-white/5 relative overflow-hidden">
-                {/* Fake biometric scan line */}
-                <div className="absolute top-0 w-full h-1 bg-[#00ff41]/50 scanline-anim z-10 box-shadow-[0_0_10px_#00ff41]" />
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-24 h-24 opacity-30">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-                <div className="absolute bottom-2 left-2 text-[10px] text-[#00ff41]">SYS.IMG.VERIFIED</div>
+              <div className="w-full aspect-square border-2 border-white/20 mb-6 flex items-center justify-center bg-white/5 relative overflow-hidden group">
+                <div className="absolute top-0 w-full h-1 bg-white/50 scanline-anim z-10 shadow-[0_0_10px_var(--sys-white)]" />
+                <img 
+                  src="/profile.jpg" 
+                  alt="Mayank Himmatsingka" 
+                  className="w-full h-full object-cover relative z-0 preserve-color"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
+                <div className="absolute bottom-2 left-2 text-[10px] text-white z-10 bg-black/50 px-1">SYS.IMG.VERIFIED</div>
               </div>
 
               <div className="space-y-4 text-xs lg:text-sm">
@@ -94,7 +98,7 @@ export default function CoreIdentityPage() {
                   <span className="opacity-50">AGE_CYCLE:</span>
                   <span className="font-bold">{PORTFOLIO_DATA.general.age}</span>
                 </div>
-                <div className="flex justify-between border-b border-white/20 pb-2 text-[#00ff41]">
+                <div className="flex justify-between border-b border-white/20 pb-2 text-white">
                   <span className="opacity-50 text-white">STATUS:</span>
                   <span className="font-bold animate-pulse">ACTIVE_DEPLOYMENT</span>
                 </div>
@@ -116,7 +120,7 @@ export default function CoreIdentityPage() {
               <div className="border-2 border-white p-6 font-mono flex flex-col">
                 <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-4">
                   <h3 className="text-sm font-bold uppercase tracking-widest">Capability Matrix</h3>
-                  <span className="text-[10px] text-[#00ff41] bg-[#00ff41]/10 px-2 py-0.5">LIVE_TELEMETRY</span>
+                  <span className="text-[10px] text-white bg-white/10 px-2 py-0.5">LIVE_TELEMETRY</span>
                 </div>
 
                 <div className="flex flex-col gap-6">
@@ -126,7 +130,7 @@ export default function CoreIdentityPage() {
                         <span className="text-sm font-bold tracking-widest">{skill.name}</span>
                         <div className="text-right">
                           <span className="text-[10px] opacity-50 block">{skill.details}</span>
-                          <span className="text-xs text-[#00ff41]">{skill.status} // {skill.level}%</span>
+                          <span className="text-xs text-white">{skill.status} // {skill.level}%</span>
                         </div>
                       </div>
                       {/* Loading bar visual */}
@@ -146,7 +150,7 @@ export default function CoreIdentityPage() {
 
               <div className="flex justify-end gap-4 font-mono text-xs opacity-50 uppercase tracking-widest">
                 <span>[ DOSSIER_END ]</span>
-                <span className="text-[#00ff41]">END_OF_TRANSMISSION</span>
+                <span className="text-white">END_OF_TRANSMISSION</span>
               </div>
             </div>
 

@@ -16,6 +16,7 @@ import { ReadingListModal } from "@/components/ReadingListModal";
 import { SocialSidebar } from "@/components/SocialSidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CanvasHint } from "@/components/CanvasHint";
+import { ChainNav } from "@/components/ChainNav";
 import { useTelemetryTab } from "@/hooks/useTelemetryTab";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { isProjectNode } from "@/data/types";
@@ -189,6 +190,7 @@ function HomeContent() {
         <SocialSidebar />
         <ThemeToggle />
         <CanvasHint />
+        <ChainNav />
 
         <AnimatePresence>
           {surveillanceActive && (

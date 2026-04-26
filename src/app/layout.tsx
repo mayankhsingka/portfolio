@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ShortcutOverlay } from "@/components/ShortcutOverlay";
+import { SystemContextMenu } from "@/components/SystemContextMenu";
+import { OrbitalNav } from "@/components/OrbitalNav";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -93,6 +95,8 @@ export default function RootLayout({
       <body className="h-full bg-grid-pattern overflow-hidden font-sans">
         {children}
         <ShortcutOverlay />
+        <SystemContextMenu />
+        <OrbitalNav />
       </body>
     </html>
   );

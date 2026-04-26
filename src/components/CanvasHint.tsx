@@ -48,6 +48,11 @@ export function CanvasHint() {
             </div>
             <div className="w-[1px] h-4 bg-black/20" />
             <div className="flex items-center gap-2">
+              <kbd className="bg-black text-white px-1.5 py-0.5 text-[9px]">SHIFT+N</kbd>
+              <span className="opacity-50">Orbital</span>
+            </div>
+            <div className="w-[1px] h-4 bg-black/20" />
+            <div className="flex items-center gap-2">
               <kbd className="bg-black text-white px-1.5 py-0.5 text-[9px]">DRAG</kbd>
               <span className="opacity-50">Explore</span>
             </div>
