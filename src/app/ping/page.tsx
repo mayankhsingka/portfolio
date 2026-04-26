@@ -5,22 +5,22 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrambleText } from "@/components/ScrambleText";
 import { TypewriterHeading } from "@/components/TypewriterHeading";
-import { CommandPalette } from "@/components/CommandPalette";
+import { PageHeaderNav } from "@/components/PageHeaderNav";
 import { useSystemAudio } from "@/hooks/useSystemAudio";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 
 const OFFICIAL_PORTS = [
-  { id: "PORT_01", label: "EMAIL", url: \`mailto:\${PORTFOLIO_DATA.general.contactEmail}\`, protocol: "SMTP", status: "LISTENING" },
+  { id: "PORT_01", label: "EMAIL", url: `mailto:${PORTFOLIO_DATA.general.contactEmail}`, protocol: "SMTP", status: "LISTENING" },
   { id: "PORT_02", label: "GITHUB", url: PORTFOLIO_DATA.general.githubUrl, protocol: "SSH", status: "ESTABLISHED" },
   { id: "PORT_03", label: "LINKEDIN", url: PORTFOLIO_DATA.general.linkedinUrl, protocol: "TCP", status: "LISTENING" },
   { id: "PORT_04", label: "X_ARCHIVE", url: "https://x.com/mayankhsingka", protocol: "UDP", status: "LISTENING" },
 ];
 
 const UNOFFICIAL_PORTS = [
-  { id: "PORT_80", label: "DISCORD", url: "#", protocol: "WSS", status: "OFFLINE", notes: "TODO: Add URL for Domain Deployment" },
-  { id: "PORT_443", label: "CALENDLY", url: "#", protocol: "HTTPS", status: "OFFLINE", notes: "TODO: Add URL for Domain Deployment" },
-  { id: "PORT_8080", label: "REGIONAL_COMMS", url: "#", protocol: "LOCAL", status: "UNKNOWN", notes: "TODO: Add specific country/local platforms here" }
+  { id: "PORT_80", label: "DISCORD", url: "#", protocol: "WSS", status: "BLOCKED", notes: "[RESTORE_PENDING] Port closed by network security." },
+  { id: "PORT_443", label: "CALENDLY", url: "#", protocol: "HTTPS", status: "BLOCKED", notes: "[MAINTENANCE] Scheduling sequence currently suspended." },
+  { id: "PORT_8080", label: "REGIONAL_COMMS", url: "#", protocol: "LOCAL", status: "UNKNOWN", notes: "[CLASSIFIED] Awaiting region-specific deployment vectors." }
 ];
 
 export default function PingPage() {
@@ -74,7 +74,7 @@ export default function PingPage() {
   };
 
   return (
-    <main className="w-full min-h-screen bg-black text-white flex flex-col p-4 lg:p-12 overflow-hidden relative md:pl-[19rem]">
+    <main className="w-full min-h-screen bg-black text-white flex flex-col p-4 lg:p-12 overflow-visible relative md:pl-[19rem]">
       <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiI+CjxwYXRoIGQ9Ik0wIDBoNDJ2NDJIMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+')] mix-blend-overlay" />
 
       <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-8 h-full">
@@ -87,9 +87,7 @@ export default function PingPage() {
               className="text-5xl lg:text-7xl font-bold uppercase tracking-tighter" 
             />
           </div>
-          <Link href="/" className="font-mono text-sm hover:bg-white hover:text-black px-4 py-2 transition-colors border-2 border-white uppercase tracking-widest shrink-0">
-            [RETURN TO ROOT]
-          </Link>
+          <PageHeaderNav theme="dark" />
         </header>
 
         {connecting ? (
@@ -186,7 +184,6 @@ export default function PingPage() {
         )}
 
       </div>
-      <CommandPalette />
     </main>
   );
 }

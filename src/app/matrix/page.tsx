@@ -3,10 +3,13 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { ScrambleText } from "@/components/ScrambleText";
+import { PageHeaderNav } from "@/components/PageHeaderNav";
 import { SkillConsole } from "./SkillConsole";
+import { WireframeCube, SkillRadar, DropzoneModule } from "./MatrixModules";
 
 // Inline SVG icons — replaces lucide-react dependency
 const IconCopy = ({ className }: { className?: string }) => (
@@ -52,10 +55,11 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } as any }
 };
 
 export default function MatrixPage() {
+  const router = useRouter();
   usePageScrollable();
   const [copied, setCopied] = useState(false);
 
@@ -66,11 +70,11 @@ export default function MatrixPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f5f5] text-black p-4 md:p-8 lg:p-12 font-sans overflow-x-hidden selection:bg-black selection:text-white">
+    <main className="min-h-screen bg-[#f5f5f5] text-black p-4 md:p-8 lg:p-12 font-sans overflow-visible selection:bg-black selection:text-white">
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
 
-      <motion.div 
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="show"
@@ -84,14 +88,12 @@ export default function MatrixPage() {
             </h1>
             <p className="font-mono text-sm opacity-60 uppercase tracking-widest mt-1">Global Operator Hub</p>
           </div>
-          <Link href="/" className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest border-2 border-black px-4 py-2 hover:bg-black hover:text-white transition-colors">
-            [ RETURN_TO_ROOT ]
-          </Link>
+          <PageHeaderNav theme="light" />
         </motion.div>
 
         {/* 1. Profile Core (Spans 2 cols, 2 rows) */}
-        <motion.div 
-          variants={itemVariants} 
+        <motion.div
+          variants={itemVariants}
           className="col-span-1 md:col-span-2 md:row-span-2 bg-white border-4 border-black p-6 md:p-8 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] group hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all"
         >
           <div className="flex flex-col gap-6">
@@ -99,10 +101,10 @@ export default function MatrixPage() {
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-black relative bg-[#e0e0e0]">
                 {/* Fallback pattern while waiting for image */}
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,#000_1px,transparent_1px)] bg-[size:4px_4px]" />
-                <img 
-                  src="/media/profile.jpg" 
-                  alt="Mayank Himmatsingka" 
-                  className="w-full h-full object-cover relative z-10 hover:scale-110 transition-transform duration-500 will-change-transform"
+                <img
+                  src="/profile.jpg"
+                  alt="Mayank Himmatsingka"
+                  className="w-full h-full object-cover relative z-10 hover:scale-110 transition-transform duration-500 will-change-transform preserve-color"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2U1ZTVlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjFlbSIgZmlsbD0iIzAwMCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGFsaWdubWVudC1iYXNlbGluZT0ibWlkZGxlIj5NSDwvdGV4dD48L3N2Zz4=';
                   }}
@@ -128,10 +130,10 @@ export default function MatrixPage() {
         </motion.div>
 
         {/* 2. Primary CTA / Booking (Spans 2 cols, 1 row) */}
-        <motion.div 
-          variants={itemVariants} 
-          className="col-span-1 md:col-span-2 bg-[#00ff41] border-4 border-black p-6 flex flex-col justify-center items-center shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer group"
-          onClick={() => window.open(`mailto:${PORTFOLIO_DATA.general.contactEmail}`, '_blank')}
+        <motion.div
+          variants={itemVariants}
+          className="col-span-1 md:col-span-2 bg-white border-4 border-black p-6 flex flex-col justify-center items-center shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer group"
+          onClick={() => router.push('/uplink')}
         >
           <div className="flex items-center gap-3 mb-2">
             <IconCalendar className="w-8 h-8" />
@@ -159,7 +161,7 @@ export default function MatrixPage() {
           </a>
           <button onClick={handleCopyEmail} className="flex flex-col items-center justify-center p-4 hover:bg-black hover:text-white transition-colors group relative">
             {copied ? (
-              <span className="font-mono text-xs font-bold text-[#00ff41] uppercase">Copied!</span>
+              <span className="font-mono text-xs font-bold text-white uppercase">Copied!</span>
             ) : (
               <>
                 <IconCopy className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
@@ -177,20 +179,79 @@ export default function MatrixPage() {
               <IconArrowUpRight className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </div>
             <div>
-              <h3 className="text-2xl font-black uppercase tracking-tighter block">OPERATOR<br/>DOSSIER</h3>
+              <h3 className="text-2xl font-black uppercase tracking-tighter block">OPERATOR<br />DOSSIER</h3>
             </div>
           </Link>
         </motion.div>
 
-        {/* 5. Capability Matrix Expansion (Spans full width) */}
+        {/* 5. Telemetry & Hardware Nodes */}
+        <motion.div variants={itemVariants} className="col-span-1 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all overflow-hidden">
+          <WireframeCube />
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="col-span-1 bg-[#e0e0e0] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all overflow-hidden">
+          <SkillRadar />
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all overflow-hidden">
+          <DropzoneModule />
+        </motion.div>
+
+        {/* 6. Capability Matrix Expansion (Spans full width) */}
         <motion.div variants={itemVariants} className="col-span-1 md:col-span-4 mt-4">
           <SkillConsole />
         </motion.div>
 
-        {/* 6. Projects Router (Spans full width) */}
+        {/* 6. Operations History (Experience) */}
+        <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-white border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all">
+          <div className="flex items-center gap-3 mb-6 border-b-2 border-black pb-4">
+            <h3 className="text-2xl font-black uppercase tracking-tighter">OPERATIONS_HISTORY</h3>
+          </div>
+          <div className="flex flex-col gap-6">
+            <div className="relative pl-6 border-l-2 border-black">
+              <div className="absolute -left-[7px] top-1 w-3 h-3 bg-white border-2 border-black animate-pulse" />
+              <div className="font-mono text-xs font-bold uppercase tracking-widest opacity-60 mb-1">2024 - PRESENT</div>
+              <h4 className="text-xl font-bold uppercase tracking-tight">Lead System Architect</h4>
+              <p className="font-mono text-sm mt-2 opacity-80">Spearheading end-to-end architecture for highly scalable, real-time data processing nodes. Full stack engineering.</p>
+            </div>
+            <div className="relative pl-6 border-l-2 border-black">
+              <div className="absolute -left-[7px] top-1 w-3 h-3 bg-black border-2 border-white" />
+              <div className="font-mono text-xs font-bold uppercase tracking-widest opacity-60 mb-1">2022 - 2024</div>
+              <h4 className="text-xl font-bold uppercase tracking-tight">Frontend Engineer</h4>
+              <p className="font-mono text-sm mt-2 opacity-80">Built complex interactive interfaces using React, Next.js, and raw WebGL. Focused on extreme performance optimizations.</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 7. Education & Raw Skills */}
+        <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-black text-white border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,0.6)] transition-all flex flex-col gap-6">
+          <div>
+            <div className="flex items-center gap-3 mb-4 border-b-2 border-white/20 pb-4">
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white">CORE_TRAINING</h3>
+            </div>
+            <div className="mb-2">
+              <h4 className="text-lg font-bold uppercase tracking-tight">B.Tech Electrical & Electronics Engineering</h4>
+              <p className="font-mono text-xs opacity-60 mt-1 uppercase tracking-widest">VSSUT Burla • 2025 - ? • Sem II - 94%</p>
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center gap-3 mb-4 border-b-2 border-white/20 pb-4">
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white">RAW_CAPABILITIES</h3>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["TypeScript", "React", "Next.js", "Node.js", "Python", "Go", "PostgreSQL", "Redis", "Docker", "AWS", "Framer Motion", "Tailwind"].map(skill => (
+                <span key={skill} className="font-mono text-[10px] border border-white/30 px-2 py-1 uppercase tracking-widest hover:bg-white hover:text-black hover:border-white transition-colors cursor-default">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 8. Projects Router (Spans full width) */}
         <motion.div variants={itemVariants} className="col-span-1 md:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4">
           <Link href="/shipped/manasya" className="bg-white border-4 border-black p-6 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all group">
-             <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start mb-4">
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1">CASE_001</span>
               <IconArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </div>
@@ -198,12 +259,29 @@ export default function MatrixPage() {
             <p className="font-mono text-xs font-bold opacity-60 mt-2">Secure Mental Health Architecture</p>
           </Link>
           <Link href="/shipped/producive" className="bg-white border-4 border-black p-6 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all group">
-             <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start mb-4">
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest bg-black text-white px-2 py-1">CASE_002</span>
               <IconArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </div>
             <h3 className="text-3xl font-black uppercase tracking-tighter">Producive</h3>
             <p className="font-mono text-xs font-bold opacity-60 mt-2">Deep Focus Browser Extension</p>
+          </Link>
+        </motion.div>
+
+        {/* 9. Internal Memos / Transmissions */}
+        <motion.div variants={itemVariants} className="col-span-1 md:col-span-4 mt-4 mb-12">
+          <Link href="/internal-memos" className="bg-black text-white border-4 border-black p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,0.6)] transition-all group">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <h3 className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-60">CLASSIFIED_ARCHIVE</h3>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter">Internal_Memos</h2>
+              <p className="font-mono text-sm opacity-80 mt-2 max-w-xl">Raw thoughts, system architecture logs, and technical transmissions detailing my build processes.</p>
+            </div>
+            <div className="mt-6 md:mt-0 flex items-center gap-2 border-2 border-white px-6 py-3 uppercase font-bold tracking-widest text-xs group-hover:bg-white group-hover:text-black transition-colors shrink-0">
+              Access Archive <IconArrowUpRight className="w-4 h-4" />
+            </div>
           </Link>
         </motion.div>
 

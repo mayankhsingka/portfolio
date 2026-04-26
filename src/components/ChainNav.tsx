@@ -9,21 +9,21 @@ import {
   AnimatePresence,
   type MotionValue,
 } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSystemAudio } from "@/hooks/useSystemAudio";
 
 // ─── Navigation Items ────────────────────────────────────
 const NAV_ITEMS = [
+  { id: "core", label: "CORE", route: "/core-identity", icon: "◇" },
   { id: "shipped", label: "SHIPPED", route: "/shipped", icon: "◈" },
-  { id: "identity", label: "IDENTITY", route: "/core-identity", icon: "◇" },
-  { id: "matrix", label: "MATRIX", route: "/matrix", icon: "◉" },
-  { id: "memos", label: "TRANSMIT", route: "/internal-memos", icon: "◆" },
+  { id: "memos", label: "MEMOS", route: "/internal-memos", icon: "◆" },
+  { id: "ping", label: "PING", route: "/ping", icon: "⎈" },
 ];
 
 // ─── Layout ──────────────────────────────────────────────
-const BTN_W = 128;
-const BTN_H = 42;
-const CHAIN_GAP = 48;
+const BTN_W = 132;
+const BTN_H = 44;
+const CHAIN_GAP = 52;
 const PITCH = BTN_W + CHAIN_GAP;
 const TOTAL_W = PITCH * 3 + BTN_W;
 const CUT_DURATION = 1800;
@@ -38,15 +38,15 @@ const SPRING_CFGS = [
 
 // ─── Helpers ─────────────────────────────────────────────
 function getDefaultPos() {
-  if (typeof window === "undefined") return { x: 200, y: 20 };
-  return { x: (window.innerWidth - TOTAL_W) / 2, y: 20 };
+  if (typeof window === "undefined") return { x: 200, y: 24 };
+  return { x: (window.innerWidth - TOTAL_W) / 2, y: 24 };
 }
 
 function loadState() {
   try {
     const mode = (localStorage.getItem("chainnav_mode") as "chained" | "unchained") || "chained";
-    const posRaw = localStorage.getItem("chainnav_pos");
-    const pos = posRaw ? JSON.parse(posRaw) : getDefaultPos();
+    // Always calculate perfect center on boot for chained mode
+    const pos = getDefaultPos();
     const freeRaw = localStorage.getItem("chainnav_free");
     const free = freeRaw ? JSON.parse(freeRaw) : null;
     return { mode, pos, free };
@@ -57,26 +57,22 @@ function loadState() {
 
 // ─── Chain Link SVG — Interlocking links ─────────────────
 function ChainLinkSVG({ isHeating, progress }: { isHeating: boolean; progress: number }) {
-  const baseColor = isHeating ? "#ef4444" : "#222";
+  const baseColor = isHeating ? "#ef4444" : "#000";
   const glow = isHeating ? `drop-shadow(0 0 ${4 + progress * 10}px rgba(239,68,68,${0.4 + progress * 0.6}))` : "none";
 
   return (
-    <svg viewBox="0 0 48 20" className="w-full h-5 overflow-visible" style={{ filter: glow }}>
-      {/* Link 1 */}
-      <rect x="1" y="3" width="14" height="14" rx="7" ry="7"
-        fill="none" stroke={baseColor} strokeWidth="2.5" className="transition-colors duration-200" />
-      {/* Link 2 — overlaps 1 and 3 */}
-      <rect x="12" y="5" width="24" height="10" rx="5" ry="5"
-        fill="none" stroke={baseColor} strokeWidth="2.5" className="transition-colors duration-200" />
-      {/* Link 3 */}
-      <rect x="33" y="3" width="14" height="14" rx="7" ry="7"
-        fill="none" stroke={baseColor} strokeWidth="2.5" className="transition-colors duration-200" />
+    <svg viewBox="0 0 52 20" className="w-full h-5 overflow-visible" preserveAspectRatio="none" style={{ filter: glow }}>
+      {/* Industrial Chain Links */}
+      <rect x="2" y="4" width="18" height="12" fill="none" stroke={baseColor} strokeWidth="2" />
+      <rect x="16" y="6" width="20" height="8" fill="#fff" stroke={baseColor} strokeWidth="2" />
+      <rect x="32" y="4" width="18" height="12" fill="none" stroke={baseColor} strokeWidth="2" />
+      
       {/* Stress fracture at critical heat */}
       {isHeating && progress > 0.4 && (
-        <motion.line
-          x1="24" y1="0" x2="24" y2="20"
-          stroke="#ef4444" strokeWidth={1 + progress * 2}
-          strokeDasharray="2 2"
+        <motion.path
+          d="M 26 2 L 30 10 L 26 18"
+          stroke="#ef4444" strokeWidth={2 + progress * 2}
+          fill="none"
           initial={{ opacity: 0 }} animate={{ opacity: progress * 0.8 }}
         />
       )}
@@ -139,8 +135,52 @@ function ChainLinkSegment({
       )}
 
       {/* Hover tooltip */}
-      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-60 transition-opacity duration-300 text-[7px] font-mono font-bold uppercase tracking-[0.2em] whitespace-nowrap pointer-events-none text-black">
+      <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[8px] font-mono font-bold uppercase tracking-[0.2em] whitespace-nowrap pointer-events-none text-black bg-white/90 px-2 py-1 border border-black/20 shadow-sm backdrop-blur-sm">
         ⛓ HOLD TO SEVER
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Broken Link Indicator (severed, clickable to re-forge) ──
+function BrokenLinkSegment({
+  leftX, leftY, rightX, rightY, onReforge,
+}: {
+  leftX: MotionValue<number>; leftY: MotionValue<number>;
+  rightX: MotionValue<number>; rightY: MotionValue<number>;
+  onReforge: () => void;
+}) {
+  const linkX = useTransform(
+    [leftX, rightX] as MotionValue[],
+    ([lx, rx]: number[]) => (lx as number) + BTN_W - 1
+  );
+  const linkY = useTransform(
+    [leftY, rightY] as MotionValue[],
+    ([ly, ry]: number[]) => ((ly as number) + (ry as number)) / 2 + BTN_H / 2 - 10
+  );
+  const linkW = useTransform(
+    [leftX, rightX] as MotionValue[],
+    ([lx, rx]: number[]) => Math.max(8, (rx as number) - ((lx as number) + BTN_W) + 2)
+  );
+
+  return (
+    <motion.div
+      style={{ x: linkX, y: linkY, width: linkW, position: "absolute" as const }}
+      className="h-5 pointer-events-auto cursor-pointer z-[46] group"
+      onClick={onReforge}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      {/* Dashed broken line */}
+      <svg viewBox="0 0 52 20" className="w-full h-5 overflow-visible" preserveAspectRatio="none">
+        <line x1="4" y1="10" x2="48" y2="10" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.4" />
+        <circle cx="26" cy="10" r="3" fill="none" stroke="#ef4444" strokeWidth="1" opacity="0.5" />
+        <line x1="24" y1="8" x2="28" y2="12" stroke="#ef4444" strokeWidth="1.5" opacity="0.6" />
+      </svg>
+
+      {/* Hover tooltip */}
+      <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[8px] font-mono font-bold uppercase tracking-[0.2em] whitespace-nowrap pointer-events-none text-white bg-red-600 px-2 py-1 border border-red-800 shadow-sm">
+        🔧 CLICK TO RE-FORGE
       </div>
     </motion.div>
   );
@@ -193,38 +233,47 @@ function BreakParticles({ originX, originY }: { originX: number; originY: number
 
 // ─── Nav Button ──────────────────────────────────────────
 function NavButton({
-  item, isFree = false, isDragging = false,
+  item, isActive = false, isFree = false, isDragging = false,
 }: {
-  item: (typeof NAV_ITEMS)[0]; isFree?: boolean; isDragging?: boolean;
+  item: (typeof NAV_ITEMS)[0]; isActive?: boolean; isFree?: boolean; isDragging?: boolean;
 }) {
   return (
     <div
       className={`
-        relative bg-white border-[2.5px] border-black font-mono text-[10px] font-black
-        uppercase tracking-[0.15em] select-none transition-all duration-150
+        relative flex items-center justify-center font-mono text-[13px] font-black
+        uppercase tracking-[0.1em] select-none transition-all duration-200
         ${isDragging
-          ? "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] scale-[1.03] bg-gray-50"
-          : "shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:bg-black hover:text-white"
+          ? "scale-[1.05] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.15)] z-50 bg-white border-2 border-black"
+          : isActive
+            ? "bg-black text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]"
+            : "bg-white text-black border-2 border-black hover:bg-black hover:text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-[2px] hover:-translate-x-[2px]"
         }
       `}
       style={{ width: BTN_W, height: BTN_H }}
     >
-      <span className="flex items-center justify-center h-full gap-2">
-        <span className="text-[13px] leading-none">{item.icon}</span>
-        {item.label}
+      <span className="flex items-center justify-between w-full h-full px-4 relative z-10">
+        <span className="flex items-center gap-2">
+          <span className={`text-[14px] transition-opacity`}>{item.icon}</span>
+          <span>{item.label}</span>
+        </span>
+        {isActive && (
+          <span className="text-[#0f0] animate-pulse absolute right-3 font-bold text-[14px] leading-none">
+            _
+          </span>
+        )}
       </span>
-      {/* Chain anchor dots */}
+      {/* Chain anchor squares */}
       {!isFree && (
         <>
-          <div className="absolute left-[-5px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] bg-black rounded-full border-2 border-white" />
-          <div className="absolute right-[-5px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] bg-black rounded-full border-2 border-white" />
+          <div className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-[6px] h-[6px] bg-black border border-white" />
+          <div className="absolute -right-[5px] top-1/2 -translate-y-1/2 w-[6px] h-[6px] bg-black border border-white" />
         </>
       )}
       {isFree && (
         <>
-          <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-red-500 rounded-full border border-white animate-pulse" />
-          <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[7px] font-mono font-bold opacity-40 whitespace-nowrap uppercase tracking-widest">
-            2× click to re-forge
+          <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-red-500 border-2 border-black animate-pulse" />
+          <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[7px] font-mono font-bold opacity-50 whitespace-nowrap uppercase tracking-widest text-black bg-white/90 px-1 border border-black/10">
+            2× Click to Re-Forge
           </div>
         </>
       )}
@@ -234,12 +283,13 @@ function NavButton({
 
 // ─── Free-floating Button (Unchained) ────────────────────
 function FreeButton({
-  item, index, initialX, initialY, onSave, onRechain,
+  item, index, initialX, initialY, onSave, onRechain, isActive
 }: {
   item: (typeof NAV_ITEMS)[0]; index: number;
   initialX: number; initialY: number;
   onSave: (id: string, x: number, y: number) => void;
   onRechain: () => void;
+  isActive?: boolean;
 }) {
   const router = useRouter();
   const x = useMotionValue(initialX);
@@ -263,7 +313,7 @@ function FreeButton({
       onClick={() => { if (!wasDragged.current) router.push(item.route); }}
       whileDrag={{ scale: 1.06 }}
     >
-      <NavButton item={item} isFree />
+      <NavButton item={item} isFree isActive={isActive} />
     </motion.div>
   );
 }
@@ -273,10 +323,12 @@ function FreeButton({
 // ═══════════════════════════════════════════════════════════
 export function ChainNav() {
   const router = useRouter();
+  const pathname = usePathname();
   const { playSnap } = useSystemAudio();
 
-  const [mode, setMode] = useState<"chained" | "unchained">("chained");
+  const [severedLinks, setSeveredLinks] = useState<Set<number>>(new Set());
   const [mounted, setMounted] = useState(false);
+  const allSevered = severedLinks.size >= 3;
   const [heatingLink, setHeatingLink] = useState<number | null>(null);
   const [cutProgress, setCutProgress] = useState(0);
   const [breakOrigin, setBreakOrigin] = useState<{ x: number; y: number } | null>(null);
@@ -321,8 +373,15 @@ export function ChainNav() {
     const saved = loadState();
     baseX.set(saved.pos.x);
     baseY.set(saved.pos.y);
+    try {
+      const savedSevered = localStorage.getItem("chainnav_severed");
+      if (savedSevered) {
+        const parsed = JSON.parse(savedSevered);
+        setSeveredLinks(new Set(parsed));
+      }
+    } catch {}
     if (saved.mode === "unchained" && saved.free) {
-      setMode("unchained");
+      setSeveredLinks(new Set([0, 1, 2]));
       setFreePositions(saved.free);
     }
     setMounted(true);
@@ -337,7 +396,7 @@ export function ChainNav() {
 
   const onBtnPointerDown = useCallback(
     (e: React.PointerEvent, idx: number) => {
-      if (mode !== "chained") return;
+      if (allSevered) return;
       dragActive.current = true;
       wasDragged.current = false;
       dragBtnIdx.current = idx;
@@ -346,7 +405,7 @@ export function ChainNav() {
       setIsDragging(true);
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     },
-    [mode]
+    [allSevered]
   );
 
   const onBtnPointerMove = useCallback(
@@ -367,17 +426,36 @@ export function ChainNav() {
     if (!dragActive.current) return;
     dragActive.current = false;
     setIsDragging(false);
+
+    // Magnetic Docking
+    let docked = false;
+    if (baseY.get() < 80) { // If dragged near the top 80px
+      const pos = getDefaultPos();
+      baseX.set(pos.x);
+      baseY.set(pos.y);
+      docked = true;
+      window.dispatchEvent(new CustomEvent("system-log", {
+        detail: "[SYS] Nav array docked successfully.",
+      }));
+    }
+
     if (!wasDragged.current && dragBtnIdx.current !== null) {
       router.push(NAV_ITEMS[dragBtnIdx.current].route);
     }
-    localStorage.setItem("chainnav_pos", JSON.stringify({ x: baseX.get(), y: baseY.get() }));
+    
+    if (!docked) {
+      localStorage.setItem("chainnav_pos", JSON.stringify({ x: baseX.get(), y: baseY.get() }));
+    } else {
+      const pos = getDefaultPos();
+      localStorage.setItem("chainnav_pos", JSON.stringify(pos));
+    }
     dragBtnIdx.current = null;
   }, [baseX, baseY, router]);
 
   // ─── Chain Cut ─────────────────────────────────────────
   const startCut = useCallback(
     (linkIdx: number) => {
-      if (mode !== "chained") return;
+      if (severedLinks.has(linkIdx)) return;
       setHeatingLink(linkIdx);
       cutStartRef.current = Date.now();
 
@@ -386,7 +464,6 @@ export function ChainNav() {
         const p = Math.min(elapsed / CUT_DURATION, 1);
         setCutProgress(p);
 
-        // Screen shake
         if (p > 0.3) {
           const i = (p - 0.3) * 3;
           document.body.style.transform = `translate(${(Math.random() - 0.5) * i}px, ${(Math.random() - 0.5) * i}px)`;
@@ -399,10 +476,10 @@ export function ChainNav() {
       }, 16);
 
       window.dispatchEvent(new CustomEvent("system-log", {
-        detail: "[WARN] Chain integrity compromised... hold to sever.",
+        detail: `[WARN] Link ${linkIdx} integrity compromised... hold to sever.`,
       }));
     },
-    [mode]
+    [severedLinks]
   );
 
   const cancelCut = useCallback(() => {
@@ -416,11 +493,6 @@ export function ChainNav() {
 
   const executeCut = useCallback(
     (linkIdx: number) => {
-      const current: Record<string, { x: number; y: number }> = {};
-      NAV_ITEMS.forEach((item, i) => {
-        current[item.id] = { x: springs[i].x.get(), y: springs[i].y.get() };
-      });
-
       const lx = springs[linkIdx].x.get() + BTN_W;
       const ly = springs[linkIdx].y.get() + BTN_H / 2;
       const rx = springs[linkIdx + 1].x.get();
@@ -428,28 +500,40 @@ export function ChainNav() {
       setBreakOrigin({ x: (lx + rx) / 2, y: (ly + ry) / 2 });
       setTimeout(() => setBreakOrigin(null), 1000);
 
-      // Scatter force from break point
-      const breakX = (lx + rx) / 2;
-      NAV_ITEMS.forEach((item) => {
-        const dir = current[item.id].x > breakX ? 1 : -1;
-        current[item.id].x += dir * (30 + Math.random() * 50);
-        current[item.id].y += (Math.random() - 0.5) * 60;
-      });
-
       playSnap();
-      setFreePositions(current);
-      setMode("unchained");
+      const newSevered = new Set(severedLinks);
+      newSevered.add(linkIdx);
+      setSeveredLinks(newSevered);
       setHeatingLink(null);
       setCutProgress(0);
 
-      localStorage.setItem("chainnav_mode", "unchained");
-      localStorage.setItem("chainnav_free", JSON.stringify(current));
+      localStorage.setItem("chainnav_severed", JSON.stringify([...newSevered]));
 
-      window.dispatchEvent(new CustomEvent("system-log", {
-        detail: "[CRITICAL] ⛓ Chain severed. Nodes unlinked. Double-click to re-forge.",
-      }));
+      // If ALL 3 links now severed, go fully unchained
+      if (newSevered.size >= 3) {
+        const current: Record<string, { x: number; y: number }> = {};
+        NAV_ITEMS.forEach((item, i) => {
+          current[item.id] = { x: springs[i].x.get(), y: springs[i].y.get() };
+        });
+        const breakX = (lx + rx) / 2;
+        NAV_ITEMS.forEach((item) => {
+          const dir = current[item.id].x > breakX ? 1 : -1;
+          current[item.id].x += dir * (30 + Math.random() * 50);
+          current[item.id].y += (Math.random() - 0.5) * 60;
+        });
+        setFreePositions(current);
+        localStorage.setItem("chainnav_mode", "unchained");
+        localStorage.setItem("chainnav_free", JSON.stringify(current));
+        window.dispatchEvent(new CustomEvent("system-log", {
+          detail: "[CRITICAL] ⛓ ALL chains severed. Full system detach. Double-click to re-forge.",
+        }));
+      } else {
+        window.dispatchEvent(new CustomEvent("system-log", {
+          detail: `[WARN] ⛓ Link ${linkIdx} severed. ${3 - newSevered.size} link(s) remain. Hold another to continue.`,
+        }));
+      }
     },
-    [springs, playSnap]
+    [springs, playSnap, severedLinks]
   );
 
   // ─── Re-chain ──────────────────────────────────────────
@@ -457,14 +541,27 @@ export function ChainNav() {
     const pos = getDefaultPos();
     baseX.set(pos.x);
     baseY.set(pos.y);
-    setMode("chained");
+    setSeveredLinks(new Set());
+    localStorage.setItem("chainnav_severed", "[]");
     localStorage.setItem("chainnav_mode", "chained");
     localStorage.setItem("chainnav_pos", JSON.stringify(pos));
     playSnap();
     window.dispatchEvent(new CustomEvent("system-log", {
-      detail: "[OK] ⛓ Chain integrity restored. Nodes re-linked.",
+      detail: "[OK] ⛓ All chains re-forged. Full integrity restored.",
     }));
   }, [baseX, baseY, playSnap]);
+
+  // ─── Re-forge single link ──────────────────────────────
+  const reForgeLink = useCallback((linkIdx: number) => {
+    const newSevered = new Set(severedLinks);
+    newSevered.delete(linkIdx);
+    setSeveredLinks(newSevered);
+    localStorage.setItem("chainnav_severed", JSON.stringify([...newSevered]));
+    playSnap();
+    window.dispatchEvent(new CustomEvent("system-log", {
+      detail: `[OK] ⛓ Link ${linkIdx} re-forged. ${newSevered.size} severed link(s) remain.`,
+    }));
+  }, [severedLinks, playSnap]);
 
   const saveFreePos = useCallback((id: string, x: number, y: number) => {
     setFreePositions((prev) => {
@@ -474,79 +571,113 @@ export function ChainNav() {
     });
   }, []);
 
-  // Memoize default pos for hint
-  const hintPos = useMemo(() => {
-    if (typeof window === "undefined") return { left: 200, top: 70 };
-    return {
-      left: (window.innerWidth - TOTAL_W) / 2 + TOTAL_W / 2 - 40,
-      top: 20 + BTN_H + 14,
-    };
-  }, [mounted]);
-
   if (!mounted) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[46]">
-      {mode === "chained" ? (
+      {/* Ghost Rail / Docking Area */}
+      {/* Ghost Rail / Docking Area */}
+      {!allSevered && (
+        <div className="fixed top-[24px] left-0 right-0 pointer-events-none flex justify-center z-[40]">
+          <div 
+            className="relative flex items-center"
+            style={{ width: TOTAL_W, height: BTN_H }}
+          >
+            {/* Tech accents */}
+            <div className="absolute -top-6 left-0 flex items-center gap-2">
+              <div className="w-2 h-2 bg-black animate-pulse" />
+              <div className="text-[9px] font-mono font-bold text-black/40 uppercase tracking-widest">
+                MAIN_SYS_NAV // {severedLinks.size > 0 ? `${severedLinks.size} LINK(S) SEVERED` : 'DOCK // DRAG TO DETACH'}
+              </div>
+            </div>
+            
+            {/* Outlines of the buttons & links */}
+            {NAV_ITEMS.map((_, i) => (
+              <div key={i} className="absolute border border-black/10 bg-black/[0.02]" style={{ width: BTN_W, height: BTN_H, left: i * PITCH, top: 0 }}>
+                 <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-black/20" />
+                 <div className="absolute top-0 right-0 w-1 h-1 border-t border-r border-black/20" />
+                 <div className="absolute bottom-0 left-0 w-1 h-1 border-b border-l border-black/20" />
+                 <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-black/20" />
+              </div>
+            ))}
+            {/* Ghost chain links */}
+            {[0, 1, 2].map((i) => (
+              <div key={`link-${i}`} className="absolute top-1/2 -translate-y-1/2 flex items-center justify-center" style={{ left: BTN_W + i * PITCH, width: CHAIN_GAP }}>
+                 <div className={`h-[1px] w-[80%] ${severedLinks.has(i) ? 'bg-red-500/20 border-t border-dashed border-red-500/30' : 'bg-black/10'}`} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!allSevered ? (
         <>
-          {/* Chain links */}
+          {/* Chain links — only render intact ones */}
           {[0, 1, 2].map((i) => (
-            <ChainLinkSegment
-              key={i}
-              leftX={springs[i].x} leftY={springs[i].y}
-              rightX={springs[i + 1].x} rightY={springs[i + 1].y}
-              isHeating={heatingLink === i}
-              cutProgress={heatingLink === i ? cutProgress : 0}
-              onCutStart={() => startCut(i)}
-              onCutCancel={cancelCut}
-            />
+            severedLinks.has(i) ? (
+              // ─── Broken Link Indicator (clickable to re-forge) ───
+              <BrokenLinkSegment
+                key={`broken-${i}`}
+                leftX={springs[i].x} leftY={springs[i].y}
+                rightX={springs[i + 1].x} rightY={springs[i + 1].y}
+                onReforge={() => reForgeLink(i)}
+              />
+            ) : (
+              <ChainLinkSegment
+                key={i}
+                leftX={springs[i].x} leftY={springs[i].y}
+                rightX={springs[i + 1].x} rightY={springs[i + 1].y}
+                isHeating={heatingLink === i}
+                cutProgress={heatingLink === i ? cutProgress : 0}
+                onCutStart={() => startCut(i)}
+                onCutCancel={cancelCut}
+              />
+            )
           ))}
 
           {/* Buttons */}
-          {NAV_ITEMS.map((item, i) => (
-            <motion.div
-              key={item.id}
-              style={{ x: springs[i].x, y: springs[i].y, position: "absolute" as const }}
-              className="pointer-events-auto cursor-grab active:cursor-grabbing select-none z-[46]"
-              onPointerDown={(e) => onBtnPointerDown(e, i)}
-              onPointerMove={onBtnPointerMove}
-              onPointerUp={onBtnPointerUp}
-            >
+          {NAV_ITEMS.map((item, i) => {
+            const isActive = pathname === item.route || (item.id === 'core' && pathname === '/');
+            return (
               <motion.div
-                initial={{ scale: 0, opacity: 0, y: -30 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + i * 0.12, type: "spring", stiffness: 200, damping: 14 }}
+                key={item.id}
+                style={{ x: springs[i].x, y: springs[i].y, position: "absolute" as const }}
+                className="pointer-events-auto cursor-grab active:cursor-grabbing select-none z-[46]"
+                onPointerDown={(e) => onBtnPointerDown(e, i)}
+                onPointerMove={onBtnPointerMove}
+                onPointerUp={onBtnPointerUp}
               >
-                <NavButton item={item} isDragging={isDragging && dragBtnIdx.current === i} />
+                <motion.div
+                  initial={{ scale: 0, opacity: 0, y: -30 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.12, type: "spring", stiffness: 200, damping: 14 }}
+                >
+                  <NavButton 
+                    item={item} 
+                    isDragging={isDragging && dragBtnIdx.current === i} 
+                    isActive={isActive} 
+                  />
+                </motion.div>
               </motion.div>
-            </motion.div>
-          ))}
-
-          {/* Drag hint */}
-          {!isDragging && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.3 }}
-              transition={{ delay: 3.5, duration: 1 }}
-              className="fixed font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-black pointer-events-none z-[45]"
-              style={{ left: hintPos.left, top: hintPos.top }}
-            >
-              ← drag chain →
-            </motion.div>
-          )}
+            );
+          })}
         </>
       ) : (
         <>
-          {NAV_ITEMS.map((item, i) => (
-            <FreeButton
-              key={item.id}
-              item={item} index={i}
-              initialX={freePositions[item.id]?.x ?? getDefaultPos().x + i * PITCH}
-              initialY={freePositions[item.id]?.y ?? getDefaultPos().y}
-              onSave={saveFreePos}
-              onRechain={reChain}
-            />
-          ))}
+          {NAV_ITEMS.map((item, i) => {
+            const isActive = pathname === item.route || (item.id === 'core' && pathname === '/');
+            return (
+              <FreeButton
+                key={item.id}
+                item={item} index={i}
+                initialX={freePositions[item.id]?.x ?? getDefaultPos().x + i * PITCH}
+                initialY={freePositions[item.id]?.y ?? getDefaultPos().y}
+                onSave={saveFreePos}
+                onRechain={reChain}
+                isActive={isActive}
+              />
+            );
+          })}
         </>
       )}
 
