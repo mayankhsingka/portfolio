@@ -9,6 +9,7 @@ import { isProjectNode } from "@/data/types";
 import { CommandPalette } from "@/components/CommandPalette";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 import { TerminalMediaFrame } from "@/components/TerminalMediaFrame";
+import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 
 // Typewriter — first visit only, then instant
 function useTypewriter(text: string, speed = 18) {
@@ -53,11 +54,12 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
 
   const { sourceUrl, liveUrl, techStack, problem, architectureDecisions: archDecisions, challenges, impact, fileId } = node;
 
-  const { displayed: typedProblem, done: typingDone } = useTypewriter(problem || node.description, 18);
+  const typedProblem = problem || node.description;
+  const typingDone = true;
   const [hoveredTech, setHoveredTech] = useState<number | null>(null);
 
   return (
-    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 bg-black md:pl-[19rem]">
+    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 bg-black md:pl-[19rem] overflow-visible">
       <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-12 bg-white/90 p-8 lg:p-16 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
         
         {/* HEADER */}
@@ -124,12 +126,24 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
             <ul className="flex flex-col gap-4 font-mono text-sm">
               {node.metrics.map((m, i) => (
                 <li key={i} className="flex flex-col">
-                  <span className="opacity-50 uppercase">{m.label}</span>
-                  <span className="font-bold">{m.value}</span>
+                  <span className="opacity-60">{m.label}</span>
+                  <span className="font-bold">{String(m.value)}</span>
                 </li>
               ))}
             </ul>
           </div>
+        </motion.section>
+
+        {/* ARCHITECTURAL PROOF (LIVE TELEMETRY) */}
+        <motion.section
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.35 }}
+          className="flex flex-col gap-6 border-b-2 border-black pb-12"
+        >
+          <h3 className="font-bold text-2xl uppercase tracking-tighter">Live Architecture Telemetry</h3>
+          <ArchitectureDiagram />
         </motion.section>
 
         {/* VISUAL EVIDENCE GALLERY */}
