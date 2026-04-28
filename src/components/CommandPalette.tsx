@@ -13,7 +13,7 @@ const STATIC_NAV = [
   { path: "/commands", label: "Sandbox", description: "System execution laboratory" },
   { path: "/theme", label: "Phosphor", description: "Cycle hardware hardware filters" },
   { path: "/core-identity", label: "About", description: "Profile: Mayank Himmatsingka" },
-  { path: "/ping", label: "Contact", description: "Open signal to operator" },
+  { path: "/uplink", label: "Contact", description: "Establish secure socket connection" },
   { path: "/engage_surveillance", label: "Camera", description: "Access local visual payload" },
 ];
 
@@ -126,9 +126,9 @@ export function CommandPalette() {
       return;
     }
 
-    if (cmd === "/ping") {
+    if (cmd === "/uplink" || cmd === "/ping") {
       setOpen(false);
-      router.push("/ping");
+      router.push("/uplink");
       return;
     }
 
@@ -362,7 +362,7 @@ export function CommandPalette() {
                 Available System Directories
               </div>
               
-              <div className="flex flex-col">
+              <div className="flex flex-col pb-4">
                 {filteredNav.map((cmd) => (
                   <button
                     key={cmd.path}
