@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { isProjectNode } from "@/data/types";
-import { CommandPalette } from "@/components/CommandPalette";
+import { PageHeaderNav } from "@/components/PageHeaderNav";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 
 export default function ShippedIndex() {
@@ -42,9 +42,7 @@ export default function ShippedIndex() {
               [SYS_LOG]: Architecture deployments currently in production or active scaling. Each node represents a shipped system.
             </p>
           </div>
-          <Link href="/" className="font-mono text-sm hover:bg-black hover:text-white px-3 py-2 transition-colors border-2 border-black uppercase tracking-widest shrink-0 h-fit">
-            [RETURN TO ROOT]
-          </Link>
+          <PageHeaderNav theme="light" />
         </motion.header>
 
         <div className="flex flex-col gap-8">
@@ -101,7 +99,6 @@ export default function ShippedIndex() {
           <span>MAYANK_HIMMATSINGKA</span>
         </footer>
       </div>
-      <CommandPalette />
     </main>
   );
 }

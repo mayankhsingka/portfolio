@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 import { ScrambleText } from "@/components/ScrambleText";
 import { TypewriterHeading } from "@/components/TypewriterHeading";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
-import { CommandPalette } from "@/components/CommandPalette";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
+import { PageHeaderNav } from "@/components/PageHeaderNav";
 
 const SKILLS = [
   { name: "SYSTEM_ARCHITECTURE", level: 98, status: "OPTIMIZED", details: "Designing scalable, high-throughput systems." },
@@ -43,9 +43,7 @@ export default function CoreIdentityPage() {
               className="text-5xl lg:text-7xl font-bold uppercase tracking-tighter" 
             />
           </div>
-          <Link href="/" className="font-mono text-sm hover:bg-white hover:text-black px-4 py-2 transition-colors border-2 border-white uppercase tracking-widest shrink-0">
-            [RETURN TO ROOT]
-          </Link>
+          <PageHeaderNav theme="dark" />
         </header>
 
         {decrypting ? (
@@ -157,7 +155,6 @@ export default function CoreIdentityPage() {
           </motion.div>
         )}
       </div>
-      <CommandPalette />
       
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes scanline-drop { 0% { top: -10px; } 100% { top: 100%; } }

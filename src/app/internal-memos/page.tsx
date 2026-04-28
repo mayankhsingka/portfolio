@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { MEMOS_DATA } from "@/data/memos";
-import { CommandPalette } from "@/components/CommandPalette";
+import { PageHeaderNav } from "@/components/PageHeaderNav";
 import { useEffect, useState } from "react";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 
@@ -32,9 +32,7 @@ export default function InternalMemosIndex() {
               [SYSTEM_LOGS]: Operational thoughts, architecture philosophies, and deep focus transmissions. Read-only.
             </p>
           </div>
-          <Link href="/" className="font-mono text-xl hover:bg-black hover:text-white px-2 py-1 transition-colors border border-transparent hover:border-black">
-            [RETURN TO ROOT]
-          </Link>
+          <PageHeaderNav theme="light" />
         </header>
 
         <div className="flex flex-col gap-8">
@@ -53,7 +51,7 @@ export default function InternalMemosIndex() {
                       {memo.title}
                     </Link>
                   </h2>
-                  <time className="font-mono text-xs cia-redact cursor-crosshair">{memo.date}</time>
+                  <time className="font-mono text-xs cursor-crosshair">{memo.date}</time>
                 </div>
                 
                 <p className="mb-6 font-mono text-sm">{memo.excerpt}</p>
@@ -61,7 +59,7 @@ export default function InternalMemosIndex() {
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2">
                     {memo.tags.map(tag => (
-                      <span key={tag} className="text-xs border border-black px-1 font-mono uppercase bg-black/5 cia-redact cursor-crosshair">
+                      <span key={tag} className="text-xs border border-black px-1 font-mono uppercase bg-black/5 cursor-crosshair">
                         {tag}
                       </span>
                     ))}
@@ -78,7 +76,6 @@ export default function InternalMemosIndex() {
           })}
         </div>
       </div>
-      <CommandPalette />
     </main>
   );
 }
