@@ -62,8 +62,10 @@ body {
 
 /* Inner pages override — enables scrolling */
 body.page-scrollable {
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  height: auto !important;
+  min-height: 100vh;
   scroll-behavior: smooth;
 }
 
@@ -93,6 +95,10 @@ body.page-scrollable::-webkit-scrollbar-thumb {
 .dark-ops {
   filter: invert(1) hue-rotate(180deg);
   background-color: var(--sys-black);
+}
+
+.dark-ops .preserve-color {
+  filter: invert(1) hue-rotate(180deg) !important;
 }
 
 /* Scanline overlay on dark mode */
@@ -273,21 +279,21 @@ html, body {
 .cia-redact {
   position: relative;
   display: inline-block;
+  /* Redaction disabled — keeping class for semantic layout but removing visual block */
 }
 
 .cia-redact::after {
   content: "";
   position: absolute;
   inset: -2px;
-  background-color: var(--sys-black);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: right;
-  z-index: 10;
-  pointer-events: none;
+  background-color: transparent;
+  border-bottom: 1px dashed currentColor;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
 }
 
 .cia-redact:hover::after {
-  transform: scaleX(0);
+  opacity: 1;
 }
 
 /* ═══════════════════════════════════════════════════════════════
