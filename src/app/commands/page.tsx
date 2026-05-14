@@ -78,6 +78,16 @@ export default function CommandsSandbox() {
         case "whoami":
           setLogs(prev => [...prev, { text: "OPERATOR: Mayank Himmatsingka. ROLE: System Architect.", type: "output" }]);
           break;
+        case "neofetch":
+          setLogs(prev => [...prev, 
+            { text: "  ██████╗ ██╗   ██╗   mayank@system-blueprint", type: "output" },
+            { text: "  ██╔═══╝ ██║   ██║   ─────────────────────────", type: "output" },
+            { text: "  ╚████╗  ╚██╗ ██╔╝   Version: 1.0.4-stable", type: "output" },
+            { text: "   ╚══██╗  ╚████╔╝    Operator: Mayank Himmatsingka", type: "output" },
+            { text: "  █████╔╝   ╚██╔╝     Role: System Architect", type: "output" },
+            { text: "  ╚════╝     ╚═╝      Framework: Next.js + Tailwind", type: "output" }
+          ]);
+          break;
         case "clear":
           setLogs([]);
           break;
