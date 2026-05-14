@@ -5,7 +5,7 @@ import { PORTFOLIO_DATA } from "@/data/portfolio";
 
 export function TerminalLogs() {
   const [logs, setLogs] = useState<{text: string, type: string, timestamp: number}[]>([]);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll logic
@@ -39,6 +39,38 @@ export function TerminalLogs() {
     return () => {
       timeouts.forEach(clearTimeout);
       window.removeEventListener("system-log", handleExternalLog);
+    };
+  }, []);
+
+  // Idle ghost logic
+  useEffect(() => {
+    let idleTimeout: NodeJS.Timeout;
+    
+    const resetIdle = () => {
+      clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(() => {
+        setLogs((prev) => {
+          // Avoid spam if multiple idles overlap
+          if (prev.length > 0 && prev[prev.length - 1].text.includes("Awaiting input")) return prev;
+          return [...prev, { 
+            text: "[WARNING] OPERATOR UNRESPONSIVE. Awaiting input...", 
+            type: "SYSTEM", 
+            timestamp: Date.now() 
+          }];
+        });
+      }, 60000); // 60 seconds
+    };
+
+    window.addEventListener("mousemove", resetIdle);
+    window.addEventListener("keydown", resetIdle);
+    window.addEventListener("wheel", resetIdle);
+    resetIdle();
+
+    return () => {
+      clearTimeout(idleTimeout);
+      window.removeEventListener("mousemove", resetIdle);
+      window.removeEventListener("keydown", resetIdle);
+      window.removeEventListener("wheel", resetIdle);
     };
   }, []);
 

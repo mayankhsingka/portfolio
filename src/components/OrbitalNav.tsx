@@ -1,44 +1,73 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useSystemAudio } from "@/hooks/useSystemAudio";
 
 // ─── Navigation Items ────────────────────────────────────
+// TO ADD A NEW NODE: Simply add a new entry here. The geometry will auto-adjust.
 const NAV_ITEMS = [
   { id: "shipped", label: "SHIPPED", desc: "Deployment Registry", route: "/shipped" },
   { id: "identity", label: "IDENTITY", desc: "Operator Dossier", route: "/core-identity" },
   { id: "matrix", label: "MATRIX", desc: "Uplink Hub", route: "/matrix" },
   { id: "memos", label: "TRANSMIT", desc: "Classified Archive", route: "/internal-memos" },
+  { id: "ping", label: "COMM_PORT", desc: "Global Ping Console", route: "/ping" },
+  { id: "sandbox", label: "SANDBOX", desc: "Terminal Emulator", route: "/commands" },
 ];
 
-const RADIUS = 150;
-
-// Cardinal positions: top, left, right, bottom
-const POSITIONS = [
-  { x: 0, y: -RADIUS },
-  { x: -RADIUS, y: 0 },
-  { x: RADIUS, y: 0 },
-  { x: 0, y: RADIUS },
-];
-
-function getSelectedIndex(dx: number, dy: number, dist: number): number | null {
-  if (dist < 40) return null;
-  const angle = Math.atan2(dy, dx);
-  if (angle > -3 * Math.PI / 4 && angle <= -Math.PI / 4) return 0; // top
-  if (Math.abs(angle) > 3 * Math.PI / 4) return 1;   // left
-  if (angle > -Math.PI / 4 && angle <= Math.PI / 4) return 2; // right
-  return 3; // bottom
-}
+const RADIUS = 160;
 
 export function OrbitalNav() {
   const router = useRouter();
+  const { playSnap, playKeystroke } = useSystemAudio();
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
-  // Use state instead of ref so re-renders use correct center
   const [center, setCenter] = useState({ x: 0, y: 0 });
 
-  // ─── Shift+N Listener ──────────────────────────────────
+  // ─── Dynamic Geometry Calculation ───────────────────────
+  const navPositions = useMemo(() => {
+    return NAV_ITEMS.map((_, i) => {
+      // Start from -90deg (top) and move clockwise
+      const angle = (i * (360 / NAV_ITEMS.length) - 90) * (Math.PI / 180);
+      return {
+        x: Math.cos(angle) * RADIUS,
+        y: Math.sin(angle) * RADIUS,
+        angle: angle
+      };
+    });
+  }, []);
+
+  // ─── Radial Selection Logic ──────────────────────────────
+  const getSelectedIndex = useCallback((dx: number, dy: number, dist: number) => {
+    if (dist < 45) return null;
+
+    // Calculate angle in degrees (0 to 360)
+    let mouseAngle = Math.atan2(dy, dx) * (180 / Math.PI);
+    if (mouseAngle < 0) mouseAngle += 360;
+
+    // Find the item with the closest angle
+    let closestIdx = 0;
+    let minDiff = Infinity;
+
+    NAV_ITEMS.forEach((_, i) => {
+      let itemAngle = (i * (360 / NAV_ITEMS.length)) % 360;
+      // Adjust because our atan2 starts at 0 (right), but our logic starts at -90 (top)
+      itemAngle = (itemAngle + 270) % 360;
+
+      let diff = Math.abs(mouseAngle - itemAngle);
+      if (diff > 180) diff = 360 - diff;
+
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIdx = i;
+      }
+    });
+
+    return closestIdx;
+  }, []);
+
+  // ─── Key Listeners ─────────────────────────────────────
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       const tag = document.activeElement?.tagName;
@@ -54,9 +83,7 @@ export function OrbitalNav() {
           setIsOpen(false);
         }
       }
-      if (e.key === "Escape" && isOpen) {
-        setIsOpen(false);
-      }
+      if (e.key === "Escape" && isOpen) setIsOpen(false);
     };
 
     const handleOrbital = () => {
@@ -73,29 +100,26 @@ export function OrbitalNav() {
     };
   }, [isOpen]);
 
-  // ─── Mouse tracking ───────────────────────────────────
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      const dx = e.clientX - center.x;
-      const dy = e.clientY - center.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      setSelected(getSelectedIndex(dx, dy, dist));
-    },
-    [center]
-  );
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const dx = e.clientX - center.x;
+    const dy = e.clientY - center.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const newIdx = getSelectedIndex(dx, dy, dist);
+    if (newIdx !== selected) {
+      setSelected(newIdx);
+      if (newIdx !== null) playSnap();
+    }
+  };
 
-  // ─── Navigate ─────────────────────────────────────────
-  const handleSelect = useCallback(
-    (idx: number | null) => {
-      if (idx === null) { setIsOpen(false); return; }
-      router.push(NAV_ITEMS[idx].route);
-      setIsOpen(false);
-      window.dispatchEvent(new CustomEvent("system-log", {
-        detail: `[NAV] Orbital jump → ${NAV_ITEMS[idx].label}`,
-      }));
-    },
-    [router]
-  );
+  const handleSelect = (idx: number | null) => {
+    if (idx === null) { setIsOpen(false); return; }
+    playKeystroke();
+    router.push(NAV_ITEMS[idx].route);
+    setIsOpen(false);
+    window.dispatchEvent(new CustomEvent("system-log", {
+      detail: `[NAV] Jump initiated → ${NAV_ITEMS[idx].label}`,
+    }));
+  };
 
   return (
     <AnimatePresence>
@@ -105,153 +129,132 @@ export function OrbitalNav() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-[70] cursor-crosshair select-none"
+          className="fixed inset-0 z-[1000] cursor-crosshair select-none"
           onMouseMove={handleMouseMove}
           onClick={() => handleSelect(selected)}
         >
-          {/* Backdrop blur */}
+          {/* Backdrop Blur */}
           <motion.div
-            initial={{ backdropFilter: "blur(0px)" }}
-            animate={{ backdropFilter: "blur(14px)" }}
-            exit={{ backdropFilter: "blur(0px)" }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0 bg-black/50"
+            initial={{ backdropFilter: "blur(0px)", opacity: 0 }}
+            animate={{ backdropFilter: "blur(12px)", opacity: 1 }}
+            exit={{ backdropFilter: "blur(0px)", opacity: 0 }}
+            className="absolute inset-0 bg-black/60"
           />
 
           {/* Central Hub */}
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
+            initial={{ scale: 0, rotate: -90 }}
             animate={{ scale: 1, rotate: 0 }}
-            exit={{ scale: 0, rotate: 180 }}
-            transition={{ type: "spring", stiffness: 280, damping: 18 }}
-            className="absolute w-16 h-16 bg-black border-2 border-white rounded-full flex items-center justify-center z-10"
-            style={{ left: center.x - 32, top: center.y - 32 }}
+            exit={{ scale: 0, rotate: 90 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="absolute w-20 h-20 bg-black border-2 border-white rounded-full flex items-center justify-center z-20 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+            style={{ left: center.x - 40, top: center.y - 40 }}
           >
-            <span className="font-mono text-white text-[10px] font-bold tracking-widest">NAV</span>
-            {/* Pulse ring */}
+            <div className="flex flex-col items-center">
+              <span className="font-mono text-white text-[10px] font-bold tracking-[0.2em]">DIRECTIVE</span>
+              <span className="font-mono text-white/40 text-[8px] uppercase">Active</span>
+            </div>
+            {/* Pulse */}
             <motion.div
-              animate={{ scale: [1, 1.5, 1], opacity: [0.4, 0, 0.4] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 border border-white/30 rounded-full"
+              animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0 border-2 border-white rounded-full"
             />
           </motion.div>
 
-          {/* Sector lines */}
-          <svg className="absolute inset-0 pointer-events-none z-[5]">
-            {/* Sector dividers — faint diagonal lines */}
-            {[Math.PI / 4, -Math.PI / 4, 3 * Math.PI / 4, -3 * Math.PI / 4].map((angle, i) => (
-              <motion.line
-                key={`sector-${i}`}
-                x1={center.x} y1={center.y}
-                x2={center.x + Math.cos(angle) * 300}
-                y2={center.y + Math.sin(angle) * 300}
-                stroke="rgba(255,255,255,0.05)"
-                strokeWidth="1"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              />
-            ))}
-            {/* Item connector lines */}
-            {POSITIONS.map((pos, i) => (
-              <motion.line
-                key={i}
-                x1={center.x} y1={center.y}
-                x2={center.x + pos.x} y2={center.y + pos.y}
-                stroke={selected === i ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.12)"}
-                strokeWidth={selected === i ? 2 : 1}
-                strokeDasharray={selected === i ? "none" : "4 4"}
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                exit={{ pathLength: 0 }}
-                transition={{ duration: 0.25, delay: i * 0.04 }}
-              />
-            ))}
+          {/* Dynamic Selection Lines */}
+          <svg className="absolute inset-0 pointer-events-none z-10">
+            {navPositions.map((pos, i) => {
+              const isSelected = selected === i;
+              return (
+                <motion.line
+                  key={`line-${i}`}
+                  x1={center.x} y1={center.y}
+                  x2={center.x + pos.x} y2={center.y + pos.y}
+                  stroke="white"
+                  strokeWidth={isSelected ? 3 : 1}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{
+                    pathLength: 1,
+                    opacity: isSelected ? 0.8 : 0.15,
+                    strokeDasharray: isSelected ? "none" : "5 5"
+                  }}
+                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                />
+              );
+            })}
           </svg>
 
           {/* Nav Items */}
           {NAV_ITEMS.map((item, i) => {
+            const pos = navPositions[i];
             const isSelected = selected === i;
             const isDimmed = selected !== null && !isSelected;
 
             return (
               <motion.div
                 key={item.id}
-                initial={{ scale: 0, opacity: 0 }}
+                initial={{ scale: 0, opacity: 0, x: center.x - 72, y: center.y - 30 }}
                 animate={{
-                  scale: isSelected ? 1.1 : 1,
-                  opacity: isDimmed ? 0.2 : 1,
-                  x: center.x + POSITIONS[i].x - 72,
-                  y: center.y + POSITIONS[i].y - 30,
+                  scale: isSelected ? 1.15 : 1,
+                  opacity: isDimmed ? 0.3 : 1,
+                  x: center.x + pos.x - 72,
+                  y: center.y + pos.y - 30,
                 }}
-                exit={{ scale: 0, opacity: 0 }}
+                exit={{ scale: 0, opacity: 0, x: center.x - 72, y: center.y - 30 }}
                 transition={{
                   type: "spring",
-                  stiffness: 320,
-                  damping: 20,
-                  delay: i * 0.04,
+                  stiffness: 400,
+                  damping: 25,
+                  delay: i * 0.03,
                 }}
-                className="absolute pointer-events-none z-10"
+                className="absolute pointer-events-none z-30"
               >
                 <div
                   className={`
-                    bg-white border-2 font-mono text-center px-5 py-3 min-w-[144px]
-                    transition-all duration-200
+                    bg-white border-2 font-mono text-center px-6 py-4 min-w-[160px]
+                    transition-all duration-300 rounded-xl
                     ${isSelected
-                      ? "border-white shadow-[0_0_30px_rgba(255,255,255,0.5),0_0_60px_rgba(255,255,255,0.2)]"
-                      : "border-white/30"
+                      ? "border-white shadow-[0_0_40px_rgba(255,255,255,0.4)] scale-105"
+                      : "border-white/20"
                     }
                   `}
                 >
-                  <div className="text-sm font-black uppercase tracking-widest text-black">
+                  <div className="text-[11px] font-black uppercase tracking-widest text-black">
                     {item.label}
                   </div>
-                  <div className="text-[8px] font-bold uppercase tracking-widest text-black/40 mt-0.5">
+                  <div className="text-[7px] font-bold uppercase tracking-widest text-black/50 mt-1">
                     {item.desc}
                   </div>
                 </div>
 
                 {isSelected && (
                   <motion.div
-                    initial={{ opacity: 0, y: 4 }}
+                    initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className="text-center text-white font-mono text-[10px] font-bold mt-1.5 uppercase tracking-widest"
+                    className="text-center text-white font-mono text-[9px] font-bold mt-2 uppercase tracking-[0.3em] drop-shadow-md"
                   >
-                    ▸ SELECT
+                    DEPLOY_UPLINK_PROTOCAL
                   </motion.div>
                 )}
               </motion.div>
             );
           })}
 
-          {/* Instructions */}
+          {/* Bottom Controls */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 0.45, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 0.25 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white font-mono text-[10px] uppercase tracking-widest flex items-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 0.6, y: 0 }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-6 font-mono text-[9px] text-white uppercase tracking-[0.2em]"
           >
-            <span>Move to select</span>
-            <span className="opacity-30">·</span>
-            <span>Click to navigate</span>
-            <span className="opacity-30">·</span>
-            <kbd className="bg-white/10 px-1.5 py-0.5 text-[9px] rounded-sm">ESC</kbd>
-            <span>close</span>
-          </motion.div>
-
-          {/* Shortcut + GTA V nod */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.25 }}
-            transition={{ delay: 0.4 }}
-            className="absolute top-6 right-6 text-right"
-          >
-            <div className="text-white font-mono text-[10px] uppercase tracking-widest">SHIFT+N</div>
-            <div className="text-white/40 font-mono text-[7px] uppercase tracking-widest mt-1">
-              Weapon Wheel™ — You know the vibe
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+              ORBITAL_NAV_V2
             </div>
+            <div className="h-3 w-[1px] bg-white/20" />
+            <span>CLICK TO DEPLOY</span>
+            <div className="h-3 w-[1px] bg-white/20" />
+            <span>ESC TO TERMINATE</span>
           </motion.div>
         </motion.div>
       )}

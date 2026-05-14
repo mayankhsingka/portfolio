@@ -90,7 +90,7 @@ export function ArchitectureNode({
               </span>
             </div>
           ) : (
-            <p>{scrambledDesc}</p>
+            <p>{description}</p>
           )}
         </div>
         
@@ -103,8 +103,8 @@ export function ArchitectureNode({
             <div className="font-bold mb-1 border-b border-black pb-1 uppercase">Sys_Metrics:</div>
             {metrics.map((m, i) => (
               <div key={i} className="flex justify-between">
-                <span className="opacity-60"><ScrambleText>{m.label}</ScrambleText></span>
-                <span className="font-bold"><ScrambleText>{String(m.value)}</ScrambleText></span>
+                <span className="opacity-60">{m.label}</span>
+                <span className="font-bold">{String(m.value)}</span>
               </div>
             ))}
 
@@ -134,6 +134,23 @@ export function ArchitectureNode({
                 </Link>
                 <div className="text-[8px] mt-1 opacity-40 text-center uppercase tracking-widest text-[#00ff41]">
                   Global Operator Wikipedia
+                </div>
+              </div>
+            )}
+
+            {id === "reading_list" && (
+              <div className="mt-4 pt-4 border-t border-black/20">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.dispatchEvent(new CustomEvent("system-open-reading-list"));
+                  }}
+                  className="block w-full border-2 border-black bg-black text-white text-center py-2 px-1 hover:bg-white hover:text-black transition-colors uppercase font-bold tracking-tighter text-[10px]"
+                >
+                  [ DECRYPT_ARCHIVE ]
+                </button>
+                <div className="text-[8px] mt-1 opacity-40 text-center uppercase tracking-widest text-black">
+                  Classified Databank
                 </div>
               </div>
             )}

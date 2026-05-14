@@ -4,7 +4,6 @@ import { SystemGrid } from "@/components/SystemGrid";
 import { ArchitectureNode } from "@/components/ArchitectureNode";
 import { DataFlowLines } from "@/components/DataFlowLines";
 import { TerminalLogs } from "@/components/TerminalLogs";
-import { CommandPalette } from "@/components/CommandPalette";
 import { SystemShortcuts } from "@/components/SystemShortcuts";
 import { BootSequence } from "@/components/BootSequence";
 import { SystemBreach } from "@/components/SystemBreach";
@@ -40,7 +39,7 @@ function HomeContent() {
 
   useEffect(() => {
     const sessionBooted = sessionStorage.getItem("system_booted");
-    
+
     let hasHighClearance = false;
     try {
       const raw = localStorage.getItem("clearance_data");
@@ -50,7 +49,7 @@ function HomeContent() {
           hasHighClearance = true;
         }
       }
-    } catch {}
+    } catch { }
 
     if (!sessionBooted && !hasHighClearance) {
       setHasBooted(false);
@@ -83,7 +82,7 @@ function HomeContent() {
     const handleSurveillance = (e: Event) => setSurveillanceActive((e as CustomEvent).detail);
     const handleOffline = () => setOfflineActive(true);
     const handleReadingList = () => setReadingListActive(true);
-    
+
     window.addEventListener("system-breach", handleBreach);
     window.addEventListener("system-surveillance", handleSurveillance);
     window.addEventListener("system-offline", handleOffline);
@@ -140,7 +139,7 @@ function HomeContent() {
   return (
     <main className="w-full h-full text-black">
       {!hasBooted && <BootSequence onComplete={completeBoot} />}
-      
+
       {/* System Breach Overlay */}
       <SystemBreach active={breachActive} onComplete={handleBreachComplete} />
 
@@ -158,9 +157,9 @@ function HomeContent() {
       <div style={{ opacity: hasBooted ? 1 : 0, transition: 'opacity 0.5s ease' }} className="w-full h-full">
         <SystemGrid canvasRef={canvasRef}>
           <DataFlowLines canvasRef={canvasRef} hoveredNodeId={hoveredNodeId} />
-          
+
           {/* Giant Personal Watermark on the Canvas Floor */}
-          <div 
+          <div
             className="absolute top-[150vh] left-[150vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col font-sans font-black uppercase text-black/20 select-none z-[-1] leading-[0.85] tracking-tighter mix-blend-multiply"
             style={{ fontSize: "clamp(6rem, 12vw, 16rem)" }}
           >
@@ -185,7 +184,6 @@ function HomeContent() {
         </SystemGrid>
 
         <TerminalLogs />
-        <CommandPalette />
         <SystemShortcuts />
         <SocialSidebar />
         <ThemeToggle />
