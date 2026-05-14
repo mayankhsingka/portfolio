@@ -19,8 +19,8 @@ export default function ShippedIndex() {
   const doubledTicker = `${tickerText}   ${tickerText}`;
 
   return (
-    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 bg-black md:pl-[19rem]">
-      <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-12 bg-white/90 p-8 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+    <main className="w-full min-h-screen text-black flex flex-col p-4 md:p-8 lg:p-24 bg-black md:pl-[19rem]">
+      <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-8 md:gap-12 bg-white/90 p-4 md:p-8 border-2 md:border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
         
         {/* Status Ticker inside the box */}
         <div className="w-full border-2 border-black bg-black text-white font-mono text-xs uppercase tracking-widest overflow-hidden py-2 -mt-2">
@@ -37,7 +37,7 @@ export default function ShippedIndex() {
         >
           <div>
             <h4 className="font-mono text-sm uppercase tracking-widest opacity-50 mb-2">// DEPLOYMENT REGISTRY</h4>
-            <h1 className="text-5xl font-bold uppercase tracking-tighter">/shipped</h1>
+            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tighter">/shipped</h1>
             <p className="font-mono mt-4 text-sm max-w-xl">
               [SYS_LOG]: Architecture deployments currently in production or active scaling. Each node represents a shipped system.
             </p>

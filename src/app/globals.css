@@ -60,6 +60,17 @@ body {
   overflow: hidden; /* Default: full screen draggable canvas */
 }
 
+/* Mobile: unlock scroll for the vertical feed */
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    min-height: 100vh;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Inner pages override — enables scrolling */
 body.page-scrollable {
   overflow-y: auto !important;

@@ -59,8 +59,8 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
   const [hoveredTech, setHoveredTech] = useState<number | null>(null);
 
   return (
-    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 bg-black md:pl-[19rem] overflow-visible">
-      <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-12 bg-white/90 p-8 lg:p-16 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+    <main className="w-full min-h-screen text-black flex flex-col p-4 md:p-8 lg:p-24 bg-black md:pl-[19rem] overflow-visible">
+      <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-8 md:gap-12 bg-white/90 p-4 md:p-8 lg:p-16 border-2 md:border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
         
         {/* HEADER */}
         <motion.header
@@ -75,7 +75,7 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
           <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
             <div>
               <h4 className="font-mono text-sm uppercase tracking-widest opacity-50 mb-2">// ARCHITECTURE CASE FILE — {fileId}</h4>
-              <h1 className="text-5xl font-bold uppercase tracking-tighter leading-tight">
+              <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tighter leading-tight">
                 {node.title}
               </h1>
               {liveUrl && liveUrl !== "#" && (

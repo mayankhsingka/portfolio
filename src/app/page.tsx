@@ -16,7 +16,9 @@ import { SocialSidebar } from "@/components/SocialSidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CanvasHint } from "@/components/CanvasHint";
 import { ChainNav } from "@/components/ChainNav";
+import { MobilePDAShell } from "@/components/mobile/MobilePDAShell";
 import { useTelemetryTab } from "@/hooks/useTelemetryTab";
+import { useDevice } from "@/hooks/useDevice";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { isProjectNode } from "@/data/types";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -24,6 +26,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 
 function HomeContent() {
+  const { isMobile } = useDevice();
   const [hasBooted, setHasBooted] = useState(true);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   useTelemetryTab();
@@ -136,6 +139,21 @@ function HomeContent() {
     return false;
   });
 
+  // ─── MOBILE SHELL ───────────────────────────────────────────────
+  // On mobile, render the entire MobilePDAShell instead of the canvas.
+  // The boot sequence still plays on first visit.
+  if (isMobile) {
+    return (
+      <main className="w-full min-h-screen text-black">
+        {!hasBooted && <BootSequence onComplete={completeBoot} />}
+        <div style={{ opacity: hasBooted ? 1 : 0, transition: "opacity 0.5s ease" }}>
+          <MobilePDAShell />
+        </div>
+      </main>
+    );
+  }
+
+  // ─── DESKTOP SHELL ──────────────────────────────────────────────
   return (
     <main className="w-full h-full text-black">
       {!hasBooted && <BootSequence onComplete={completeBoot} />}
