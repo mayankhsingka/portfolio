@@ -27,7 +27,7 @@ export function TerminalMediaFrame({ type, url, caption, index }: TerminalMediaF
           <div className="w-2 h-2 rounded-full bg-black/20" />
         </div>
         <span className="font-mono text-[9px] uppercase tracking-widest opacity-40">
-          Source_ID: 0x{Math.floor(Math.random() * 65535).toString(16).toUpperCase()}
+          Source_ID: 0x{((index + 1) * 4919).toString(16).toUpperCase().padStart(4, "0")}
         </span>
       </div>
 
