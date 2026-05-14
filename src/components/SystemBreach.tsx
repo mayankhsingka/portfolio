@@ -11,7 +11,7 @@ interface SystemBreachProps {
 export function SystemBreach({ active, onComplete }: SystemBreachProps) {
   const [stars, setStars] = useState<any[]>([]);
   const [escapePhase, setEscapePhase] = useState<0 | 1 | 2>(0);
-  
+
   // Generate the "Galaxy" once active
   useEffect(() => {
     if (active && stars.length === 0) {
@@ -73,15 +73,14 @@ export function SystemBreach({ active, onComplete }: SystemBreachProps) {
       >
         {/* Psychological Escape Button - Top Left */}
         <div className="absolute top-8 left-8 z-[10000]">
-          <button 
+          <button
             onClick={handleAttemptEscape}
-            className={`font-mono text-xs md:text-sm font-bold tracking-widest border-2 px-6 py-3 transition-all duration-300 ${
-              escapePhase === 0 
-                ? "border-white/20 text-white/50 hover:border-white hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.3)]" 
+            className={`font-mono text-xs md:text-sm font-bold tracking-widest border-2 px-6 py-3 transition-all duration-300 ${escapePhase === 0
+                ? "border-white/20 text-white/50 hover:border-white hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.3)]"
                 : escapePhase === 1
                   ? "border-red-500 text-red-500 bg-red-500/10 animate-pulse shadow-[0_0_20px_rgba(255,0,0,0.6)]"
                   : "border-white bg-white text-black scale-110"
-            }`}
+              }`}
           >
             {escapePhase === 0 ? "[ ESCAPE ]" : escapePhase === 1 ? "ARE YOU SURE?" : "TERMINATING..."}
           </button>
@@ -89,12 +88,12 @@ export function SystemBreach({ active, onComplete }: SystemBreachProps) {
 
         {/* The Galaxy / Random Starfield */}
         <div className="absolute inset-0 perspective-[1000px] overflow-hidden mix-blend-screen">
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               rotateZ: [0, 360],
               scale: escapePhase === 1 ? 1.2 : escapePhase === 2 ? 8 : 1
             }}
-            transition={{ 
+            transition={{
               rotateZ: { duration: 300, repeat: Infinity, ease: "linear" },
               scale: { duration: escapePhase === 2 ? 1 : 2, ease: "easeInOut" }
             }}
@@ -129,40 +128,39 @@ export function SystemBreach({ active, onComplete }: SystemBreachProps) {
         </div>
 
         {/* Central Data Core / Black Hole */}
-        <motion.div 
-          animate={{ 
+        <motion.div
+          animate={{
             scale: escapePhase === 1 ? 0.9 : escapePhase === 2 ? 0 : [1, 1.05, 1],
-            boxShadow: escapePhase === 1 
-              ? "0 0 100px rgba(255,0,0,0.4), inset 0 0 50px rgba(255,0,0,0.5)" 
+            boxShadow: escapePhase === 1
+              ? "0 0 100px rgba(255,0,0,0.4), inset 0 0 50px rgba(255,0,0,0.5)"
               : "0 0 80px rgba(255,255,255,0.05), inset 0 0 40px rgba(255,255,255,0.05)"
           }}
           transition={{
             scale: { duration: escapePhase > 0 ? 0.5 : 4, repeat: escapePhase === 0 ? Infinity : 0, ease: "easeInOut" }
           }}
-          className={`relative w-64 h-64 md:w-96 md:h-96 rounded-full flex items-center justify-center z-10 backdrop-blur-sm transition-colors duration-1000 ${
-            escapePhase === 1 ? "bg-red-500/5 border border-red-500/30" : "bg-white/5 border border-white/10"
-          }`}
+          className={`relative w-64 h-64 md:w-96 md:h-96 rounded-full flex items-center justify-center z-10 backdrop-blur-sm transition-colors duration-1000 ${escapePhase === 1 ? "bg-red-500/5 border border-red-500/30" : "bg-white/5 border border-white/10"
+            }`}
         >
           {/* Orbital Rings */}
-          <motion.div 
+          <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className={`absolute inset-0 rounded-full border-t-2 border-b-2 ${escapePhase === 1 ? 'border-red-500/50' : 'border-white/30'}`} 
+            className={`absolute inset-0 rounded-full border-t-2 border-b-2 ${escapePhase === 1 ? 'border-red-500/50' : 'border-white/30'}`}
           />
-          <motion.div 
+          <motion.div
             animate={{ rotate: -360 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className={`absolute inset-6 rounded-full border-l-2 border-r-2 ${escapePhase === 1 ? 'border-red-500/40' : 'border-white/20'}`} 
+            className={`absolute inset-6 rounded-full border-l-2 border-r-2 ${escapePhase === 1 ? 'border-red-500/40' : 'border-white/20'}`}
           />
-          <motion.div 
+          <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            className={`absolute inset-12 rounded-full border-t border-b border-dashed ${escapePhase === 1 ? 'border-red-500/30' : 'border-white/10'}`} 
+            className={`absolute inset-12 rounded-full border-t border-b border-dashed ${escapePhase === 1 ? 'border-red-500/30' : 'border-white/10'}`}
           />
-          
+
           <div className={`font-mono text-center tracking-[0.5em] font-bold ${escapePhase === 1 ? 'text-red-500' : 'text-white/80'}`}>
-            <motion.div 
-              animate={{ opacity: [0.3, 1, 0.3] }} 
+            <motion.div
+              animate={{ opacity: [0.3, 1, 0.3] }}
               transition={{ duration: 2, repeat: Infinity }}
               className="text-[10px] md:text-xs mb-2"
             >
