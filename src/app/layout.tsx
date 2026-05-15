@@ -5,6 +5,8 @@ import { ShortcutOverlay } from "@/components/ShortcutOverlay";
 import { SystemContextMenu } from "@/components/SystemContextMenu";
 import { OrbitalNav } from "@/components/OrbitalNav";
 import { CommandPalette } from "@/components/CommandPalette";
+import { MobileGlobalNav } from "@/components/mobile/MobileGlobalNav";
+import { ClearanceProvider } from "@/components/ClearanceProvider";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -94,11 +96,14 @@ export default function RootLayout({
         />
       </head>
       <body className="h-full bg-grid-pattern overflow-hidden font-sans">
-        {children}
-        <ShortcutOverlay />
-        <SystemContextMenu />
-        <OrbitalNav />
-        <CommandPalette />
+        <ClearanceProvider>
+          {children}
+          <ShortcutOverlay />
+          <SystemContextMenu />
+          <OrbitalNav />
+          <CommandPalette />
+          <MobileGlobalNav />
+        </ClearanceProvider>
       </body>
     </html>
   );

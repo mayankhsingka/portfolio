@@ -235,9 +235,5 @@ function HomeContent() {
 }
 
 export default function Home() {
-  return (
-    <ClearanceProvider>
-      <HomeContent />
-    </ClearanceProvider>
-  );
+  return <HomeContent />;
 }
