@@ -68,8 +68,8 @@ export default function MemoReader({ params }: { params: Promise<{ slug: string 
   };
 
   return (
-    <main className="w-full min-h-screen text-black flex flex-col p-8 lg:p-24 overflow-visible md:pl-[19rem]">
-      <div className="max-w-3xl mx-auto w-full z-10 flex flex-col gap-12 bg-white/90 p-8 lg:p-16 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+    <main className="w-full min-h-screen text-black flex flex-col p-4 md:p-8 lg:p-24 overflow-visible md:pl-[19rem]">
+      <div className="max-w-3xl mx-auto w-full z-10 flex flex-col gap-12 bg-white/90 p-4 md:p-8 lg:p-16 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
         
         <header className="flex flex-col gap-6">
           <Link href="/internal-memos" className="font-mono text-sm hover:underline uppercase block w-fit">

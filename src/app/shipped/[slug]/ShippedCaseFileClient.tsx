@@ -10,6 +10,7 @@ import { CommandPalette } from "@/components/CommandPalette";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 import { TerminalMediaFrame } from "@/components/TerminalMediaFrame";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
+import { PageHeaderNav } from "@/components/PageHeaderNav";
 
 // Typewriter — first visit only, then instant
 function useTypewriter(text: string, speed = 18) {
@@ -69,14 +70,19 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
           transition={{ duration: 0.35 }}
           className="border-b-4 border-black pb-8 flex flex-col gap-6"
         >
-          <Link href="/shipped" className="font-mono text-sm hover:underline uppercase block w-fit">
-            &lt; Return to Deployment Registry
-          </Link>
+          <div className="flex justify-end w-full">
+            <PageHeaderNav theme="light" />
+          </div>
           <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
             <div>
               <h4 className="font-mono text-sm uppercase tracking-widest opacity-50 mb-2">// ARCHITECTURE CASE FILE — {fileId}</h4>
-              <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tighter leading-tight">
+              <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tighter leading-tight flex items-center gap-4 flex-wrap">
                 {node.title}
+                {node.status !== "ACTIVE" && (
+                  <span className="text-sm font-mono font-bold tracking-widest border-2 border-black px-3 py-1 bg-black text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]">
+                    [{node.status.replace("_", " ")}]
+                  </span>
+                )}
               </h1>
               {liveUrl && liveUrl !== "#" && (
                 <a href={liveUrl} target="_blank" rel="noopener noreferrer"
@@ -96,8 +102,8 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
               )}
               {liveUrl && liveUrl !== "#" ? (
                 <a href={liveUrl} target="_blank" rel="noopener noreferrer"
-                  className="bg-black text-white px-4 py-2 hover:bg-white hover:text-black border-2 border-black transition-colors">
-                  [LIVE_DEPLOYMENT]
+                  className="bg-black text-white px-4 py-2 hover:bg-white hover:text-black border-2 border-black transition-colors flex items-center gap-1">
+                  [LIVE_DEPLOYMENT] <span className="font-sans">↗</span>
                 </a>
               ) : (
                 <span className="bg-black/30 text-white/70 px-4 py-2 border-2 border-black/30 cursor-not-allowed">[LIVE_DEPLOYMENT]</span>
@@ -275,6 +281,12 @@ export default function ShippedCaseFile({ params }: { params: Promise<{ slug: st
             </div>
           </motion.section>
         )}
+
+        <div className="flex justify-center mt-12 mb-4">
+          <Link href="/" className="bg-black text-white font-mono text-sm uppercase tracking-widest px-8 py-4 font-bold border-2 border-black hover:bg-white hover:text-black transition-colors shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-y-1 hover:translate-x-1">
+            [ RETURN TO HOMEPAGE ]
+          </Link>
+        </div>
 
         <footer className="border-t-4 border-black pt-8 mt-4 flex justify-between items-center font-mono text-xs uppercase opacity-70">
           <span>// DEPLOYMENT SPECS END</span>
