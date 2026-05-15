@@ -13,7 +13,7 @@ const STATIC_NAV = [
   { path: "/commands", label: "Sandbox", description: "System execution laboratory" },
   { path: "/theme", label: "Phosphor", description: "Cycle hardware hardware filters" },
   { path: "/core-identity", label: "About", description: "Profile: Mayank Himmatsingka" },
-  { path: "/uplink", label: "Contact", description: "Establish secure socket connection" },
+  { path: "/ping", label: "Contact", description: "Establish secure socket connection" },
   { path: "/engage_surveillance", label: "Camera", description: "Access local visual payload" },
 ];
 
@@ -128,18 +128,18 @@ export function CommandPalette() {
 
     if (cmd === "/uplink" || cmd === "/ping") {
       setOpen(false);
-      router.push("/uplink");
+      router.push("/ping");
       return;
     }
 
     if (cmd.startsWith("/theme")) {
-      const themes = ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"];
+      const themes = ["", "theme-aviation", "dark-ops"];
       let currentTheme = localStorage.getItem("sys_theme") || "";
       let nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
       const nextTheme = themes[nextIdx];
       
       // Remove old themes
-      themes.forEach(t => t && document.documentElement.classList.remove(t));
+      ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"].forEach(t => t && document.documentElement.classList.remove(t));
       if (nextTheme) document.documentElement.classList.add(nextTheme);
       
       localStorage.setItem("sys_theme", nextTheme);
