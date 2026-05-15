@@ -4,7 +4,7 @@
 export interface BaseNode {
   id: string;
   title: string;
-  status: "ACTIVE" | "SCALING" | "CLASSIFIED" | "LOCKED";
+  status: "ACTIVE" | "SCALING" | "CLASSIFIED" | "LOCKED" | "IN_PROGRESS";
   description: string;
   top?: string;
   left?: string;

@@ -12,11 +12,11 @@ import { PORTFOLIO_DATA } from "@/data/portfolio";
 interface ArchitectureNodeProps {
   id: string;
   title: string;
-  status?: "ACTIVE" | "ARCHIVED" | "SCALING" | "CLASSIFIED" | "LOCKED";
+  status?: "ACTIVE" | "SCALING" | "CLASSIFIED" | "LOCKED" | "IN_PROGRESS";
   description: string;
   metrics?: { label: string; value: string }[];
-  top: string;
-  left: string;
+  top?: string;
+  left?: string;
   slug?: string;
   onHover?: (id: string | null) => void;
 }

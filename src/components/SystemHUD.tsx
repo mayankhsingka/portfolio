@@ -60,7 +60,7 @@ export function SystemHUD() {
 
               {/* Navigation Links */}
               {navItems.map((item) => {
-                const isActive = pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path));
+                const isActive = pathname === item.path || (item.path !== "/" && pathname?.startsWith(item.path));
                 return (
                   <Link
                     key={item.path}
