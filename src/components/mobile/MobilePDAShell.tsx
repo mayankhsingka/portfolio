@@ -12,6 +12,7 @@ import { MobileAbortButton } from "./MobileAbortButton";
 import { SystemBreach } from "@/components/SystemBreach";
 import { OfflineGame } from "@/components/OfflineGame";
 import { ReadingListModal } from "@/components/ReadingListModal";
+import { DesktopTeaserModal } from "./DesktopTeaserModal";
 
 const TABS = ["IDENT", "CASE_FILES", "ARCHIVE"];
 
@@ -19,6 +20,7 @@ export function MobilePDAShell() {
   const [breachActive, setBreachActive] = useState(false);
   const [offlineActive, setOfflineActive] = useState(false);
   const [readingListActive, setReadingListActive] = useState(false);
+  const [teaserActive, setTeaserActive] = useState(false);
   const { level, notification, clearNotification, promoteToRoot } = useClearanceContext();
 
   // Tab State & Animation Direction
@@ -262,6 +264,11 @@ export function MobilePDAShell() {
         </AnimatePresence>
       </div>
 
+      {/* Desktop Teaser Modal */}
+      <AnimatePresence>
+        {teaserActive && <DesktopTeaserModal onClose={() => setTeaserActive(false)} />}
+      </AnimatePresence>
+
       {/* Clearance Notification */}
       <AnimatePresence>
         {notification && (
@@ -276,6 +283,19 @@ export function MobilePDAShell() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Desktop Teaser Banner */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[var(--background)] border-t-2 border-current p-3 shadow-[0_-4px_15px_rgba(0,0,0,0.1)]">
+        <button
+          onClick={() => setTeaserActive(true)}
+          className="w-full flex items-center justify-between font-mono text-[10px] font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity"
+        >
+          <span>// SYS_UPGRADE: Switch to Desktop (10"+)</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
 
     </main>
   );
