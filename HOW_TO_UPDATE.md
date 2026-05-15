@@ -1,119 +1,57 @@
-# System Maintenance & Content Updates
+# System Maintenance — Content Authoring Index
 
-This portfolio is strictly data-driven. The UI components are decoupled from the content. You **never** need to modify `.tsx` files to add new projects, blogs, or work experiences.
+This portfolio is data-driven. To add a project, blog, or page you almost never touch component files — you edit content in `src/data/` and the UI hydrates everything.
 
-All content is hydrated from a single source of truth: `src/data/portfolio.ts` (for projects/experiences) and `src/data/memos.ts` (for blogs).
+This file is the **index**. The actual step-by-step cookbooks live in `docs/`.
 
 ---
 
-## 1. Adding a New Project or Experience
+## What do you want to do?
 
-Open `src/data/portfolio.ts` and locate the `nodes` array. Each object in this array represents a node on your infinite grid.
+| Task | Doc | Time |
+|---|---|---|
+| Add a new project / experience node | [`docs/ADD_PROJECT.md`](docs/ADD_PROJECT.md) | ~10 min |
+| Add a new blog post (memo) | [`docs/ADD_MEMO.md`](docs/ADD_MEMO.md) | ~5 min |
+| Add a brand-new page / route | [`docs/ADD_PAGE.md`](docs/ADD_PAGE.md) | ~20 min |
+| Update boot logs, file system, or command list | See "Quick edits" below | ~2 min |
 
-### The Template
-Copy and paste this template into the `nodes` array.
+---
 
-```typescript
-{
-  // "project" generates a full case study page. 
-  // "info" just shows the card on the grid (good for basic about info or lists).
-  kind: "project", 
-  
-  id: "exp_google", // Unique internal ID
-  title: "Software Engineer @ Google",
-  slug: "swe-google", // IMPORTANT: This creates the URL -> /shipped/swe-google
-  status: "ACTIVE", // E.g., ACTIVE, ARCHIVED, SCALING
-  
-  // The summary shown on the grid card
-  description: "Re-engineered the core distributed caching layer for search indexing.",
-  
-  // Absolute positioning on the infinite canvas. 
-  // Adjust these to place it relative to your other nodes.
-  top: "calc(150vh - 60px)",
-  left: "calc(80vw - 125px)",
-  
-  // URLs for the [SOURCE_CODE] and [LIVE_DEPLOYMENT] buttons
-  sourceUrl: "https://github.com/mankuu-10/project", 
-  liveUrl: "https://project.com", 
-  
-  // ---- CASE FILE DETAILS (Only needed if kind: "project") ----
-  fileId: "CASE_003",
-  created: "2024-05-01",
-  modified: "2025-08-01",
-  revision: 3,
-  telemetry: "COMMITS: 432 | DEPLOYMENTS: 12",
-  problem: "The legacy caching layer was dropping 5% of concurrent requests...",
-  impact: "Resolved the bottleneck entirely. Handled 5M+ QPS.",
-  
-  // Metrics displayed on the grid node
-  metrics: [
-    { label: "Role", value: "Backend L3" },
-    { label: "Duration", value: "1.5 Yrs" },
-  ],
-  
-  // Tech Stack breakdown for the case file page
-  techStack: [
-    { label: "SYS", value: "C++", reason: "Required for memory management." },
-    { label: "DB", value: "Spanner", reason: "Distributed consistency." },
-  ],
-  
-  // Optional: Visual Evidence (Images)
-  // Ensure images are placed in the /public/media directory
-  gallery: [
-    { type: "image", url: "/media/google/dashboard.png", caption: "Internal telemetry dashboard." }
-  ]
-}
+## Quick edits (no doc needed)
+
+All of these live in `src/data/portfolio.ts`:
+
+- **Boot terminal logs** (the scrolling lines after page load) → edit the `logs` array.
+- **Fake file system** (what `ls` and `cat` return in `/commands`) → edit the `fileSystem` object.
+- **Command list shown in `/commands`** → edit the `commands` array.
+- **Your name, role, age, email, GitHub, LinkedIn, philosophy** → edit the `general` object.
+
+Save the file. Next.js hot-reloads. Done.
+
+---
+
+## Sanity check after any edit
+
+```bash
+npx tsc --noEmit
 ```
 
-### Linking the Node (The SVG Wires)
-If you want to draw a connecting wire from the "Root Directive" (or any other node) to your new experience:
-1. Open `src/components/DataFlowLines.tsx`.
-2. Locate the `CONNECTIONS` array at the top.
-3. Add your connection: `{ from: "core", to: "exp_google" }`.
+Exit code 0 = clean. If TypeScript yells, the doc you followed will tell you which fields are required.
 
 ---
 
-## 2. Adding a New Blog / Memo
+## Where files live
 
-Open `src/data/memos.ts` and locate the `MEMOS` array.
+```
+src/data/
+  portfolio.ts   ← projects, info nodes, general info, terminal data
+  memos.ts       ← blog posts
+  types.ts       ← TypeScript contract — don't edit, but READ when debugging
 
-### The Template
-Copy and paste this template into the `MEMOS` array.
-
-```typescript
-{
-  slug: "scaling-websocket-infrastructure", // URL: /internal-memos/scaling-websocket-infrastructure
-  title: "Scaling WebSocket Infrastructure to 10k Connections",
-  date: "2026-05-14",
-  classification: "UNCLASSIFIED", // E.g., UNCLASSIFIED, CONFIDENTIAL, RESTRICTED
-  summary: "A post-mortem on how we handled connection exhaustion during peak load.",
-  
-  // The content of the blog post. 
-  // Each string in this array represents a paragraph.
-  content: [
-    "When we first deployed Manasya, the real-time layer was built on a naive polling mechanism. This was fine for 100 users, but at scale, it melted our servers.",
-    
-    // You can use these special prefixes to style paragraphs differently:
-    "> SYSTEM_NOTE: Always measure before optimizing.",
-    
-    // Normal paragraphs
-    "We switched to Supabase Realtime channels. The migration involved...",
-    
-    // Terminal style code blocks
-    "`[CODE_BLOCK] const channel = supabase.channel('room_1'); channel.subscribe();`"
-  ],
-  
-  tags: ["infrastructure", "websockets", "scaling"]
-}
+src/app/         ← one folder per route (e.g. app/shipped/, app/uplink/)
+src/components/  ← reusable UI (don't touch unless rewriting a page)
+public/media/    ← project screenshots, organized per-project subfolder
 ```
 
----
-
-## 3. Updating Terminal Logs and Commands
-
-All the fake terminal logs that scroll on the screen, and the simulated file system, are also in `src/data/portfolio.ts`.
-
-- **To update the boot logs:** Edit the `logs` array.
-- **To update the simulated file system (`ls` and `cat` commands):** Edit the `fileSystem` object.
-
-Save the file, and Next.js will instantly hydrate the new content across the entire application.
+The case-file page at `/shipped/<slug>` is **auto-generated** from a project node. You never write a new file for it.
+The memo reader page at `/internal-memos/<slug>` is also auto-generated.
