@@ -56,21 +56,21 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
   }, [canvasRef]);
 
   useEffect(() => {
-    // Use requestAnimationFrame for ultra-smooth 60fps tracking during momentum drags
-    let animationFrameId: number;
-    const renderLoop = () => {
-      calculateLines();
-      animationFrameId = requestAnimationFrame(renderLoop);
-    };
+    // Massive Performance Fix: 
+    // The relative coordinates inside the canvas DO NOT change during a drag interaction.
+    // We do NOT need a 60fps requestAnimationFrame loop.
+    // We only need to calculate the connections once on mount, and whenever the window resizes.
     
-    // Slight delay to ensure DOM is painted before first calc
-    const timeout = setTimeout(() => {
-      renderLoop();
-    }, 100);
+    // Initial calculation (slight delay to ensure DOM paint)
+    const timeout = setTimeout(() => calculateLines(), 100);
+
+    // Watch for window resizes
+    const handleResize = () => calculateLines();
+    window.addEventListener("resize", handleResize);
 
     return () => {
       clearTimeout(timeout);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", handleResize);
     };
   }, [calculateLines]);
 
