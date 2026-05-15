@@ -116,15 +116,13 @@ export function MobileNodeCard({ node, index }: MobileNodeCardProps) {
                 )}
 
                 {isCore && (
-                  <a
-                    href={PORTFOLIO_DATA.general.builderArchiveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href="/core-identity"
                     className="block w-full border-2 border-black bg-white text-black text-center py-3 uppercase font-bold font-mono text-sm tracking-tight active:bg-black active:text-white transition-colors"
                     style={{ minHeight: 48 }}
                   >
-                    Download Resume
-                  </a>
+                    View Operator Profile →
+                  </Link>
                 )}
               </div>
             </div>
