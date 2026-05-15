@@ -60,7 +60,7 @@ export function SystemContextMenu() {
         window.dispatchEvent(new CustomEvent("system-breach"));
         break;
       case "source":
-        window.open("https://github.com/mankuu-10", "_blank");
+        window.open("https://github.com/mayankhsingka", "_blank");
         break;
     }
   };

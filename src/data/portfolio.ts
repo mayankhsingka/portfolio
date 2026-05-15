@@ -8,7 +8,7 @@ export const PORTFOLIO_DATA: PortfolioData = {
     philosophy: "Architecting systems that survive the chaos of scale. I build high-performance products with extreme velocity, stripping away abstraction until only the raw utility remains.",
     contactEmail: "mayankhsingka@gmail.com",
     phone: "7326037045",
-    githubUrl: "https://github.com/mankuu-10",
+    githubUrl: "https://github.com/mayankhsingka",
     linkedinUrl: "https://linkedin.com/in/mayankhsingka",
     launchDate: "2026-04-01",
     builderArchiveUrl: "/resume.pdf",
