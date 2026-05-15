@@ -18,12 +18,12 @@ export function DockedActionBar({ onOpenMenu }: DockedActionBarProps) {
   const router = useRouter();
 
   const cycleTheme = () => {
-    const themes = ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"];
+    const themes = ["", "theme-aviation", "dark-ops"];
     const currentTheme = localStorage.getItem("sys_theme") || "";
     const nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
     const nextTheme = themes[nextIdx];
 
-    themes.forEach((t) => t && document.documentElement.classList.remove(t));
+    ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"].forEach((t) => t && document.documentElement.classList.remove(t));
     if (nextTheme) document.documentElement.classList.add(nextTheme);
     localStorage.setItem("sys_theme", nextTheme);
 
@@ -33,9 +33,9 @@ export function DockedActionBar({ onOpenMenu }: DockedActionBarProps) {
 
   const buttons = [
     { label: "MENU", icon: "≡", action: onOpenMenu },
-    { label: "PROJECTS", icon: "◆", action: () => router.push("/shipped") },
+    { label: "PLATFORMS", icon: "◆", action: () => router.push("/shipped") },
     { label: "THEME", icon: "◉", action: cycleTheme },
-    { label: "CONTACT", icon: "↗", action: () => router.push("/uplink") },
+    { label: "CONTACT", icon: "↗", action: () => router.push("/ping") },
   ];
 
   return (
