@@ -44,8 +44,6 @@ export const PORTFOLIO_DATA: PortfolioData = {
       slug: "manasya",
       status: "ACTIVE",
       description: "A zero-trust digital perimeter for emotional resilience. Facilitating secure, encrypted uplinks between students and counseling safety nets.",
-      top: "calc(120vh - 60px)",
-      left: "calc(120vw - 125px)",
       sourceUrl: "https://github.com/mayankhsingka/manasya",
       liveUrl: "https://manasya.in",
       fileId: "CASE_001",
@@ -91,8 +89,6 @@ export const PORTFOLIO_DATA: PortfolioData = {
       slug: "producive",
       status: "IN_PROGRESS",
       description: "A tactical firewall for the human mind. Neutralizing algorithmic rabbit holes and re-engineering the DOM to protect cognitive focus.",
-      top: "calc(180vh - 60px)",
-      left: "calc(130vw - 125px)",
       sourceUrl: "https://github.com/mayankhsingka/producive",
       liveUrl: "#",
       fileId: "CASE_002",
@@ -136,8 +132,6 @@ export const PORTFOLIO_DATA: PortfolioData = {
       title: "Core Stack",
       status: "ACTIVE",
       description: "Web development and system architecture tools used for rapid shipping.",
-      top: "calc(130vh - 60px)",
-      left: "calc(180vw - 125px)",
       metrics: [
         { label: "Frontend", value: "Next.js, Tailwind" },
         { label: "Execution", value: "Rapid Iteration" },
@@ -149,14 +143,19 @@ export const PORTFOLIO_DATA: PortfolioData = {
       title: "Reading Queue",
       status: "CLASSIFIED",
       description: "Curated reading list for product thinking, execution frameworks, and system design.",
-      top: "calc(170vh - 60px)",
-      left: "calc(175vw - 125px)",
       clearance: "OPERATOR",
       metrics: [
         { label: "Books", value: "5 Queued" },
         { label: "Focus", value: "Product & Systems" },
       ]
     }
+  ],
+
+  connections: [
+    { from: "core", to: "exp_1" },
+    { from: "core", to: "exp_2" },
+    { from: "core", to: "skill_matrix" },
+    { from: "core", to: "reading_list" },
   ],
 
   logs: [

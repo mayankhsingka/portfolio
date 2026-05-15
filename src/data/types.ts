@@ -6,10 +6,15 @@ export interface BaseNode {
   title: string;
   status: "ACTIVE" | "SCALING" | "CLASSIFIED" | "LOCKED";
   description: string;
-  top: string;
-  left: string;
+  top?: string;
+  left?: string;
   metrics: { label: string; value: string }[];
   clearance?: "OPERATOR" | "ROOT";
+}
+
+export interface NodeConnection {
+  from: string;
+  to: string;
 }
 
 export interface ProjectNode extends BaseNode {
@@ -69,6 +74,7 @@ export interface PortfolioData {
   general: GeneralInfo;
   fileSystem: Record<string, string>;
   nodes: ArchNode[];
+  connections: NodeConnection[];
   logs: LogEntry[];
   commands: CommandDef[];
 }

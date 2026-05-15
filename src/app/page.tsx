@@ -21,8 +21,9 @@ import { useTelemetryTab } from "@/hooks/useTelemetryTab";
 import { useDevice } from "@/hooks/useDevice";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { isProjectNode } from "@/data/types";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { applyAutoLayout } from "@/utils/autoLayout";
 
 
 function HomeContent() {
@@ -131,13 +132,15 @@ function HomeContent() {
     }, 100);
   }, [promoteToRoot]);
 
-  // Show nodes based on clearance
-  const visibleNodes = PORTFOLIO_DATA.nodes.filter((n) => {
-    if (!n.clearance) return true;
-    if (n.clearance === "OPERATOR" && (level === "OPERATOR" || level === "ROOT")) return true;
-    if (n.clearance === "ROOT" && level === "ROOT") return true;
-    return false;
-  });
+  const visibleNodes = useMemo(() => {
+    const filtered = PORTFOLIO_DATA.nodes.filter((n) => {
+      if (!n.clearance) return true;
+      if (n.clearance === "OPERATOR" && (level === "OPERATOR" || level === "ROOT")) return true;
+      if (n.clearance === "ROOT" && level === "ROOT") return true;
+      return false;
+    });
+    return applyAutoLayout(filtered);
+  }, [level]);
 
   // ─── MOBILE SHELL ───────────────────────────────────────────────
   // On mobile, render the entire MobilePDAShell instead of the canvas.

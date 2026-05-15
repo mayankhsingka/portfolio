@@ -3,14 +3,6 @@
 import { useState, useEffect, useCallback, useRef, RefObject } from "react";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 
-// Node connection definitions
-const CONNECTIONS = [
-  { from: "core", to: "exp_1" },
-  { from: "core", to: "exp_2" },
-  { from: "core", to: "skill_matrix" },
-  { from: "core", to: "reading_list" },
-];
-
 interface LineData {
   x1: number;
   y1: number;
@@ -33,7 +25,7 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     
-    const newLines = CONNECTIONS.map((conn) => {
+    const newLines = PORTFOLIO_DATA.connections.map((conn) => {
       const fromEl = canvas.querySelector(`[data-node-id="${conn.from}"]`) as HTMLElement | null;
       const toEl = canvas.querySelector(`[data-node-id="${conn.to}"]`) as HTMLElement | null;
       if (!fromEl || !toEl) return null;

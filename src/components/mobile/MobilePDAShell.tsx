@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
-import { isProjectNode, NodeData } from "@/data/types";
+import { isProjectNode, ArchNode } from "@/data/types";
 import { useClearanceContext } from "@/components/ClearanceProvider";
 import { MobileNodeCard } from "./MobileNodeCard";
 import { MobileAbortButton } from "./MobileAbortButton";
@@ -252,7 +252,7 @@ export function MobilePDAShell() {
                 {infoNodes.map((node, i) => (
                   <MobileNodeCard
                     key={node.id}
-                    node={node as NodeData}
+                    node={node as ArchNode}
                     index={i + projectNodes.length + 1}
                   />
                 ))}
