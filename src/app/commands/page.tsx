@@ -141,7 +141,8 @@ export default function CommandsSandbox() {
   };
 
   return (
-    <main className="fixed inset-0 bg-black text-white p-4 md:p-8 font-mono text-sm sm:text-base selection:bg-white selection:text-black cursor-text z-50" onClick={() => inputRef.current?.focus()}>
+    <>
+    <main className="fixed inset-0 bg-black text-white p-4 md:p-8 font-mono text-sm sm:text-base selection:bg-white selection:text-black cursor-text z-50 hidden lg:block" onClick={() => inputRef.current?.focus()}>
       <div className="max-w-4xl mx-auto w-full h-full flex flex-col gap-2 relative z-10">
         {/* Header */}
         <div className="border-b border-white/30 pb-4 mb-4 flex justify-between">
@@ -196,5 +197,22 @@ export default function CommandsSandbox() {
       
       <CommandPalette />
     </main>
+
+    {/* MOBILE PLACEHOLDER */}
+    <main className="fixed inset-0 bg-black text-white flex flex-col items-center justify-center p-8 lg:hidden z-50">
+      <div className="w-24 h-24 mb-6">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-full h-full opacity-80" strokeLinecap="square" strokeLinejoin="miter">
+          <rect x="2" y="3" width="20" height="14" rx="0" ry="0"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+      </div>
+      <h2 className="text-xl font-bold uppercase tracking-widest text-center mb-4 leading-tight">Terminal Sandbox requires<br/>10"+ Display</h2>
+      <p className="text-xs font-mono opacity-50 text-center uppercase">Access this URL on a desktop or laptop to initialize the root shell environment.</p>
+      <button onClick={() => router.back()} className="mt-12 border border-white/50 px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-colors">
+        [ RETURN TO PDA ]
+      </button>
+    </main>
+    </>
   );
 }

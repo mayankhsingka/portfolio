@@ -133,7 +133,7 @@ export default function MatrixPage() {
         <motion.div
           variants={itemVariants}
           className="col-span-1 md:col-span-2 bg-white border-4 border-black p-6 flex flex-col justify-center items-center shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer group"
-          onClick={() => router.push('/uplink')}
+          onClick={() => router.push('/ping')}
         >
           <div className="flex items-center gap-3 mb-2">
             <IconCalendar className="w-8 h-8" />
@@ -210,15 +210,15 @@ export default function MatrixPage() {
           <div className="flex flex-col gap-6">
             <div className="relative pl-6 border-l-2 border-black">
               <div className="absolute -left-[7px] top-1 w-3 h-3 bg-white border-2 border-black animate-pulse" />
-              <div className="font-mono text-xs font-bold uppercase tracking-widest opacity-60 mb-1">2024 - PRESENT</div>
-              <h4 className="text-xl font-bold uppercase tracking-tight">Lead System Architect</h4>
-              <p className="font-mono text-sm mt-2 opacity-80">Spearheading end-to-end architecture for highly scalable, real-time data processing nodes. Full stack engineering.</p>
+              <div className="font-mono text-xs font-bold uppercase tracking-widest opacity-60 mb-1">2025+</div>
+              <h4 className="text-xl font-bold uppercase tracking-tight">Software Engineer</h4>
+              <p className="font-mono text-sm mt-2 opacity-80">Building robust, scalable applications and diving deep into systemic architecture.</p>
             </div>
             <div className="relative pl-6 border-l-2 border-black">
               <div className="absolute -left-[7px] top-1 w-3 h-3 bg-black border-2 border-white" />
-              <div className="font-mono text-xs font-bold uppercase tracking-widest opacity-60 mb-1">2022 - 2024</div>
-              <h4 className="text-xl font-bold uppercase tracking-tight">Frontend Engineer</h4>
-              <p className="font-mono text-sm mt-2 opacity-80">Built complex interactive interfaces using React, Next.js, and raw WebGL. Focused on extreme performance optimizations.</p>
+              <div className="font-mono text-xs font-bold uppercase tracking-widest opacity-60 mb-1">2006 - PRESENT</div>
+              <h4 className="text-xl font-bold uppercase tracking-tight">Architect</h4>
+              <p className="font-mono text-sm mt-2 opacity-80">Architecting my life and learning the fundamentals of engineering, design, and systems.</p>
             </div>
           </div>
         </motion.div>
@@ -230,8 +230,8 @@ export default function MatrixPage() {
               <h3 className="text-2xl font-black uppercase tracking-tighter text-white">CORE_TRAINING</h3>
             </div>
             <div className="mb-2">
-              <h4 className="text-lg font-bold uppercase tracking-tight">B.Tech Electrical & Electronics Engineering</h4>
-              <p className="font-mono text-xs opacity-60 mt-1 uppercase tracking-widest">VSSUT Burla • 2025 - ? • Sem II - 94%</p>
+              <h4 className="text-lg font-bold uppercase tracking-tight">B.Tech (Electrical & Electronics Engineering)</h4>
+              <p className="font-mono text-xs opacity-60 mt-1 uppercase tracking-widest">VSSUT Burla • 2025 - Present</p>
             </div>
           </div>
           <div>

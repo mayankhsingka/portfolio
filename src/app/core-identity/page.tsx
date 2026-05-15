@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ScrambleText } from "@/components/ScrambleText";
 import { TypewriterHeading } from "@/components/TypewriterHeading";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
@@ -16,6 +16,48 @@ const SKILLS = [
   { name: "DB_OPTIMIZATION", level: 88, status: "NOMINAL", details: "PostgreSQL, Edge KV, and RLS policies." },
   { name: "PRODUCT_STRATEGY", level: 96, status: "LOCKED_IN", details: "Aligning technical stack with business physics." }
 ];
+
+const PRINCIPLES = [
+  {
+    title: "1. Optimisation over Bloatisation",
+    content: "In every industry, I feel there have been overburdening of resources like RAM in the Computer world. Earlier systems were made efficient and made to run on low memory, but now companies and people ship products quick while optimising the resources isn't being looked at. I love optimising things, I hate Electron Based Apps, I run Windows 10/Linux with a boring Sublime Text. Applications consuming 10GBs of RAM at idle isn't great what I feel. (Unable to find a chromium substitute/will switch soon)"
+  },
+  {
+    title: "2. Influence In Environments",
+    content: "I believe influence plays a great role, and environments shape the operator. A clean, raw workspace—both physical and digital—dictates clarity of thought. The tools we surround ourselves with directly impact the systems we architect."
+  },
+  {
+    title: "3. Brutal Utility Over Aesthetics",
+    content: "True design serves function. A beautiful system that fails under load is a failed system. Form must follow function, stripping away unnecessary abstraction until only raw, performant utility remains."
+  },
+  {
+    title: "4. Systems Thinking From Day Zero",
+    content: "The best engineers don't just build features; they architect systems. Every component must be designed with its eventual scale and operational load in mind, preventing architectural debt before it accrues."
+  },
+  {
+    title: "5. Execution Velocity",
+    content: "Speed is a feature. Shipping a functional product is infinitely more valuable than perfecting a local branch. Iterate fast, fail fast, and optimize relentlessly."
+  }
+];
+
+function ExpandablePrinciple({ title, content }: { title: string, content: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="border-2 border-white/20 p-4 hover:border-white transition-colors cursor-pointer group" onClick={() => setIsOpen(!isOpen)}>
+      <div className="flex justify-between items-center font-bold tracking-tight uppercase">
+        <h4 className="text-[15px] md:text-lg">{title}</h4>
+        <span className="font-mono text-xl opacity-50 group-hover:opacity-100 transition-opacity">{isOpen ? "[-]" : "[+]"}</span>
+      </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+            <p className="font-mono text-sm opacity-80 mt-4 leading-relaxed border-l-2 border-white/20 pl-4">{content}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function CoreIdentityPage() {
   usePageScrollable();
@@ -67,7 +109,7 @@ export default function CoreIdentityPage() {
             className="grid grid-cols-1 lg:grid-cols-3 gap-8"
           >
             {/* Left Col: Basic Info */}
-            <div className="col-span-1 border-2 border-white p-6 font-mono relative group hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-shadow">
+            <div className="col-span-1 border-2 border-white p-6 font-mono relative group hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-shadow h-fit">
               <div className="absolute top-0 right-0 bg-white text-black text-[10px] px-2 py-1 font-bold uppercase">SEC_LEVEL: ALPHA</div>
               
               <div className="w-full aspect-square border-2 border-white/20 mb-6 flex items-center justify-center bg-white/5 relative overflow-hidden group">
@@ -114,8 +156,35 @@ export default function CoreIdentityPage() {
                 </p>
               </div>
 
-              {/* Skills Visualizer */}
+              {/* Arsenal Section */}
               <div className="border-2 border-white p-6 font-mono flex flex-col">
+                <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-4">
+                  <h3 className="text-sm font-bold uppercase tracking-widest">Hardware / Software Arsenal</h3>
+                  <span className="text-[10px] text-white bg-white/10 px-2 py-0.5">LOCAL_ENV</span>
+                </div>
+                <div className="text-sm opacity-80 leading-relaxed space-y-4">
+                  <p>I absolutely love using <span className="font-bold text-white">Linux</span> for its raw power and control.</p>
+                  <p>I execute all my tasks on a <span className="font-bold text-white bg-white/10 px-1 py-0.5">12GB RAM laptop</span>, keeping things grounded and strictly avoiding resource bloat.</p>
+                  <p>My primary IDE is a beautifully boring, ultra-fast <span className="font-bold text-white">Sublime Text</span>.</p>
+                  <p>Lately, <span className="font-bold text-white underline decoration-dashed underline-offset-4">Antigravity</span> has been my vibe coding friend, amplifying my execution velocity.</p>
+                </div>
+              </div>
+
+              {/* Operating Principles */}
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-4 mb-2">
+                  <h3 className="text-2xl font-bold uppercase tracking-tighter">Operating Principles</h3>
+                  <div className="h-0.5 flex-1 bg-white/20" />
+                </div>
+                <div className="flex flex-col gap-3">
+                  {PRINCIPLES.map(p => (
+                    <ExpandablePrinciple key={p.title} title={p.title} content={p.content} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Skills Visualizer */}
+              <div className="border-2 border-white p-6 font-mono flex flex-col mt-4">
                 <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-4">
                   <h3 className="text-sm font-bold uppercase tracking-widest">Capability Matrix</h3>
                   <span className="text-[10px] text-white bg-white/10 px-2 py-0.5">LIVE_TELEMETRY</span>
@@ -143,10 +212,21 @@ export default function CoreIdentityPage() {
                     </div>
                   ))}
                 </div>
-
               </div>
 
-              <div className="flex justify-end gap-4 font-mono text-xs opacity-50 uppercase tracking-widest">
+              {/* Matrix Call to Action */}
+              <div className="border-4 border-white p-6 md:p-8 flex flex-col items-center text-center mt-4 group hover:bg-white hover:text-black transition-colors relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiI+CjxwYXRoIGQ9Ik0wIDBoNDJ2NDJIMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+')] mix-blend-overlay group-hover:invert transition-all" />
+                <h3 className="text-3xl font-black uppercase tracking-tighter mb-4 relative z-10">Access The Matrix</h3>
+                <p className="font-mono text-sm opacity-80 mb-8 max-w-lg relative z-10 group-hover:text-black/80 font-bold">
+                  To view my exact competency nodes, detailed operational history, and an interactive map of my technical skills, visit the Matrix. It's where the raw system data lives.
+                </p>
+                <Link href="/matrix" className="border-4 border-current px-8 py-4 font-mono text-sm font-bold uppercase tracking-widest relative z-10 bg-black text-white group-hover:bg-black group-hover:text-white hover:scale-[1.02] transition-transform shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] group-hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,0.4)]">
+                  [ INITIATE UPLINK TO MATRIX ]
+                </Link>
+              </div>
+
+              <div className="flex justify-end gap-4 font-mono text-xs opacity-50 uppercase tracking-widest mt-8">
                 <span>[ DOSSIER_END ]</span>
                 <span className="text-white">END_OF_TRANSMISSION</span>
               </div>
