@@ -25,7 +25,7 @@
 
 :root {
   --sys-black: #000000;
-  --sys-white: #ffffff;
+  --sys-white: #FAF3E0;
   --background: var(--sys-white);
   --foreground: var(--sys-black);
 }

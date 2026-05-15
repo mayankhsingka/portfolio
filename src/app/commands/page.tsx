@@ -101,14 +101,14 @@ export default function CommandsSandbox() {
           setTimeout(() => router.push(route), 800);
           break;
         case "/theme":
-          const themes = ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"];
+          const themes = ["", "theme-aviation", "dark-ops"];
           const currentTheme = localStorage.getItem("sys_theme") || "";
           const nextIdx = (themes.indexOf(currentTheme) + 1) % themes.length;
           const nextTheme = themes[nextIdx];
-          themes.forEach(t => t && document.documentElement.classList.remove(t));
+          ["", "theme-aviation", "theme-amber", "theme-matrix", "dark-ops"].forEach(t => t && document.documentElement.classList.remove(t));
           if (nextTheme) document.documentElement.classList.add(nextTheme);
           localStorage.setItem("sys_theme", nextTheme);
-          setLogs(prev => [...prev, { text: `Theme shifted to: ${nextTheme || 'DEFAULT_LIGHT'}`, type: "system" }]);
+          setLogs(prev => [...prev, { text: `Theme shifted to: ${nextTheme || 'CREAM'}`, type: "system" }]);
           break;
         case "/engage_surveillance":
         case "/play":

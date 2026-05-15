@@ -146,7 +146,7 @@ export function CommandPalette() {
       document.documentElement.classList.add("dark-ops-transition");
       setTimeout(() => document.documentElement.classList.remove("dark-ops-transition"), 400);
       
-      setTerminalOutput(prev => [...prev, { cmd, output: `[OK] Phosphor parameters updated: ${nextTheme === "" ? "default" : nextTheme}` }]);
+      setTerminalOutput(prev => [...prev, { cmd, output: `[OK] Phosphor parameters updated: ${nextTheme === "" ? "cream" : nextTheme}` }]);
       return;
     }
 
