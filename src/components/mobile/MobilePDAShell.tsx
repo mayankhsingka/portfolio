@@ -95,7 +95,7 @@ export function MobilePDAShell() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="font-mono text-[10px] uppercase tracking-widest opacity-40 mb-2">
+          <div className="font-mono text-[10px] uppercase tracking-widest opacity-50 mb-2">
             // System Blueprint v1.0
           </div>
           <h1 className="text-3xl font-bold uppercase tracking-tighter leading-tight">
@@ -113,8 +113,8 @@ export function MobilePDAShell() {
       <div className="flex flex-col gap-0">
         {/* Identity Section */}
         {coreNode && (
-          <section className="p-5">
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-30 mb-3 border-b border-black/10 pb-2">
+          <section className="px-5 py-6">
+            <div className="font-mono text-[10px] uppercase tracking-widest opacity-50 mb-3 border-b border-black/30 pb-2">
               // Identity
             </div>
             <MobileNodeCard node={coreNode} index={0} />
@@ -123,8 +123,8 @@ export function MobilePDAShell() {
 
         {/* Projects Section */}
         {projectNodes.length > 0 && (
-          <section className="p-5 pt-2">
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-30 mb-3 border-b border-black/10 pb-2">
+          <section className="px-5 py-6">
+            <div className="font-mono text-[10px] uppercase tracking-widest opacity-50 mb-3 border-b border-black/30 pb-2">
               // Shipped ({projectNodes.length})
             </div>
             <div className="flex flex-col gap-3">
@@ -137,8 +137,8 @@ export function MobilePDAShell() {
 
         {/* System Nodes Section */}
         {infoNodes.length > 0 && (
-          <section className="p-5 pt-2">
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-30 mb-3 border-b border-black/10 pb-2">
+          <section className="px-5 py-6">
+            <div className="font-mono text-[10px] uppercase tracking-widest opacity-50 mb-3 border-b border-black/30 pb-2">
               // System Modules
             </div>
             <div className="flex flex-col gap-3">
@@ -153,21 +153,22 @@ export function MobilePDAShell() {
           </section>
         )}
 
-        {/* Quick Links Footer */}
-        <section className="p-5 pt-2 mb-4">
-          <div className="font-mono text-[10px] uppercase tracking-widest opacity-30 mb-3 border-b border-black/10 pb-2">
-            // Quick Access
+        {/* External Links */}
+        <section className="px-5 py-6 mb-4">
+          <div className="font-mono text-[10px] uppercase tracking-widest opacity-50 mb-3 border-b border-black/30 pb-2">
+            // External
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             {[
-              { label: "Memos", href: "/internal-memos" },
-              { label: "Terminal", href: "/commands" },
-              { label: "Skill Matrix", href: "/matrix" },
-              { label: "About", href: "/core-identity" },
+              { label: "Resume", href: PORTFOLIO_DATA.general.builderArchiveUrl },
+              { label: "GitHub", href: PORTFOLIO_DATA.general.githubUrl },
+              { label: "LinkedIn", href: PORTFOLIO_DATA.general.linkedinUrl },
             ].map((link) => (
               <a
                 key={link.label}
                 href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border-2 border-black py-3 text-center font-mono text-xs font-bold uppercase
                            active:bg-black active:text-white transition-colors"
                 style={{ minHeight: 48 }}

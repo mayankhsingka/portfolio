@@ -50,13 +50,13 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 35 }}
-            className="fixed bottom-0 left-0 right-0 z-[61] bg-white border-t-4 border-black max-h-[85vh] overflow-y-auto"
+            className="fixed bottom-0 left-0 right-0 z-[61] bg-white border-t-2 border-black max-h-[85vh] overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b-2 border-black">
               <div>
                 <h2 className="font-bold text-xl uppercase tracking-tight">System Directory</h2>
-                <span className="font-mono text-[10px] opacity-40 uppercase">
+                <span className="font-mono text-[10px] opacity-50 uppercase">
                   Clearance: {level}
                 </span>
               </div>
@@ -79,7 +79,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
                   onClick={() => navigate(item.path)}
-                  className="flex flex-col items-start p-4 border-b border-black/10 
+                  className="flex flex-col items-start p-4 border-b border-black/30
                              active:bg-black active:text-white transition-colors text-left"
                   style={{ minHeight: 56 }}
                 >
@@ -94,14 +94,14 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             </div>
 
             {/* Quick Actions */}
-            <div className="p-4 border-t-2 border-black/10">
-              <p className="font-mono text-[10px] uppercase tracking-widest opacity-40 mb-3">
+            <div className="p-4 border-t-2 border-black">
+              <p className="font-mono text-[10px] uppercase tracking-widest opacity-50 mb-3">
                 Quick Actions
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: "Resume", action: () => window.open("/resume.pdf", "_blank") },
-                  { label: "GitHub", action: () => window.open("https://github.com/mankuu-10", "_blank") },
+                  { label: "GitHub", action: () => window.open("https://github.com/mayankhsingka", "_blank") },
                   { label: "LinkedIn", action: () => window.open("https://linkedin.com/in/mayankhsingka", "_blank") },
                 ].map((qa) => (
                   <button

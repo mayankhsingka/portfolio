@@ -28,7 +28,7 @@ export function MobileNodeCard({ node, index }: MobileNodeCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.08 }}
-      className={`border-2 border-black bg-white ${isLocked ? "opacity-60" : ""}`}
+      className={`border-2 ${isLocked ? "border-dashed" : ""} border-black bg-white`}
     >
       {/* Header — always visible, tap target */}
       <button
@@ -44,13 +44,13 @@ export function MobileNodeCard({ node, index }: MobileNodeCardProps) {
             {node.title}
           </h3>
         </div>
-        <span className="font-mono text-xs opacity-40 shrink-0 ml-2">
+        <span className="font-mono text-xs opacity-50 shrink-0 ml-2">
           {expanded ? "[ − ]" : "[ + ]"}
         </span>
       </button>
 
       {/* Description — always visible */}
-      <div className="px-4 pb-3 text-sm border-l-2 border-black ml-4">
+      <div className="px-4 pb-3 text-sm">
         {isLocked ? (
           <span className="text-red-500 font-bold uppercase text-xs">
             ACCESS_RESTRICTED: Insufficient clearance.
@@ -70,12 +70,12 @@ export function MobileNodeCard({ node, index }: MobileNodeCardProps) {
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 flex flex-col gap-4 border-t-2 border-black/10 pt-4 mx-4">
+            <div className="px-4 pb-4 flex flex-col gap-4 border-t border-black/30 pt-3">
               {/* Metrics */}
               {node.metrics && node.metrics.length > 0 && (
                 <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                   {node.metrics.map((m, i) => (
-                    <div key={i} className="border border-black/20 p-2">
+                    <div key={i} className="border border-black/30 p-2">
                       <span className="opacity-50 block">{m.label}</span>
                       <span className="font-bold">{String(m.value)}</span>
                     </div>

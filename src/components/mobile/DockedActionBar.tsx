@@ -51,14 +51,13 @@ export function DockedActionBar({ onOpenMenu }: DockedActionBarProps) {
           <button
             key={btn.label}
             onClick={btn.action}
-            className="flex-1 flex flex-col items-center justify-center gap-0.5 
+            className="flex-1 flex flex-col items-center justify-center gap-0.5
                        active:bg-black active:text-white transition-colors
-                       border-r border-black/10 last:border-r-0
+                       border-r border-black/30 last:border-r-0
                        font-mono"
-            style={{ minHeight: 48 }}
           >
             <span className="text-lg leading-none">{btn.icon}</span>
-            <span className="text-[9px] uppercase tracking-widest font-bold opacity-60">
+            <span className="text-[9px] uppercase tracking-widest font-bold">
               {btn.label}
             </span>
           </button>
