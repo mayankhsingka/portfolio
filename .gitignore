@@ -49,3 +49,6 @@ next-env.d.ts
 node_modules_old/
 node_modules_xinstalled/
 build_error.txt
+
+# Local notes
+todo.md
