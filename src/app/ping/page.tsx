@@ -17,12 +17,6 @@ const OFFICIAL_PORTS = [
   { id: "PORT_04", label: "X_ARCHIVE", url: "https://x.com/mayankhsingka", protocol: "UDP", status: "LISTENING" },
 ];
 
-const UNOFFICIAL_PORTS = [
-  { id: "PORT_80", label: "DISCORD", url: "#", protocol: "WSS", status: "BLOCKED", notes: "[RESTORE_PENDING] Port closed by network security." },
-  { id: "PORT_443", label: "CALENDLY", url: "#", protocol: "HTTPS", status: "BLOCKED", notes: "[MAINTENANCE] Scheduling sequence currently suspended." },
-  { id: "PORT_8080", label: "REGIONAL_COMMS", url: "#", protocol: "LOCAL", status: "UNKNOWN", notes: "[CLASSIFIED] Awaiting region-specific deployment vectors." }
-];
-
 export default function PingPage() {
   usePageScrollable();
   const [connecting, setConnecting] = useState(true);
@@ -148,31 +142,6 @@ export default function PingPage() {
                       )}
                     </AnimatePresence>
                   </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Unofficial Ports */}
-            <div className="flex flex-col gap-4">
-              <h3 className="text-sm font-bold uppercase tracking-[0.3em] opacity-50 border-b border-white/20 pb-2">Secondary / Unofficial Ports</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-70 hover:opacity-100 transition-opacity">
-                {UNOFFICIAL_PORTS.map((port) => (
-                  <div key={port.id} className="border border-white/30 p-4 border-dashed relative">
-                    <div className="absolute -top-2 left-4 bg-black px-2 text-[10px] text-yellow-500 uppercase font-bold">UNVERIFIED_UPLINK</div>
-                    <div className="flex justify-between items-center mt-2 mb-2">
-                      <span className="text-xs opacity-50">{port.id}</span>
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-red-500">{port.status}</span>
-                    </div>
-                    <div className="text-lg font-bold uppercase tracking-tighter mb-2 text-white/50">{port.label}</div>
-                    
-                    <a href={port.url} className="block mt-4 text-[10px] bg-white/10 hover:bg-white hover:text-black text-center py-2 uppercase transition-colors">
-                      [ ESTABLISH_CONNECTION ]
-                    </a>
-                    
-                    <div className="mt-2 text-[9px] text-yellow-500/80 uppercase tracking-widest">
-                      // {port.notes}
-                    </div>
-                  </div>
                 ))}
               </div>
             </div>
