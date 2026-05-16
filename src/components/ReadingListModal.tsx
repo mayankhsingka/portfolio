@@ -53,9 +53,14 @@ export function ReadingListModal({ onClose }: ReadingListModalProps) {
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-lg bg-white border-4 border-black text-black font-mono shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] flex flex-col"
       >
-        <div className="bg-black text-white p-2 text-xs font-bold uppercase tracking-widest flex justify-between items-center">
+        <div className="bg-black text-white p-2 text-[10px] font-bold uppercase tracking-widest flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <span>READING_LIST.DAT</span>
-          <button onClick={onClose} className="hover:text-red-500">[X]</button>
+          <button onClick={onClose} className="hover:text-red-500 border border-white px-2 py-1 flex items-center gap-2">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            RETURN TO NORMAL MODE
+          </button>
         </div>
         
         <div className="p-6 h-[60vh] overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed relative">

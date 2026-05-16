@@ -84,7 +84,7 @@ export default function MatrixPage() {
         <motion.div variants={itemVariants} className="col-span-1 md:col-span-4 flex justify-between items-center border-b-4 border-black pb-4 mb-4">
           <div>
             <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter">
-              <ScrambleText>Uplink_Matrix</ScrambleText>
+              <ScrambleText>Skill Matrix</ScrambleText>
             </h1>
             <p className="font-mono text-sm opacity-60 uppercase tracking-widest mt-1">Global Operator Hub</p>
           </div>

@@ -15,6 +15,8 @@ const OFFICIAL_PORTS = [
   { id: "PORT_02", label: "GITHUB", url: PORTFOLIO_DATA.general.githubUrl, protocol: "SSH", status: "ESTABLISHED" },
   { id: "PORT_03", label: "LINKEDIN", url: PORTFOLIO_DATA.general.linkedinUrl, protocol: "TCP", status: "LISTENING" },
   { id: "PORT_04", label: "X_ARCHIVE", url: "https://x.com/mayankhsingka", protocol: "UDP", status: "LISTENING" },
+  { id: "PORT_05", label: "SECURE_VOICE", url: "tel:+917326037045", protocol: "VoIP", status: "OPEN" },
+  { id: "PORT_06", label: "WHATSAPP", url: "https://wa.me/917326037045", protocol: "E2EE", status: "LISTENING" },
 ];
 
 export default function PingPage() {

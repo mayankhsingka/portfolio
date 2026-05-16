@@ -76,11 +76,13 @@ export default function MemoReader({ params }: { params: Promise<{ slug: string 
             &lt; Back to Log Index
           </Link>
           <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
-            <TypewriterHeading 
-              text={memo.title} 
-              className="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-tight"
-            />
-            <div className="flex flex-wrap gap-2 shrink-0 font-mono text-xs font-bold mt-2 md:mt-0">
+            <div className="break-words">
+              <TypewriterHeading 
+                text={memo.title} 
+                className="text-3xl md:text-5xl font-bold uppercase tracking-tighter leading-tight"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2 shrink-0 font-mono text-[10px] md:text-xs font-bold mt-2 md:mt-0">
               <button 
                 onClick={() => setIsReadingMode(true)}
                 className="border-2 border-black px-2 py-1 hover:bg-black hover:text-white transition-colors"
@@ -153,8 +155,10 @@ export default function MemoReader({ params }: { params: Promise<{ slug: string 
                 onClick={() => setIsReadingMode(false)}
                 className="fixed top-6 right-6 md:top-10 md:right-10 font-mono text-[10px] md:text-xs opacity-40 hover:opacity-100 transition-opacity flex items-center gap-2 uppercase tracking-widest border border-transparent hover:border-[#2b2b2b] px-3 py-1.5 rounded-full"
               >
-                <span>[ESC] TO EXIT</span>
-                <span className="text-lg leading-none">×</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>RETURN TO NORMAL MODE</span>
               </button>
 
               <div className="flex flex-col gap-6 font-serif">

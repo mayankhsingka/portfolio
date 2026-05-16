@@ -39,14 +39,21 @@ export function PageHeaderNav({ theme = "dark" }: PageHeaderNavProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] md:text-xs shrink-0">
-      <button onClick={() => router.back()} className={`${baseClasses} ${colorClasses}`}>
-        &lt; BACK
+      <button onClick={() => router.back()} className={`${baseClasses} ${colorClasses}`} title="Back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
       </button>
-      <button onClick={() => router.forward()} className={`${baseClasses} ${colorClasses}`}>
-        FWD &gt;
+      <button onClick={() => router.forward()} className={`${baseClasses} ${colorClasses}`} title="Forward">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
       </button>
-      <button onClick={() => router.push("/")} className={`${baseClasses} ${colorClasses}`}>
-        HOME
+      <button onClick={() => router.push("/")} className={`${baseClasses} ${colorClasses}`} title="Home">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
       </button>
       <button onClick={triggerCmd} className={`${baseClasses} ${colorClasses} hidden sm:flex`}>
         [ / ] CMD
@@ -55,7 +62,9 @@ export function PageHeaderNav({ theme = "dark" }: PageHeaderNavProps) {
         [SHIFT+N] NAV
       </div>
       <button onClick={cycleTheme} className={`${baseClasses} ${colorClasses}`} title="Cycle Theme">
-        THEME ◉
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
       </button>
     </div>
   );
