@@ -19,6 +19,7 @@ interface DataFlowLinesProps {
 
 export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) {
   const [lines, setLines] = useState<LineData[]>([]);
+  const [isVisible, setIsVisible] = useState(true);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const calculateLines = useCallback(() => {
@@ -66,6 +67,15 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
     };
   }, [calculateLines]);
 
+  useEffect(() => {
+    // Battery Optimization: Pause animations when tab is not visible
+    const handleVisibilityChange = () => {
+      setIsVisible(document.visibilityState === "visible");
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
   if (lines.length === 0) return null;
 
   return (
@@ -84,9 +94,11 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
             }
             .wire-path {
               animation: wire-flow 1.5s linear infinite;
+              animation-play-state: ${isVisible ? 'running' : 'paused'};
             }
             .wire-path-hovered {
               animation: wire-flow 0.5s linear infinite;
+              animation-play-state: ${isVisible ? 'running' : 'paused'};
             }
           `}
         </style>

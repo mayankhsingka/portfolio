@@ -1,25 +1,18 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MEMOS_DATA } from "@/data/memos";
 import { TypewriterHeading } from "@/components/TypewriterHeading";
 import { CommandPalette } from "@/components/CommandPalette";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
+import type { Memo } from "@/lib/memos";
 
-export default function MemoReader({ params }: { params: Promise<{ slug: string }> }) {
+export default function MemoReader({ memo }: { memo: Memo }) {
   usePageScrollable();
-  const resolvedParams = use(params);
-  const memo = MEMOS_DATA.find(m => m.slug === resolvedParams.slug);
   const [isSaved, setIsSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isReadingMode, setIsReadingMode] = useState(false);
-
-  if (!memo) {
-    notFound();
-  }
 
   useEffect(() => {
     const saved = localStorage.getItem("saved_memos");

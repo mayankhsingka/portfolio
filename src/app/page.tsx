@@ -24,7 +24,8 @@ import { isProjectNode } from "@/data/types";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { applyAutoLayout } from "@/utils/autoLayout";
-
+import { Gatekeeper } from "@/components/Gatekeeper";
+import { CardMode } from "@/components/CardMode";
 
 function HomeContent() {
   const { isMobile } = useDevice();
@@ -39,9 +40,17 @@ function HomeContent() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const delTimestamps = useRef<number[]>([]);
   const { level, notification, clearNotification, promoteToRoot } = useClearanceContext();
-
+  const [userPersona, setUserPersona] = useState<string | null>(null);
 
   useEffect(() => {
+    // Check for persona on mount
+    const persona = localStorage.getItem("user_persona");
+    if (persona) {
+      setUserPersona(persona);
+    } else {
+      setUserPersona("unknown");
+    }
+
     const sessionBooted = sessionStorage.getItem("system_booted");
 
     let hasHighClearance = false;
@@ -141,6 +150,21 @@ function HomeContent() {
     });
     return applyAutoLayout(filtered);
   }, [level]);
+
+  if (userPersona === "unknown") {
+    return (
+      <Gatekeeper 
+        onComplete={(persona) => {
+          setUserPersona(persona);
+        }} 
+      />
+    );
+  }
+
+  // If recruiter, render the cool swipeable 15-card summary mode
+  if (userPersona === "recruiter") {
+    return <CardMode />;
+  }
 
   // ─── MOBILE SHELL ───────────────────────────────────────────────
   // On mobile, render the entire MobilePDAShell instead of the canvas.

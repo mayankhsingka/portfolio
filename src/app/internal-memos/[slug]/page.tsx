@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { MEMOS_DATA } from "@/data/memos";
+import { getAllMemos, getMemoBySlug } from "@/lib/memos";
 import MemoReaderClient from "./MemoReaderClient";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -8,7 +9,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const memo = MEMOS_DATA.find((m) => m.slug === slug);
+  const memo = getMemoBySlug(slug);
 
   if (!memo) {
     return { title: "Memo Not Found" };
@@ -28,9 +29,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export function generateStaticParams() {
-  return MEMOS_DATA.map((memo) => ({ slug: memo.slug }));
+  const memos = getAllMemos();
+  return memos.map((memo) => ({ slug: memo.slug }));
 }
 
-export default function MemoReaderPage({ params }: Props) {
-  return <MemoReaderClient params={params} />;
+export default async function MemoReaderPage({ params }: Props) {
+  const { slug } = await params;
+  const memo = getMemoBySlug(slug);
+  
+  if (!memo) {
+    notFound();
+  }
+
+  return <MemoReaderClient memo={memo} />;
 }

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { isProjectNode } from "@/data/types";
-import { MEMOS_DATA } from "@/data/memos";
+import { getAllMemos } from "@/lib/memos";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://mayankhsingka.vercel.app";
@@ -16,7 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     }));
 
-  const memos = MEMOS_DATA.map((m) => ({
+  const allMemos = getAllMemos();
+  const memos = allMemos.map((m) => ({
     url: `${SITE_URL}/internal-memos/${m.slug}`,
     lastModified: m.date,
     changeFrequency: "monthly" as const,
