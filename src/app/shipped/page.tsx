@@ -19,7 +19,7 @@ export default function ShippedIndex() {
   const doubledTicker = `${tickerText}   ${tickerText}`;
 
   return (
-    <main className="w-full min-h-screen text-black flex flex-col p-4 md:p-8 lg:p-24 bg-black md:pl-[19rem]">
+    <main className="w-full min-h-screen text-[var(--foreground)] flex flex-col p-4 md:p-8 lg:p-24">
       <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-8 md:gap-12 bg-white/90 p-4 md:p-8 border-2 md:border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
         
         {/* Status Ticker inside the box */}

@@ -9,7 +9,7 @@ export default function StandardLayout() {
   usePageScrollable();
 
   return (
-    <main className="w-full min-h-screen bg-[#fafafa] text-[#111] font-sans selection:bg-black selection:text-white">
+    <main className="w-full min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans">
       <div className="max-w-4xl mx-auto px-6 py-24 flex flex-col gap-24">
         {/* Header */}
         <header className="flex flex-col gap-6 border-b-2 border-[#111] pb-12">

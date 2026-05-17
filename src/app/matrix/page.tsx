@@ -70,7 +70,7 @@ export default function MatrixPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f5f5] text-black p-4 md:p-8 lg:p-12 font-sans overflow-visible selection:bg-black selection:text-white">
+    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] p-4 md:p-8 lg:p-12 font-sans overflow-visible">
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
 
