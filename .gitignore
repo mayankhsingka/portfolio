@@ -52,3 +52,7 @@ build_error.txt
 
 # Local notes
 todo.md
+public.md
+
+# resume — served separately, not in repo
+/public/resume.pdf

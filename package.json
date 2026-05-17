@@ -1,7 +1,27 @@
 {
   "name": "portfolio",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "Brutalist, interactive personal site for Mayank Himmatsingka — terminal aesthetics, dossier-style navigation, internal memos.",
+  "author": "Mayank Himmatsingka <mayankhsingka@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://mayankhimmatsingka.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mayankhsingka/portfolio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mayankhsingka/portfolio/issues"
+  },
+  "keywords": [
+    "portfolio",
+    "nextjs",
+    "react",
+    "tailwindcss",
+    "framer-motion",
+    "brutalist",
+    "terminal-ui"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
