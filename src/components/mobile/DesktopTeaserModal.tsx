@@ -12,7 +12,7 @@ const FEATURES = [
     title: "Infinite Canvas",
     blurb: "Drag a 300vw drafting board. Every node is alive.",
     glyph: (
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="2" y="2" width="24" height="24" />
         <circle cx="9" cy="9" r="2.5" />
         <circle cx="19" cy="14" r="2.5" />
@@ -23,19 +23,39 @@ const FEATURES = [
   },
   {
     title: "Command Palette",
-    blurb: "Hit Ctrl + K. Bend the system with one keystroke.",
+    blurb: "Ctrl + K. Bend the system with one keystroke.",
     glyph: (
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="6" width="22" height="16" rx="1" />
         <path d="M7 12h3M7 16h6M14 12h4M16 16h2" />
       </svg>
     ),
   },
   {
-    title: "Chain Navigation",
-    blurb: "Hold a link to sever it. Industrial physics-driven nav.",
+    title: "Terminal Sandbox",
+    blurb: "Full shell. Run system commands. Clear directories.",
     glyph: (
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="4" width="22" height="20" rx="1" />
+        <path d="M7 10l3 3-3 3M12 16h6" />
+      </svg>
+    ),
+  },
+  {
+    title: "System Breach",
+    blurb: "Crack the root layer. A minigame for full clearance.",
+    glyph: (
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="5" y="11" width="18" height="12" rx="1" />
+        <path d="M9 11V8a5 5 0 0 1 10 0v3M14 16v3" />
+      </svg>
+    ),
+  },
+  {
+    title: "Chain Navigation",
+    blurb: "Hold a link. Sever the chain. Physics-driven nav.",
+    glyph: (
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="10" width="8" height="8" />
         <rect x="11" y="11" width="6" height="6" />
         <rect x="17" y="10" width="8" height="8" />
@@ -43,12 +63,54 @@ const FEATURES = [
     ),
   },
   {
-    title: "Easter Eggs",
-    blurb: "BIOS intercept, ASCII surveillance, root breach.",
+    title: "ASCII Surveillance",
+    blurb: "Your webcam re-rendered into the DOM. /engage_surveillance.",
     glyph: (
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M2 7l8-3v20l-8-3z" />
+        <rect x="10" y="6" width="16" height="16" rx="1" />
+        <circle cx="18" cy="14" r="3" />
+      </svg>
+    ),
+  },
+  {
+    title: "Clearance System",
+    blurb: "VISITOR → OPERATOR → ROOT. Unlock classified nodes.",
+    glyph: (
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M14 3l10 5v6c0 6-4 11-10 12-6-1-10-6-10-12V8z" />
+        <path d="M10 14l3 3 5-6" />
+      </svg>
+    ),
+  },
+  {
+    title: "BIOS Intercept",
+    blurb: "Spam DEL on boot. Drop into a real POST setup utility.",
+    glyph: (
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="3" width="22" height="22" />
+        <path d="M3 9h22M3 15h22M3 21h22M9 3v22M15 3v22M21 3v22" strokeWidth="1" opacity="0.4" />
+      </svg>
+    ),
+  },
+  {
+    title: "Orbital Navigation",
+    blurb: "Shift + N anywhere. GTA-V radial dial across the system.",
+    glyph: (
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="14" cy="14" r="11" />
-        <path d="M9 14l4 4 6-8" />
+        <circle cx="14" cy="14" r="2.5" fill="currentColor" />
+        <path d="M14 3v4M14 21v4M3 14h4M21 14h4" />
+      </svg>
+    ),
+  },
+  {
+    title: "5 Phosphor Themes",
+    blurb: "Default · Aviation · Amber · Matrix · Dark Ops scanlines.",
+    glyph: (
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="14" cy="14" r="11" />
+        <path d="M14 3a11 11 0 0 0 0 22z" fill="currentColor" />
       </svg>
     ),
   },
@@ -171,13 +233,13 @@ export function DesktopTeaserModal({ onClose }: DesktopTeaserModalProps) {
         {/* Hero */}
         <div className="px-5 pt-5 pb-3">
           <div className="font-mono text-[10px] uppercase tracking-widest opacity-50 mb-1">
-            // Mobile shows ~30% of the system
+            // {FEATURES.length} desktop-only modules · mobile shows fragments
           </div>
           <h2 className="text-3xl font-black uppercase leading-[0.95] tracking-tighter">
-            Switch to a<br />bigger screen.
+            The full<br />architecture.
           </h2>
           <p className="text-sm opacity-70 mt-3 border-l-2 border-current pl-3">
-            The Mobile PDA is a tactical readout. The real System Blueprint — infinite canvas, command palette, easter eggs — runs on 10″+ viewports.
+            Mobile is the tactical readout. On a 10″+ screen, the System Blueprint runs in full — every module, every easter egg, every keystroke.
           </p>
         </div>
 
