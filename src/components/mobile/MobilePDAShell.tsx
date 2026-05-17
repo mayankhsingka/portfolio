@@ -43,14 +43,17 @@ export function MobilePDAShell() {
     const handleBreach = () => setBreachActive(true);
     const handleOffline = () => setOfflineActive(true);
     const handleReadingList = () => setReadingListActive(true);
+    const handleTeaser = () => setTeaserActive(true);
 
     window.addEventListener("system-breach", handleBreach);
     window.addEventListener("system-offline", handleOffline);
     window.addEventListener("system-open-reading-list", handleReadingList);
+    window.addEventListener("system-open-teaser", handleTeaser);
     return () => {
       window.removeEventListener("system-breach", handleBreach);
       window.removeEventListener("system-offline", handleOffline);
       window.removeEventListener("system-open-reading-list", handleReadingList);
+      window.removeEventListener("system-open-teaser", handleTeaser);
     };
   }, []);
 
@@ -214,7 +217,7 @@ export function MobilePDAShell() {
                     { label: "GitHub", href: PORTFOLIO_DATA.general.githubUrl, icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg> },
                     { label: "Twitter", href: "https://twitter.com/mayankhsingka", icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><path d="M4 4l11.733 16h4.267l-11.733 -16z"></path><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path></svg> },
                     { label: "Calendly", href: "https://calendly.com/mayankhsingka", icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> },
-                    { label: "Call", href: "tel:7326037045", icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> },
+                    { label: "Call", href: `tel:+91${PORTFOLIO_DATA.general.phone}`, icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> },
                   ].map((link) => (
                     <a
                       key={link.label}
@@ -264,7 +267,7 @@ export function MobilePDAShell() {
         </AnimatePresence>
       </div>
 
-      {/* Desktop Teaser Modal */}
+      {/* Desktop Teaser Modal — triggered from MobileMenu's "PC Mode" entry */}
       <AnimatePresence>
         {teaserActive && <DesktopTeaserModal onClose={() => setTeaserActive(false)} />}
       </AnimatePresence>
@@ -283,20 +286,6 @@ export function MobilePDAShell() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Desktop Teaser Banner */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[var(--background)] border-t-2 border-current p-3 shadow-[0_-4px_15px_rgba(0,0,0,0.1)]">
-        <button
-          onClick={() => setTeaserActive(true)}
-          className="w-full flex items-center justify-between font-mono text-[10px] font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity"
-        >
-          <span>// SYS_UPGRADE: Switch to Desktop (10"+)</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-      </div>
-
     </main>
   );
 }

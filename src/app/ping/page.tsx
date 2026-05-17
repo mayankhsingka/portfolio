@@ -1,159 +1,310 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { ScrambleText } from "@/components/ScrambleText";
-import { TypewriterHeading } from "@/components/TypewriterHeading";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { PageHeaderNav } from "@/components/PageHeaderNav";
-import { useSystemAudio } from "@/hooks/useSystemAudio";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 
-const OFFICIAL_PORTS = [
-  { id: "PORT_01", label: "EMAIL", url: `mailto:${PORTFOLIO_DATA.general.contactEmail}`, protocol: "SMTP", status: "LISTENING" },
-  { id: "PORT_02", label: "GITHUB", url: PORTFOLIO_DATA.general.githubUrl, protocol: "SSH", status: "ESTABLISHED" },
-  { id: "PORT_03", label: "LINKEDIN", url: PORTFOLIO_DATA.general.linkedinUrl, protocol: "TCP", status: "LISTENING" },
-  { id: "PORT_04", label: "X_ARCHIVE", url: "https://x.com/mayankhsingka", protocol: "UDP", status: "LISTENING" },
-  { id: "PORT_05", label: "SECURE_VOICE", url: "tel:+917326037045", protocol: "VoIP", status: "OPEN" },
-  { id: "PORT_06", label: "WHATSAPP", url: "https://wa.me/917326037045", protocol: "E2EE", status: "LISTENING" },
+type Channel = {
+  id: string;
+  label: string;
+  handle: string;
+  url: string;
+  blurb: string;
+  cta: string;
+  primary?: boolean;
+  external?: boolean;
+  icon: React.ReactNode;
+};
+
+const PRIMARY: Channel[] = [
+  {
+    id: "email",
+    label: "Email",
+    handle: PORTFOLIO_DATA.general.contactEmail,
+    url: `mailto:${PORTFOLIO_DATA.general.contactEmail}`,
+    blurb: "Best for serious inquiries, opportunities, and collaborations. I read everything.",
+    cta: "Compose email",
+    primary: true,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+        <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+      </svg>
+    ),
+  },
+  {
+    id: "calendly",
+    label: "Schedule a call",
+    handle: "calendly.com/mayankhsingka",
+    url: "https://calendly.com/mayankhsingka",
+    blurb: "Book a 30-min slot directly. Best for intros, technical deep-dives, or just to chat.",
+    cta: "Pick a time",
+    primary: true,
+    external: true,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+        <circle cx="12" cy="15" r="2.2"></circle>
+      </svg>
+    ),
+  },
 ];
 
-export default function PingPage() {
-  usePageScrollable();
-  const [connecting, setConnecting] = useState(true);
-  const [traceLogs, setTraceLogs] = useState<string[]>([]);
-  const [copiedPort, setCopiedPort] = useState<string | null>(null);
-  const { playKeystroke, playSnap } = useSystemAudio();
+const SOCIAL: Channel[] = [
+  {
+    id: "linkedin",
+    label: "LinkedIn",
+    handle: "@mayankhsingka",
+    url: PORTFOLIO_DATA.general.linkedinUrl,
+    blurb: "Professional network, work history, and recommendations.",
+    cta: "Connect",
+    external: true,
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+        <rect x="2" y="9" width="4" height="12"></rect>
+        <circle cx="4" cy="4" r="2"></circle>
+      </svg>
+    ),
+  },
+  {
+    id: "github",
+    label: "GitHub",
+    handle: "@mayankhsingka",
+    url: PORTFOLIO_DATA.general.githubUrl,
+    blurb: "Source code, open-source contributions, and side projects.",
+    cta: "Follow",
+    external: true,
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+      </svg>
+    ),
+  },
+  {
+    id: "twitter",
+    label: "X / Twitter",
+    handle: "@mayankhsingka",
+    url: "https://twitter.com/mayankhsingka",
+    blurb: "Daily thoughts on building, systems, and shipping fast.",
+    cta: "Follow",
+    external: true,
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+        <path d="M4 4l11.733 16h4.267l-11.733 -16z"></path>
+        <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path>
+      </svg>
+    ),
+  },
+];
 
-  // Fake Traceroute
-  useEffect(() => {
-    const lines = [
-      "tracing route to sys.mayank.host [192.168.0.1]...",
-      "1  <1 ms  <1 ms  <1 ms  root.local [127.0.0.1]",
-      "2    3 ms    2 ms    2 ms  gateway.isp [10.0.0.1]",
-      "3   14 ms   12 ms   13 ms  edge.routing.node [172.16.2.4]",
-      "4  * * * Request timed out.",
-      "5   45 ms   42 ms   40 ms  secure.proxy.net [198.51.100.2]",
-      "6   89 ms   88 ms   92 ms  sys.mayank.host [192.168.0.1]",
-      "Trace complete.",
-      "[SECURE UPLINK ESTABLISHED]"
-    ];
+const DIRECT: Channel[] = [
+  {
+    id: "whatsapp",
+    label: "WhatsApp",
+    handle: `+91 ${PORTFOLIO_DATA.general.phone}`,
+    url: `https://wa.me/91${PORTFOLIO_DATA.general.phone}`,
+    blurb: "Quick async messages. Best for short questions.",
+    cta: "Open chat",
+    external: true,
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+      </svg>
+    ),
+  },
+  {
+    id: "phone",
+    label: "Phone",
+    handle: `+91 ${PORTFOLIO_DATA.general.phone}`,
+    url: `tel:+91${PORTFOLIO_DATA.general.phone}`,
+    blurb: "Direct line. Available IST 10am–10pm.",
+    cta: "Call now",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+      </svg>
+    ),
+  },
+];
 
-    let current = 0;
-    const interval = setInterval(() => {
-      if (current < lines.length) {
-        setTraceLogs(prev => [...prev, lines[current]]);
-        playKeystroke();
-        current++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => {
-          setConnecting(false);
-          playSnap();
-        }, 1000);
-      }
-    }, 400);
+function ChannelCard({ ch }: { ch: Channel }) {
+  const [copied, setCopied] = useState(false);
 
-    return () => clearInterval(interval);
-  }, [playKeystroke, playSnap]);
-
-  const handleCopy = (e: React.MouseEvent, textToCopy: string, portId: string) => {
-    // If it's a social link, we let it naturally open the link (or we could preventDefault and just copy).
-    // Let's allow natural navigation, but run the copy logic for email.
-    if (textToCopy.startsWith("mailto:")) {
-      e.preventDefault();
-      navigator.clipboard.writeText(textToCopy.replace("mailto:", ""));
-      setCopiedPort(portId);
-      setTimeout(() => setCopiedPort(null), 3000);
-    }
+  const copyHandle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText(ch.handle).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    });
   };
 
   return (
-    <main className="w-full min-h-screen bg-black text-white flex flex-col p-4 lg:p-12 overflow-visible relative md:pl-[19rem]">
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiI+CjxwYXRoIGQ9Ik0wIDBoNDJ2NDJIMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+')] mix-blend-overlay" />
-
-      <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-8 h-full">
-        
-        <header className="border-b-4 border-white pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mt-8 md:mt-0">
-          <div>
-            <h4 className="font-mono text-sm uppercase tracking-widest opacity-50 mb-2 text-[#00ff41]">// COMMS_DASHBOARD</h4>
-            <TypewriterHeading 
-              text="/ping" 
-              className="text-5xl lg:text-7xl font-bold uppercase tracking-tighter" 
-            />
-          </div>
-          <PageHeaderNav theme="dark" />
-        </header>
-
-        {connecting ? (
-          <div className="flex-1 font-mono text-sm flex flex-col gap-2 opacity-80 min-h-[50vh]">
-            {traceLogs.map((log, i) => (
-              <div key={i} className={log.includes("ESTABLISHED") ? "text-[#00ff41] font-bold mt-4" : ""}>
-                {log}
-              </div>
-            ))}
-            <div className="w-2 h-4 bg-white animate-pulse mt-2" />
-          </div>
-        ) : (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col gap-12 font-mono"
-          >
-            {/* Top Bar Status */}
-            <div className="flex justify-between items-center border border-[#00ff41]/50 bg-[#00ff41]/5 px-4 py-2 text-[#00ff41] text-xs font-bold uppercase tracking-widest">
-              <span className="flex items-center gap-2"><div className="w-2 h-2 bg-[#00ff41] rounded-full animate-pulse"/> UPLINK_SECURE</span>
-              <span>ENC: AES-256</span>
-              <span className="hidden md:inline">LATENCY: 12ms</span>
-            </div>
-
-            {/* Official Ports */}
-            <div className="flex flex-col gap-4">
-              <h3 className="text-sm font-bold uppercase tracking-[0.3em] opacity-50 border-b border-white/20 pb-2">Primary / Official Ports</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {OFFICIAL_PORTS.map((port) => (
-                  <a
-                    key={port.id}
-                    href={port.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => handleCopy(e, port.url, port.id)}
-                    className="border-2 border-white p-4 hover:bg-white hover:text-black transition-colors group relative overflow-hidden"
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs opacity-50 group-hover:opacity-100 transition-opacity bg-white/10 group-hover:bg-black/10 px-1">{port.id}</span>
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-[#00ff41] group-hover:text-black">{port.status}</span>
-                    </div>
-                    <div className="text-xl font-bold uppercase tracking-tighter mb-4"><ScrambleText>{port.label}</ScrambleText></div>
-                    <div className="flex justify-between text-[10px] uppercase tracking-widest opacity-50 group-hover:opacity-100 transition-opacity border-t border-white/20 group-hover:border-black/20 pt-2">
-                      <span>PROTOCOL: {port.protocol}</span>
-                      <span>[ CONNECT ]</span>
-                    </div>
-
-                    <AnimatePresence>
-                      {copiedPort === port.id && (
-                        <motion.div 
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          exit={{ y: -20, opacity: 0 }}
-                          className="absolute inset-0 bg-[#00ff41] text-black flex items-center justify-center font-bold text-xs uppercase tracking-widest text-center px-4"
-                        >
-                          Payload encrypted and copied to clipboard.
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div className="text-center font-mono text-[10px] opacity-30 mt-8">
-              WARNING: UNAUTHORIZED PINGS WILL BE LOGGED.
-            </div>
-          </motion.div>
+    <a
+      href={ch.url}
+      target={ch.external ? "_blank" : undefined}
+      rel={ch.external ? "noopener noreferrer" : undefined}
+      className={`group relative border-2 border-black bg-[var(--background)] p-5 flex flex-col gap-3 transition-all hover:shadow-[6px_6px_0px_0px_currentColor] hover:-translate-x-0.5 hover:-translate-y-0.5 ${
+        ch.primary ? "shadow-[4px_4px_0px_0px_currentColor]" : ""
+      }`}
+      style={{ minHeight: 168 }}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="w-11 h-11 border-2 border-current flex items-center justify-center shrink-0 bg-current text-[var(--background)]">
+          {ch.icon}
+        </div>
+        {ch.primary && (
+          <span className="font-mono text-[9px] font-bold uppercase tracking-widest bg-current text-[var(--background)] px-1.5 py-0.5">
+            Primary
+          </span>
         )}
+      </div>
 
+      <div className="flex flex-col gap-1">
+        <h3 className="text-lg sm:text-xl font-black uppercase tracking-tight leading-none">
+          {ch.label}
+        </h3>
+        <button
+          onClick={copyHandle}
+          className="font-mono text-xs opacity-60 hover:opacity-100 transition-opacity text-left w-fit truncate max-w-full"
+          title="Click to copy"
+        >
+          {copied ? "✓ copied" : ch.handle}
+        </button>
+      </div>
+
+      <p className="text-xs sm:text-sm opacity-70 leading-snug">{ch.blurb}</p>
+
+      <div className="mt-auto pt-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest font-bold border-t-2 border-current/20 group-hover:border-current/60 transition-colors">
+        <span className="opacity-70 group-hover:opacity-100">{ch.cta}</span>
+        <span className="group-hover:translate-x-1 transition-transform">→</span>
+      </div>
+    </a>
+  );
+}
+
+export default function PingPage() {
+  usePageScrollable();
+
+  return (
+    <main className="w-full min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans flex flex-col">
+      {/* Top status bar */}
+      <div className="sticky top-0 z-30 bg-[var(--background)] border-b-2 border-current">
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-widest opacity-70">
+            <span className="inline-block w-1.5 h-1.5 bg-current animate-pulse" />
+            <span>// uplink_active</span>
+          </div>
+          <PageHeaderNav theme="light" />
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 pb-32 flex flex-col gap-10 sm:gap-14">
+        {/* Hero */}
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="flex flex-col gap-4"
+        >
+          <div className="font-mono text-[10px] sm:text-xs uppercase tracking-widest opacity-50">
+            // get_in_touch
+          </div>
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.92]">
+            Let&apos;s build<br />something.
+          </h1>
+          <p className="text-base sm:text-lg opacity-75 max-w-2xl leading-relaxed">
+            I&apos;m {PORTFOLIO_DATA.general.name.split(" ")[0]} — a {PORTFOLIO_DATA.general.role.toLowerCase()}. Open to roles, freelance, collabs, or just a chat about systems and shipping fast.
+          </p>
+
+          {/* Quick stats */}
+          <div className="flex flex-wrap gap-3 sm:gap-4 mt-2 font-mono text-[10px] sm:text-xs uppercase tracking-widest">
+            <div className="border-2 border-current px-3 py-1.5 flex items-center gap-2">
+              <span className="inline-block w-1.5 h-1.5 bg-current animate-pulse" /> Avg reply &lt; 24h
+            </div>
+            <div className="border-2 border-current px-3 py-1.5">Based in India · IST</div>
+            <div className="border-2 border-current px-3 py-1.5">Open to remote</div>
+          </div>
+        </motion.section>
+
+        {/* Primary channels */}
+        <section className="flex flex-col gap-4">
+          <div className="flex items-baseline justify-between gap-3 border-b-2 border-current pb-2">
+            <h2 className="font-mono text-xs sm:text-sm font-bold uppercase tracking-widest">
+              // Primary channels
+            </h2>
+            <span className="font-mono text-[10px] uppercase tracking-widest opacity-50">
+              fastest response
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            {PRIMARY.map((ch) => (
+              <ChannelCard key={ch.id} ch={ch} />
+            ))}
+          </div>
+        </section>
+
+        {/* Social */}
+        <section className="flex flex-col gap-4">
+          <div className="flex items-baseline justify-between gap-3 border-b-2 border-current pb-2">
+            <h2 className="font-mono text-xs sm:text-sm font-bold uppercase tracking-widest">
+              // Social
+            </h2>
+            <span className="font-mono text-[10px] uppercase tracking-widest opacity-50">
+              follow / connect
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            {SOCIAL.map((ch) => (
+              <ChannelCard key={ch.id} ch={ch} />
+            ))}
+          </div>
+        </section>
+
+        {/* Direct */}
+        <section className="flex flex-col gap-4">
+          <div className="flex items-baseline justify-between gap-3 border-b-2 border-current pb-2">
+            <h2 className="font-mono text-xs sm:text-sm font-bold uppercase tracking-widest">
+              // Direct lines
+            </h2>
+            <span className="font-mono text-[10px] uppercase tracking-widest opacity-50">
+              urgent only
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            {DIRECT.map((ch) => (
+              <ChannelCard key={ch.id} ch={ch} />
+            ))}
+          </div>
+        </section>
+
+        {/* Footer note */}
+        <section className="border-2 border-current p-5 sm:p-6 bg-current text-[var(--background)]">
+          <div className="font-mono text-[10px] uppercase tracking-widest opacity-60 mb-2">
+            // currently open to
+          </div>
+          <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
+            {["Full-time roles", "Freelance projects", "Founding engineer", "Technical collabs", "Speaking / panels"].map(
+              (tag) => (
+                <span
+                  key={tag}
+                  className="border-2 border-[var(--background)] px-2.5 py-1 font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold"
+                >
+                  {tag}
+                </span>
+              ),
+            )}
+          </div>
+          <p className="text-xs sm:text-sm opacity-80 leading-relaxed">
+            Looking for someone to build with? Want a second opinion on architecture? Just want to say hi? Hit any of the channels above — I&apos;ll get back.
+          </p>
+        </section>
       </div>
     </main>
   );

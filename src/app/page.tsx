@@ -151,12 +151,28 @@ function HomeContent() {
     return applyAutoLayout(filtered);
   }, [level]);
 
+  // ─── MOBILE SHELL ───────────────────────────────────────────────
+  // Mobile always gets the PDA shell — the persona gate (Gatekeeper /
+  // CardMode) is a desktop-only flow. Keeping mobile out of it avoids
+  // recruiter-persona visitors landing on the sparse card stack instead
+  // of the rich PDA with their name, photo, and tabs.
+  if (isMobile) {
+    return (
+      <>
+        {!hasBooted && <BootSequence onComplete={completeBoot} />}
+        <div style={{ opacity: hasBooted ? 1 : 0, transition: "opacity 0.5s ease" }}>
+          <MobilePDAShell />
+        </div>
+      </>
+    );
+  }
+
   if (userPersona === "unknown") {
     return (
-      <Gatekeeper 
+      <Gatekeeper
         onComplete={(persona) => {
           setUserPersona(persona);
-        }} 
+        }}
       />
     );
   }
@@ -164,20 +180,6 @@ function HomeContent() {
   // If recruiter, render the cool swipeable 15-card summary mode
   if (userPersona === "recruiter") {
     return <CardMode />;
-  }
-
-  // ─── MOBILE SHELL ───────────────────────────────────────────────
-  // On mobile, render the entire MobilePDAShell instead of the canvas.
-  // The boot sequence still plays on first visit.
-  if (isMobile) {
-    return (
-      <main className="w-full min-h-screen text-black">
-        {!hasBooted && <BootSequence onComplete={completeBoot} />}
-        <div style={{ opacity: hasBooted ? 1 : 0, transition: "opacity 0.5s ease" }}>
-          <MobilePDAShell />
-        </div>
-      </main>
-    );
   }
 
   // ─── DESKTOP SHELL ──────────────────────────────────────────────
