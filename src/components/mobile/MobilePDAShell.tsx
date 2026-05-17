@@ -12,7 +12,6 @@ import { MobileAbortButton } from "./MobileAbortButton";
 import { SystemBreach } from "@/components/SystemBreach";
 import { OfflineGame } from "@/components/OfflineGame";
 import { ReadingListModal } from "@/components/ReadingListModal";
-import { DesktopTeaserModal } from "./DesktopTeaserModal";
 
 const TABS = ["IDENT", "CASE_FILES", "ARCHIVE"];
 
@@ -20,7 +19,6 @@ export function MobilePDAShell() {
   const [breachActive, setBreachActive] = useState(false);
   const [offlineActive, setOfflineActive] = useState(false);
   const [readingListActive, setReadingListActive] = useState(false);
-  const [teaserActive, setTeaserActive] = useState(false);
   const { level, notification, clearNotification, promoteToRoot } = useClearanceContext();
 
   // Tab State & Animation Direction
@@ -43,17 +41,16 @@ export function MobilePDAShell() {
     const handleBreach = () => setBreachActive(true);
     const handleOffline = () => setOfflineActive(true);
     const handleReadingList = () => setReadingListActive(true);
-    const handleTeaser = () => setTeaserActive(true);
+    // `system-open-teaser` is now handled globally by MobileGlobalNav so
+    // PC Mode works from /ping and every other route, not just the home PDA.
 
     window.addEventListener("system-breach", handleBreach);
     window.addEventListener("system-offline", handleOffline);
     window.addEventListener("system-open-reading-list", handleReadingList);
-    window.addEventListener("system-open-teaser", handleTeaser);
     return () => {
       window.removeEventListener("system-breach", handleBreach);
       window.removeEventListener("system-offline", handleOffline);
       window.removeEventListener("system-open-reading-list", handleReadingList);
-      window.removeEventListener("system-open-teaser", handleTeaser);
     };
   }, []);
 
@@ -266,11 +263,6 @@ export function MobilePDAShell() {
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Desktop Teaser Modal — triggered from MobileMenu's "PC Mode" entry */}
-      <AnimatePresence>
-        {teaserActive && <DesktopTeaserModal onClose={() => setTeaserActive(false)} />}
-      </AnimatePresence>
 
       {/* Clearance Notification */}
       <AnimatePresence>
