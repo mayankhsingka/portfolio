@@ -10,8 +10,8 @@ import { useSystemAudio } from "@/hooks/useSystemAudio";
 const STATIC_NAV = [
   { path: "/shipped", label: "Registry", description: "View all architecture deployments" },
   { path: "/internal-memos", label: "Archive", description: "Classified tactical intelligence" },
-  { path: "/commands", label: "Sandbox", description: "System execution laboratory" },
-  { path: "/theme", label: "Phosphor", description: "Cycle hardware hardware filters" },
+  { path: "/matrix", label: "Matrix", description: "Skill graph & uplink hub" },
+  { path: "/theme", label: "Phosphor", description: "Cycle hardware filter themes" },
   { path: "/core-identity", label: "About", description: "Profile: Mayank Himmatsingka" },
   { path: "/ping", label: "Contact", description: "Establish secure socket connection" },
   { path: "/engage_surveillance", label: "Camera", description: "Access local visual payload" },

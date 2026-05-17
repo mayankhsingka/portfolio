@@ -207,13 +207,13 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
             <path id={pathId} d={pathD} fill="none" stroke="none" />
             <path id={pathIdReverse} d={pathDReverse} fill="none" stroke="none" />
 
-            {/* === DATA PACKETS — forward direction === */}
-            {/* Packet 1: primary */}
+            {/* === DATA PACKETS === */}
+            {/* Forward packet — primary */}
             <circle
               r={isHovered ? 3.5 : 2.5}
               fill="black"
               opacity={isHovered ? 1 : 0.7}
-              filter="url(#packet-glow)"
+              filter={isHovered ? "url(#packet-glow)" : undefined}
               style={{ transition: "r 0.3s ease, opacity 0.3s ease" }}
             >
               <animateMotion
@@ -225,28 +225,12 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
               </animateMotion>
             </circle>
 
-            {/* Packet 2: delayed, slightly smaller */}
+            {/* Return packet — bidirectional feel */}
             <circle
-              r={isHovered ? 2.5 : 1.5}
+              r={isHovered ? 2 : 1.2}
               fill="black"
-              opacity={isHovered ? 0.8 : 0.4}
-              filter="url(#packet-glow)"
-            >
-              <animateMotion
-                dur={`${baseDuration}s`}
-                repeatCount="indefinite"
-                begin={`${baseDuration * 0.33}s`}
-              >
-                <mpath href={`#${pathId}`} />
-              </animateMotion>
-            </circle>
-
-            {/* Packet 3: return direction — gives bidirectional data flow feel */}
-            <circle
-              r={isHovered ? 2 : 1}
-              fill="black"
-              opacity={isHovered ? 0.6 : 0.25}
-              filter="url(#packet-glow)"
+              opacity={isHovered ? 0.6 : 0.3}
+              filter={isHovered ? "url(#packet-glow)" : undefined}
             >
               <animateMotion
                 dur={`${baseDuration * 1.3}s`}
@@ -254,21 +238,6 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
                 begin={`${baseDuration * 0.5}s`}
               >
                 <mpath href={`#${pathIdReverse}`} />
-              </animateMotion>
-            </circle>
-
-            {/* Trailing particle effect — very small dots that follow main packet with delay */}
-            <circle
-              r={isHovered ? 1.5 : 0.8}
-              fill="black"
-              opacity={isHovered ? 0.5 : 0.15}
-            >
-              <animateMotion
-                dur={`${baseDuration}s`}
-                repeatCount="indefinite"
-                begin="0.15s"
-              >
-                <mpath href={`#${pathId}`} />
               </animateMotion>
             </circle>
 

@@ -205,23 +205,13 @@ function HomeContent() {
         <SystemGrid canvasRef={canvasRef}>
           <DataFlowLines canvasRef={canvasRef} hoveredNodeId={hoveredNodeId} />
 
-          {/* Giant Personal Watermark on the Canvas Floor */}
+          {/* Watermark on the Canvas Floor — text only, pushed below the core node so it doesn't compete */}
           <div
-            className="absolute top-[150vh] left-[150vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none flex items-end gap-8 font-sans font-black uppercase text-black/20 select-none z-[-1] leading-[0.85] tracking-tighter mix-blend-multiply"
-            style={{ fontSize: "clamp(6rem, 12vw, 16rem)" }}
+            className="absolute top-[178vh] left-[150vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none font-sans font-black uppercase text-black/15 select-none z-[-1] leading-[0.85] tracking-tighter mix-blend-multiply flex flex-col items-center"
+            style={{ fontSize: "clamp(4rem, 9vw, 12rem)" }}
           >
-            {/* Profile Image */}
-            <div className="w-40 h-40 xl:w-52 xl:h-52 border-4 border-black/20 rounded-full overflow-hidden shrink-0 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] mb-2">
-              <img 
-                src="/profile.jpg" 
-                alt="Mayank Himmatsingka" 
-                className="w-full h-full object-cover preserve-color"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span>MAYANK</span>
-              <span>HIMMATSINGKA</span>
-            </div>
+            <span>MAYANK</span>
+            <span>HIMMATSINGKA</span>
           </div>
 
           {visibleNodes.map((node) => (

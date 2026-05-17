@@ -1,22 +1,39 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function CanvasHint() {
   const [visible, setVisible] = useState(true);
+  const startPos = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
-    // Auto-hide after 8 seconds
-    const timer = setTimeout(() => setVisible(false), 8000);
-    
-    // Also hide on any key press or palette open
-    const hideOnAction = () => setVisible(false);
-    window.addEventListener("keydown", hideOnAction);
-    
+    // Safety net: hide after 20s even if the user is idle, so it doesn't sit forever.
+    const safety = setTimeout(() => setVisible(false), 20000);
+
+    const hide = () => setVisible(false);
+
+    // Hide once the user actually starts exploring: drag the canvas (mouse moves >80px),
+    // press a key, scroll/zoom, or open the command palette.
+    const onMove = (e: MouseEvent) => {
+      if (!startPos.current) {
+        startPos.current = { x: e.clientX, y: e.clientY };
+        return;
+      }
+      const dx = e.clientX - startPos.current.x;
+      const dy = e.clientY - startPos.current.y;
+      if (Math.hypot(dx, dy) > 80) hide();
+    };
+
+    window.addEventListener("keydown", hide);
+    window.addEventListener("wheel", hide, { passive: true });
+    window.addEventListener("mousemove", onMove);
+
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener("keydown", hideOnAction);
+      clearTimeout(safety);
+      window.removeEventListener("keydown", hide);
+      window.removeEventListener("wheel", hide);
+      window.removeEventListener("mousemove", onMove);
     };
   }, []);
 
