@@ -53,6 +53,22 @@ const PRIMARY: Channel[] = [
       </svg>
     ),
   },
+  {
+    id: "resume",
+    label: "Download résumé",
+    handle: "resume.pdf · v2.0",
+    url: PORTFOLIO_DATA.general.builderArchiveUrl,
+    blurb: "Plain PDF. Roles, projects, tech stack, references. Open it anywhere.",
+    cta: "Download",
+    primary: true,
+    external: true,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <path d="M14 2v6h6M12 12v6M9 15l3 3 3-3" />
+      </svg>
+    ),
+  },
 ];
 
 const SOCIAL: Channel[] = [
@@ -189,6 +205,102 @@ function ChannelCard({ ch }: { ch: Channel }) {
   );
 }
 
+function ContactForm() {
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [message, setMessage] = useState("");
+  const [sent, setSent] = useState(false);
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !contact.trim() || !message.trim()) return;
+
+    // No backend wired yet — open the visitor's mail client with the
+    // form contents pre-populated so the transmission still lands in
+    // the inbox. We'll swap this for a real /api/contact handler later.
+    const subject = encodeURIComponent(`[/ping] Transmission from ${name}`);
+    const body = encodeURIComponent(
+      `Name: ${name}\nContact: ${contact}\n\nMessage:\n${message}\n\n—\nSent from /ping`,
+    );
+    window.location.href = `mailto:${PORTFOLIO_DATA.general.contactEmail}?subject=${subject}&body=${body}`;
+    setSent(true);
+    setTimeout(() => setSent(false), 6000);
+  };
+
+  return (
+    <section className="flex flex-col gap-4">
+      <div className="flex items-baseline justify-between gap-3 border-b-2 border-current pb-2">
+        <h2 className="font-mono text-xs sm:text-sm font-bold uppercase tracking-widest">
+          // Send a transmission
+        </h2>
+        <span className="font-mono text-[10px] uppercase tracking-widest opacity-50">
+          straight to my inbox
+        </span>
+      </div>
+
+      <form
+        onSubmit={submit}
+        className="border-2 border-current bg-[var(--background)] p-5 sm:p-6 flex flex-col gap-4 shadow-[6px_6px_0px_0px_currentColor]"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label className="flex flex-col gap-1.5">
+            <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+              Name
+            </span>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="who's hailing"
+              className="border-2 border-current bg-transparent px-3 py-3 font-mono text-sm focus:outline-none focus:shadow-[3px_3px_0px_0px_currentColor] focus:-translate-x-[1px] focus:-translate-y-[1px] transition-all placeholder:opacity-30"
+            />
+          </label>
+          <label className="flex flex-col gap-1.5">
+            <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+              Email or phone
+            </span>
+            <input
+              type="text"
+              required
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+              placeholder="how to reach you back"
+              className="border-2 border-current bg-transparent px-3 py-3 font-mono text-sm focus:outline-none focus:shadow-[3px_3px_0px_0px_currentColor] focus:-translate-x-[1px] focus:-translate-y-[1px] transition-all placeholder:opacity-30"
+            />
+          </label>
+        </div>
+
+        <label className="flex flex-col gap-1.5">
+          <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+            Message
+          </span>
+          <textarea
+            required
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={5}
+            placeholder="what's the directive"
+            className="border-2 border-current bg-transparent px-3 py-3 font-mono text-sm resize-y focus:outline-none focus:shadow-[3px_3px_0px_0px_currentColor] focus:-translate-x-[1px] focus:-translate-y-[1px] transition-all placeholder:opacity-30"
+          />
+        </label>
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
+          <span className="font-mono text-[10px] uppercase tracking-widest opacity-50">
+            {sent ? "✓ launched — check your mail client" : "opens your email client for now"}
+          </span>
+          <button
+            type="submit"
+            className="border-2 border-current bg-current text-[var(--background)] px-6 py-3 font-mono text-xs font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_currentColor] hover:shadow-[6px_6px_0px_0px_currentColor] hover:-translate-x-[1px] hover:-translate-y-[1px] active:translate-x-0 active:translate-y-0 active:shadow-none transition-all"
+          >
+            Transmit →
+          </button>
+        </div>
+      </form>
+    </section>
+  );
+}
+
 export default function PingPage() {
   usePageScrollable();
 
@@ -233,17 +345,20 @@ export default function PingPage() {
           </div>
         </motion.section>
 
+        {/* Contact form — primary CTA, lands in inbox */}
+        <ContactForm />
+
         {/* Primary channels */}
         <section className="flex flex-col gap-4">
           <div className="flex items-baseline justify-between gap-3 border-b-2 border-current pb-2">
             <h2 className="font-mono text-xs sm:text-sm font-bold uppercase tracking-widest">
-              // Primary channels
+              // Other channels
             </h2>
             <span className="font-mono text-[10px] uppercase tracking-widest opacity-50">
-              fastest response
+              email · call · résumé
             </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {PRIMARY.map((ch) => (
               <ChannelCard key={ch.id} ch={ch} />
             ))}
