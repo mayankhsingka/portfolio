@@ -14,7 +14,7 @@ import { useSystemAudio } from "@/hooks/useSystemAudio";
 
 // ─── Navigation Items ────────────────────────────────────
 const NAV_ITEMS = [
-  { id: "core",    label: "DOSSIER", sublabel: "about · me", route: "/core-identity",  icon: "◇" },
+  { id: "core",    label: "CORE",    sublabel: "about · me", route: "/core-identity",  icon: "◇" },
   { id: "shipped", label: "SHIPPED", sublabel: "projects",   route: "/shipped",        icon: "◈" },
   { id: "memos",   label: "MEMOS",   sublabel: "writing",    route: "/internal-memos", icon: "◆" },
   { id: "ping",    label: "CONTACT", sublabel: "reach out",  route: "/ping",           icon: "⎈" },
