@@ -67,7 +67,6 @@ export interface GeneralInfo {
   githubUrl: string;
   linkedinUrl: string;
   launchDate: string;
-  builderArchiveUrl: string;
 }
 
 export interface PortfolioData {

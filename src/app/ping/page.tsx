@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { PageHeaderNav } from "@/components/PageHeaderNav";
+import { NumberPlate } from "@/components/NumberPlate";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
 
@@ -53,22 +54,6 @@ const PRIMARY: Channel[] = [
       </svg>
     ),
   },
-  {
-    id: "resume",
-    label: "Download résumé",
-    handle: "resume.pdf · v2.0",
-    url: PORTFOLIO_DATA.general.builderArchiveUrl,
-    blurb: "Plain PDF. Roles, projects, tech stack, references. Open it anywhere.",
-    cta: "Download",
-    primary: true,
-    external: true,
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <path d="M14 2v6h6M12 12v6M9 15l3 3 3-3" />
-      </svg>
-    ),
-  },
 ];
 
 const SOCIAL: Channel[] = [
@@ -105,8 +90,8 @@ const SOCIAL: Channel[] = [
   {
     id: "twitter",
     label: "X / Twitter",
-    handle: "@mayankhsingka",
-    url: "https://twitter.com/mayankhsingka",
+    handle: "@himmatsingka_m",
+    url: "https://x.com/himmatsingka_m",
     blurb: "Daily thoughts on building, systems, and shipping fast.",
     cta: "Follow",
     external: true,
@@ -309,9 +294,11 @@ export default function PingPage() {
       {/* Top status bar */}
       <div className="sticky top-0 z-30 bg-[var(--background)] border-b-2 border-current">
         <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-widest opacity-70">
-            <span className="inline-block w-1.5 h-1.5 bg-current animate-pulse" />
-            <span>// uplink_active</span>
+          <div className="flex items-center gap-3">
+            <NumberPlate />
+            <span className="hidden sm:inline font-mono text-[10px] uppercase tracking-widest opacity-50">
+              · uplink active
+            </span>
           </div>
           <PageHeaderNav theme="light" />
         </div>
@@ -355,10 +342,10 @@ export default function PingPage() {
               // Other channels
             </h2>
             <span className="font-mono text-[10px] uppercase tracking-widest opacity-50">
-              email · call · résumé
+              email · schedule
             </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {PRIMARY.map((ch) => (
               <ChannelCard key={ch.id} ch={ch} />
             ))}

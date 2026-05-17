@@ -7,7 +7,6 @@ import { useSystemAudio } from "@/hooks/useSystemAudio";
 import { useScrambleText } from "@/hooks/useScrambleText";
 import { ScrambleText } from "@/components/ScrambleText";
 
-import { PORTFOLIO_DATA } from "@/data/portfolio";
 
 interface ArchitectureNodeProps {
   id: string;
@@ -169,17 +168,15 @@ export function ArchitectureNode({
 
             {isCore && (
               <div className="mt-4 pt-4 border-t border-black/20">
-                <a 
-                  href={PORTFOLIO_DATA.general.builderArchiveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/ping"
                   className="block w-full border-2 border-black bg-black text-white text-center py-2 px-1 hover:bg-white hover:text-black transition-colors uppercase font-bold tracking-tighter text-[10px]"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  [ ACCESS_BUILDER_ARCHIVE ]
-                </a>
+                  [ ESTABLISH_UPLINK ]
+                </Link>
                 <div className="text-[8px] mt-1 opacity-40 text-center uppercase tracking-widest">
-                  Encrypted System Dossier v2.0
+                  Open the comms console
                 </div>
               </div>
             )}

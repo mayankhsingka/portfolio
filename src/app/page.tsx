@@ -16,6 +16,7 @@ import { SocialSidebar } from "@/components/SocialSidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CanvasHint } from "@/components/CanvasHint";
 import { ChainNav } from "@/components/ChainNav";
+import { NumberPlate } from "@/components/NumberPlate";
 import { MobilePDAShell } from "@/components/mobile/MobilePDAShell";
 import { useTelemetryTab } from "@/hooks/useTelemetryTab";
 import { useDevice } from "@/hooks/useDevice";
@@ -236,6 +237,11 @@ function HomeContent() {
         <ThemeToggle />
         <CanvasHint />
         <ChainNav />
+
+        {/* Identity number plate — top-left corner brand mark */}
+        <div className="fixed top-4 left-4 z-[45] pointer-events-auto">
+          <NumberPlate size="md" />
+        </div>
 
         <AnimatePresence>
           {surveillanceActive && (

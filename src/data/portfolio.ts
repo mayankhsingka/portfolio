@@ -11,7 +11,6 @@ export const PORTFOLIO_DATA: PortfolioData = {
     githubUrl: "https://github.com/mayankhsingka",
     linkedinUrl: "https://linkedin.com/in/mayankhsingka",
     launchDate: "2026-04-01",
-    builderArchiveUrl: "/resume.pdf",
   },
 
   fileSystem: {

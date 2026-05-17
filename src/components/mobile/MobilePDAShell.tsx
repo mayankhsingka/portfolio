@@ -7,6 +7,7 @@ import { isProjectNode, ArchNode } from "@/data/types";
 import { useClearanceContext } from "@/components/ClearanceProvider";
 import { MobileNodeCard } from "./MobileNodeCard";
 import { MobileAbortButton } from "./MobileAbortButton";
+import { NumberPlate } from "@/components/NumberPlate";
 
 // Lazy-load heavy overlays
 import { SystemBreach } from "@/components/SystemBreach";
@@ -137,8 +138,8 @@ export function MobilePDAShell() {
           className="flex justify-between items-start gap-4"
         >
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-widest opacity-50 mb-2">
-              // SYS_BLUEPRINT_V1.0
+            <div className="mb-3">
+              <NumberPlate size="md" />
             </div>
             <h1 className="text-3xl font-bold uppercase tracking-tighter leading-tight">
               Mayank

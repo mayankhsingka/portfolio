@@ -155,7 +155,7 @@ export default function MatrixPage() {
             <IconLinkedin className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
             <span className="font-mono text-[10px] font-bold tracking-widest">LINKEDIN</span>
           </a>
-          <a href="https://x.com/mayankhsingka" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 border-r-2 border-black hover:bg-black hover:text-white transition-colors group">
+          <a href="https://x.com/himmatsingka_m" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 border-r-2 border-black hover:bg-black hover:text-white transition-colors group">
             <IconTwitter className="w-8 h-8 mb-2 group-hover:-translate-y-1 transition-transform" />
             <span className="font-mono text-[10px] font-bold tracking-widest">TWITTER</span>
           </a>
