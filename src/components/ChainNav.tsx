@@ -14,15 +14,15 @@ import { useSystemAudio } from "@/hooks/useSystemAudio";
 
 // ─── Navigation Items ────────────────────────────────────
 const NAV_ITEMS = [
-  { id: "core", label: "CORE", route: "/core-identity", icon: "◇" },
-  { id: "shipped", label: "SHIPPED", route: "/shipped", icon: "◈" },
-  { id: "memos", label: "MEMOS", route: "/internal-memos", icon: "◆" },
-  { id: "ping", label: "PING", route: "/ping", icon: "⎈" },
+  { id: "core",    label: "DOSSIER", sublabel: "about · me", route: "/core-identity",  icon: "◇" },
+  { id: "shipped", label: "SHIPPED", sublabel: "projects",   route: "/shipped",        icon: "◈" },
+  { id: "memos",   label: "MEMOS",   sublabel: "writing",    route: "/internal-memos", icon: "◆" },
+  { id: "ping",    label: "CONTACT", sublabel: "reach out",  route: "/ping",           icon: "⎈" },
 ];
 
 // ─── Layout ──────────────────────────────────────────────
 const BTN_W = 132;
-const BTN_H = 44;
+const BTN_H = 52;
 const CHAIN_GAP = 52;
 const PITCH = BTN_W + CHAIN_GAP;
 const TOTAL_W = PITCH * 3 + BTN_W;
@@ -240,8 +240,7 @@ function NavButton({
   return (
     <div
       className={`
-        relative flex items-center justify-center font-mono text-[13px] font-black
-        uppercase tracking-[0.1em] select-none transition-all duration-200
+        relative flex items-center select-none transition-all duration-200
         ${isDragging
           ? "scale-[1.05] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.15)] z-50 bg-white border-2 border-black"
           : isActive
@@ -251,13 +250,18 @@ function NavButton({
       `}
       style={{ width: BTN_W, height: BTN_H }}
     >
-      <span className="flex items-center justify-between w-full h-full px-4 relative z-10">
-        <span className="flex items-center gap-2">
-          <span className={`text-[14px] transition-opacity`}>{item.icon}</span>
-          <span>{item.label}</span>
+      <span className="flex items-center gap-2.5 w-full h-full px-3 relative z-10">
+        <span className="text-[16px] leading-none shrink-0">{item.icon}</span>
+        <span className="flex flex-col leading-none gap-1 min-w-0">
+          <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] truncate">
+            {item.label}
+          </span>
+          <span className="font-mono text-[8px] font-medium tracking-[0.15em] opacity-55 truncate">
+            {item.sublabel}
+          </span>
         </span>
         {isActive && (
-          <span className="text-[#0f0] animate-pulse absolute right-3 font-bold text-[14px] leading-none">
+          <span className="ml-auto text-[#0f0] animate-pulse font-bold text-[14px] leading-none shrink-0">
             _
           </span>
         )}
