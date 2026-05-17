@@ -2,35 +2,27 @@
 
 > **Stamp**
 > What this does: adds a completely new top-level route (like `/research`, `/talks`, `/now`) — not a new project or memo.
-> What it touches: creates one new file under `src/app/<route>/page.tsx`, plus minor edits to `sitemap.ts`, command palette, and mobile menu.
-> Time: ~20 minutes.
+> What it touches: one new file under `src/app/<route>/page.tsx`, plus minor edits to `sitemap.ts`, command palette, and mobile menu.
+> Time: ~15 minutes.
 
-Only use this if you genuinely need a new page. For a project, use [ADD_PROJECT.md](./ADD_PROJECT.md). For a blog post, use [ADD_MEMO.md](./ADD_MEMO.md).
+Only use this for a genuinely new page. For a project → [ADD_PROJECT.md](./ADD_PROJECT.md). For a memo → [ADD_MEMO.md](./ADD_MEMO.md).
 
 ---
 
-## Step 1 — Decide light or dark
+## Step 1 — Create the route folder
 
-Look at existing inner pages:
-- **Light theme** (white bg, black ink): `/shipped`, `/internal-memos`. Pattern: see `src/app/shipped/page.tsx`.
-- **Dark theme** (black bg, white ink, scanlines): `/core-identity`, `/ping`. Pattern: see `src/app/core-identity/page.tsx`.
-
-Pick the one that matches the page's intent.
-
-## Step 2 — Create the route folder
-
-Pick a route. Use lowercase, single-word if possible. Examples that fit the brutalist vocab: `/research`, `/uplink-log`, `/recon`, `/cache`, `/threadlog`.
+Pick a lowercase route. Examples that match the existing vocabulary: `/research`, `/uplink-log`, `/recon`, `/cache`.
 
 ```
 src/app/<your-route>/
-  page.tsx          ← the page itself
-  layout.tsx        ← OPTIONAL — only if you need a wrapping layout
+  page.tsx          ← the page itself (required)
+  layout.tsx        ← OPTIONAL — wrapping layout if needed
   loading.tsx       ← OPTIONAL — shown while the page loads
 ```
 
-## Step 3 — Light-theme page template
+## Step 2 — Use this template
 
-Save this as `src/app/<your-route>/page.tsx`:
+Save as `src/app/<your-route>/page.tsx`:
 
 ```tsx
 "use client";
@@ -43,65 +35,70 @@ export default function YourPage() {
   usePageScrollable();
 
   return (
-    <main className="w-full min-h-screen text-black flex flex-col p-4 md:p-8 lg:p-24 bg-black md:pl-[19rem]">
-      <div className="max-w-4xl mx-auto w-full z-10 flex flex-col gap-8 md:gap-12 bg-white/90 p-4 md:p-8 border-2 md:border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
-
-        <motion.header
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="border-b-4 border-black pb-8 flex flex-col md:flex-row justify-between md:items-end gap-4"
-        >
-          <div>
-            <h4 className="font-mono text-sm uppercase tracking-widest opacity-50 mb-2">// SECTION_LABEL</h4>
-            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tighter">/your-route</h1>
-            <p className="font-mono mt-4 text-sm max-w-xl">
-              [SYS_LOG]: One-sentence description of this page.
-            </p>
+    <main className="w-full min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans flex flex-col">
+      {/* Sticky top status bar */}
+      <div className="sticky top-0 z-30 bg-[var(--background)] border-b-2 border-current">
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+          <div className="font-mono text-[10px] sm:text-xs uppercase tracking-widest opacity-50">
+            // your_route
           </div>
           <PageHeaderNav theme="light" />
-        </motion.header>
+        </div>
+      </div>
 
-        {/* YOUR CONTENT HERE */}
-        <section>
-          <p>Replace this with your content.</p>
+      <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 pb-32 flex flex-col gap-10 sm:gap-14">
+        {/* Hero */}
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="flex flex-col gap-4"
+        >
+          <div className="font-mono text-[10px] sm:text-xs uppercase tracking-widest opacity-50">
+            // section_label
+          </div>
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.92]">
+            Page Title<br />Here.
+          </h1>
+          <p className="text-base sm:text-lg opacity-75 max-w-2xl leading-relaxed">
+            One-sentence description of what this page is for.
+          </p>
+        </motion.section>
+
+        {/* Sections */}
+        <section className="flex flex-col gap-4">
+          <div className="border-b-2 border-current pb-2">
+            <h2 className="font-mono text-xs sm:text-sm font-bold uppercase tracking-widest">
+              // section_one
+            </h2>
+          </div>
+          <p>Your content here. Use the same cream bg + black borders + hard-shadow brutalist vocabulary as the rest of the site.</p>
         </section>
-
-        <footer className="border-t-4 border-black pt-8 flex justify-between items-center font-mono text-xs uppercase opacity-70">
-          <span>// END OF FILE</span>
-          <span>MAYANK_HIMMATSINGKA</span>
-        </footer>
       </div>
     </main>
   );
 }
 ```
 
-## Step 4 — Dark-theme page template
+### Theme conventions
 
-If you picked dark, swap the `<main>` and content wrapper to match `/core-identity/page.tsx`:
+All inner pages use **theme variables**, not hardcoded colours:
 
-```tsx
-<main className="w-full min-h-screen bg-black text-white flex flex-col p-4 lg:p-12 overflow-visible relative md:pl-[19rem]">
-  <div className="max-w-5xl mx-auto w-full z-10 flex flex-col gap-8">
-    <header className="border-b-4 border-white pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mt-8 md:mt-0">
-      <div>
-        <h4 className="font-mono text-sm uppercase tracking-widest opacity-50 mb-2 text-white">// SECTION_LABEL</h4>
-        <h1 className="text-5xl lg:text-7xl font-bold uppercase tracking-tighter">/your-route</h1>
-      </div>
-      <PageHeaderNav theme="dark" />
-    </header>
+| Token | Use for |
+|---|---|
+| `bg-[var(--background)]` | Page background — cream by default, adapts to phosphor themes |
+| `text-[var(--foreground)]` | Body text — black by default |
+| `border-current` | Borders, dividers — inherits the foreground colour |
+| `bg-current text-[var(--background)]` | Inverted accents (badges, CTAs) — black bg, cream text |
+| `bg-current/10`, `border-current/20` | Subtle highlights and faint dividers |
 
-    {/* YOUR CONTENT */}
-  </div>
-</main>
-```
+**Do not** use `bg-black`/`text-white` for the page wrapper. That's how the dark-frame look snuck in before the cream refactor (commit `aba57ee`).
 
-## Step 5 — Register the route for indexing
+## Step 3 — Register in sitemap
 
-Open `src/app/sitemap.ts`. Add an entry so your sitemap picks it up:
+Open `src/app/sitemap.ts`. Add:
 
-```typescript
+```ts
 {
   url: `${BASE_URL}/your-route`,
   lastModified: new Date(),
@@ -110,26 +107,36 @@ Open `src/app/sitemap.ts`. Add an entry so your sitemap picks it up:
 },
 ```
 
-## Step 6 — Add to navigation
+## Step 4 — Add to navigation
 
-**Command Palette:** Open `src/components/CommandPalette.tsx`. Find the routes list (search for `/shipped` to locate the pattern). Add your route so power users can `Ctrl+K` to it.
+**Command Palette** (`src/components/CommandPalette.tsx`) — add to `STATIC_NAV`:
 
-**Mobile Menu:** Open `src/components/mobile/MobileMenu.tsx:12-19`. Add an entry to `MENU_ITEMS`:
+```ts
+{ path: "/your-route", label: "Display", description: "What this page does" },
+```
 
-```typescript
+**Mobile Menu** (`src/components/mobile/MobileMenu.tsx`) — add to `MENU_ITEMS`:
+
+```ts
 { path: "/your-route", label: "Display Name", desc: "Short description" },
 ```
 
-## Step 7 — Save and check
+**(Optional) Top ChainNav** (`src/components/ChainNav.tsx`) — only if this is a primary top-level route. Add to `NAV_ITEMS` (and an icon glyph):
 
-1. Visit `/your-route` — page renders.
-2. Visit `/sitemap.xml` — your URL appears.
-3. Open `Ctrl+K` — your route is searchable.
-4. On mobile, open the menu — your route is listed.
+```ts
+{ id: "your", label: "YOUR", sublabel: "tagline", route: "/your-route", icon: "◇" },
+```
+
+## Step 5 — Verify
+
+1. Visit `/your-route` — renders.
+2. Visit `/sitemap.xml` — URL appears.
+3. `Ctrl+K` → search "your" — palette finds the route.
+4. Mobile → menu → your route is listed.
 5. `npx tsc --noEmit` — exit 0.
 
 ## Common errors
 
-- **Route not found** → folder/file naming. Must be `src/app/<route>/page.tsx` exactly, with `default export`.
-- **`usePageScrollable` not enabling scroll** → make sure `"use client"` is at the top.
-- **Page header nav doesn't match the bg** → `theme="light"` for light pages, `theme="dark"` for dark.
+- **404** → folder/file naming. Must be `src/app/<route>/page.tsx` exactly, with `export default`.
+- **Page doesn't scroll** → forgot `"use client"` at the top, or forgot to call `usePageScrollable()`.
+- **Colours look broken in dark-ops mode** → you used `bg-white` / `text-black` instead of `var(--background)` / `var(--foreground)`. Phosphor themes only swap the CSS variables, not Tailwind's hex colours.

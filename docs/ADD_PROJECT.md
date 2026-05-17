@@ -31,9 +31,12 @@ Paste the whole block as a new element in `nodes: [...]`. **Every field is requi
   status: "ACTIVE",                  // "ACTIVE" | "SCALING" | "CLASSIFIED" | "LOCKED"
   description: "One sentence brutalist tagline. ~150 chars.",
 
-  // ── Canvas position (desktop only — see Step 5 cheatsheet) ──
-  top: "calc(140vh - 60px)",
-  left: "calc(160vw - 125px)",
+  // ── Canvas position ──
+  // OPTIONAL. If you omit `top`/`left`, applyAutoLayout (utils/autoLayout.ts)
+  // assigns this node a stable slot on a golden-ratio spiral around `core`.
+  // Only set them by hand if you want to override that for a specific node.
+  // top:  "calc(140vh - 60px)",
+  // left: "calc(160vw - 125px)",
 
   // ── Links shown on case file ──
   sourceUrl: "https://github.com/mayankhsingka/project-title",
@@ -94,19 +97,23 @@ Paste the whole block as a new element in `nodes: [...]`. **Every field is requi
 3. In your node's `gallery:` array, set each `url` to `/media/<your-slug>/<filename>` (no `public` prefix — that's the web root).
 4. If you have **no screenshots yet**, delete the entire `gallery:` line from your node. The case file will still render perfectly — it just won't show a gallery section. **Do not leave placeholder URLs in.**
 
-## Step 5 — Pick a canvas position
+## Step 5 — Canvas position (usually skip this)
 
-The canvas is 300vw × 300vh. Center is `150vw × 150vh`. Current node positions to avoid:
+Positions are auto-assigned. `utils/autoLayout.ts` keeps a stable per-id slot table and places each new node on a golden-ratio spiral around the core. Adding a project automatically lands it at a clean orbit — no math required.
 
-| Node | top | left |
-|---|---|---|
-| `core` (Root Directive) | 150vh | 150vw |
-| `exp_1` Manasya | 120vh | 120vw |
-| `exp_2` Producive | 180vh | 130vw |
-| `skill_matrix` | 130vh | 180vw |
-| `reading_list` | 170vh | 175vw |
+**Only override if you have a specific reason** (e.g., you want a project to sit visually close to another for a story beat). To override, uncomment `top:` and `left:` in the template above. Canvas is 300vw × 300vh, center is `150vw × 150vh`, subtract `60px` from top and `125px` from left in the `calc()` to match the existing centering math.
 
-Pick coordinates ~30vh away from the nearest neighbor. Subtract `60px` from top and `125px` from left in the calc (matches the existing nodes' centering math).
+If you add a new node, register its slot in `SLOT_BY_ID` inside `utils/autoLayout.ts` so it gets a deterministic position (otherwise it falls back to a hash). One line:
+
+```ts
+const SLOT_BY_ID: Record<string, number> = {
+  exp_1: 0,
+  exp_2: 1,
+  skill_matrix: 2,
+  reading_list: 3,
+  exp_3: 4,        // ← your new node, next slot
+};
+```
 
 ## Step 6 — Save and check
 
@@ -123,6 +130,31 @@ Pick coordinates ~30vh away from the nearest neighbor. Subtract `60px` from top 
 - **404 on `/shipped/<slug>`** → typo in the `slug:` field, or you forgot to save the file.
 - **Image broken** → wrong path. Should be `/media/...` not `/public/media/...`.
 
-## After publishing
+## Step 7 — Wire it up on the canvas (recommended)
 
-If you want a small subtle data-flow line from `core` to your new node on the canvas, open `src/components/DataFlowLines.tsx` and look for the `CONNECTIONS` array near the top — add `{ from: "core", to: "exp_3" }`. If that array doesn't exist anymore, skip it; the node still works without a wire.
+Open `src/data/portfolio.ts` and add a row to the `connections:` array near the bottom:
+
+```ts
+connections: [
+  { from: "core", to: "exp_1" },
+  { from: "core", to: "exp_2" },
+  { from: "core", to: "skill_matrix" },
+  { from: "core", to: "reading_list" },
+  { from: "core", to: "exp_3" },   // ← your new node
+],
+```
+
+`DataFlowLines` reads this array and draws an animated wire from `core` to your node, snapping to the visible left/right port dots based on relative position. No code changes needed — the canvas observes mutations and re-traces automatically.
+
+Cross-edges work too (e.g. `{ from: "exp_3", to: "skill_matrix" }`) if you want to show a project linking to a capability.
+
+## Verifying everything propagated
+
+After saving, your one node should now be present at all of these surfaces — no extra editing required:
+
+- ✅ Desktop canvas — node visible, wire to `core`, draggable
+- ✅ `/shipped` — card appears in the registry list
+- ✅ `/shipped/<your-slug>` — full case file renders
+- ✅ Mobile PDA — card appears under CASE_FILES tab
+- ✅ `/sitemap.xml` — URL is indexed
+- ✅ Command palette (Ctrl+K) — no entry needed; palette only surfaces routes, not nodes

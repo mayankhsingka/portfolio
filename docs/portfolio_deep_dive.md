@@ -11,34 +11,62 @@ A personal portfolio for **Mayank Himmatsingka** (20yo Product Builder) disguise
 ### Tech Stack
 | Layer | Technology | Version |
 |-------|-----------|---------|
-| Framework | Next.js (App Router) | 16.2.2 |
+| Framework | Next.js (App Router, Turbopack) | 16.2.2 |
 | UI Library | React | 19.2.4 |
-| Styling | Tailwind CSS v4 | PostCSS |
+| Styling | Tailwind CSS v4 (theme tokens via `@theme inline` in `globals.css`) | — |
 | Animation | Framer Motion | 12.38+ |
-| Icons | Lucide React | 1.7.0 |
+| Icons | Inline SVG (no icon library) | — |
+| Memo CMS | Markdown + `gray-matter` + `react-markdown` | — |
 | Fonts | Space Grotesk + JetBrains Mono | Google Fonts |
 
 ### File Tree (Source Only)
 ```
 src/
 ├── app/
-│   ├── globals.css              ← Design tokens, grid pattern, dark-ops class
-│   ├── layout.tsx               ← Root layout, fonts, metadata, dark-mode script
-│   ├── page.tsx                 ← HOME: Boot sequence + SystemGrid canvas
-│   ├── shipped/[slug]/page.tsx  ← Dynamic project "Case File" pages
-│   └── internal-memos/
-│       ├── page.tsx             ← Blog listing with localStorage bookmarks
-│       └── [slug]/              ← Individual memo reading pages
+│   ├── globals.css                 ← Theme tokens, grid pattern, dark-ops invert
+│   ├── layout.tsx                  ← Root layout, fonts, metadata, theme hydration
+│   ├── page.tsx                    ← HOME: branches desktop canvas vs mobile PDA
+│   ├── shipped/                    ← Project registry + dynamic case files
+│   ├── internal-memos/             ← Memo index + dynamic readers
+│   ├── matrix/                     ← Skill matrix hub
+│   ├── core-identity/              ← Operator dossier
+│   ├── ping/                       ← Connect page (contact form + channels)
+│   ├── commands/                   ← Desktop-only terminal sandbox
+│   ├── standard/                   ← Recruiter-friendly resume view (CardMode exit)
+│   └── uplink/                     ← Server redirect → /ping
 ├── components/
-│   ├── BootSequence.tsx         ← First-visit BIOS-style startup animation
-│   ├── SystemGrid.tsx           ← 300vw × 300vh draggable infinite canvas
-│   ├── ArchitectureNode.tsx     ← Draggable project/skill cards on the grid
-│   ├── CommandPalette.tsx       ← Ctrl+K terminal with ls/cat/whoami + routing
-│   ├── TerminalLogs.tsx         ← Bottom-right streaming log panel
-│   └── SystemShortcuts.tsx      ← Shift+A (About) / Shift+C (Contact) overlays
-└── data/
-    ├── portfolio.ts             ← All identity, nodes, logs, commands, fileSystem
-    └── memos.ts                 ← Blog post content (paragraph arrays)
+│   ├── SystemGrid.tsx              ← 300vw × 300vh draggable canvas
+│   ├── ArchitectureNode.tsx        ← Draggable nodes; emits system-node-moved
+│   ├── DataFlowLines.tsx           ← Wires that snap to ports + recalc on mutation
+│   ├── ChainNav.tsx                ← Top-center physics chain of nav buttons
+│   ├── OrbitalNav.tsx              ← Shift+N radial menu
+│   ├── CommandPalette.tsx          ← Ctrl+K terminal + routing
+│   ├── BootSequence.tsx            ← First-visit BIOS-style startup
+│   ├── ThemeToggle.tsx             ← 40-px icon at top-right
+│   ├── SocialSidebar.tsx           ← Bottom-left icon strip with hover labels
+│   ├── TerminalLogs.tsx            ← Bottom-right log panel (collapsed by default)
+│   ├── CanvasHint.tsx              ← Bottom-center keyboard hints (hides on use)
+│   ├── NumberPlate.tsx             ← MH · 04 · 2006 brand mark
+│   ├── Gatekeeper.tsx / CardMode.tsx ← First-visit persona gate (desktop)
+│   └── mobile/                     ← Mobile-only component tree
+│       ├── MobilePDAShell.tsx      ← Vertical-feed landing with sticky tab jump
+│       ├── MobileGlobalNav.tsx     ← Docked action bar + menu + PC Mode modal
+│       ├── MobileMenu.tsx          ← Slide-up nav menu
+│       └── DesktopTeaserModal.tsx  ← PC Mode tease (10 desktop-only features)
+├── data/
+│   ├── portfolio.ts                ← nodes, logs, commands, connections, general
+│   └── types.ts                    ← TypeScript contracts
+├── lib/
+│   └── memos.ts                    ← reads content/memos/*.md
+├── hooks/
+│   ├── useDevice.ts                ← isMobile + isTouch SSR-safe detection
+│   ├── usePageScrollable.ts        ← scroll override for inner pages
+│   └── useSystemAudio.ts           ← Web Audio mechanical keystroke gen
+└── utils/
+    └── autoLayout.ts               ← Stable golden-spiral node placement
+
+content/memos/                       ← One markdown file per memo (filename = slug)
+public/                              ← /favicon.svg, /media/<slug>/screenshots, etc.
 ```
 
 ---

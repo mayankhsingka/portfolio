@@ -85,22 +85,24 @@ src/
 
 ## 📂 Documentation
 
-All architectural plans and development logs are consolidated in `docs/`:
+`docs/` holds the living reference material — everything else (old session logs, completed-commit plans, implementation brainstorms) has been pruned.
+
+**Authoring cookbooks** — use these when adding content:
+
+| Document | Purpose | Time |
+|---|---|---|
+| [HOW_TO_UPDATE.md](HOW_TO_UPDATE.md) | Index of all content-authoring tasks (start here) | 30 s read |
+| [docs/ADD_PROJECT.md](docs/ADD_PROJECT.md) | Add a new project / experience node | ~10 min |
+| [docs/ADD_MEMO.md](docs/ADD_MEMO.md) | Add a new memo / blog post (markdown) | ~3 min |
+| [docs/ADD_PAGE.md](docs/ADD_PAGE.md) | Add a brand-new route | ~15 min |
+
+**Reference** — the architectural overview docs:
 
 | Document | Purpose |
 |---|---|
-| [CONTEXT.md](docs/CONTEXT.md) | System context & session resumption protocol |
-| [portfolio_deep_dive.md](docs/portfolio_deep_dive.md) | Full architectural audit |
-| [mobile_architecture_plan.md](docs/mobile_architecture_plan.md) | Original mobile strategy (Tactical PDA concept) |
-| [plans.md](docs/plans.md) | Future roadmap & brainstorm |
-| [session_summary.md](docs/session_summary.md) | Phase 1 development log |
-| [system_blueprint_commit_plan.md](docs/system_blueprint_commit_plan.md) | Atomic commit history plan |
-
-Additional guides:
-| Document | Purpose |
-|---|---|
-| [HOW_TO_UPDATE.md](HOW_TO_UPDATE.md) | Step-by-step guide for adding projects, blogs, and experiences |
-| [AGENTS.md](AGENTS.md) | AI agent configuration |
+| [docs/CONTEXT.md](docs/CONTEXT.md) | Operator profile, aesthetic rules, mindblowing-layer manifest |
+| [docs/portfolio_deep_dive.md](docs/portfolio_deep_dive.md) | Full system map: tech stack, file tree, UX flow |
+| [AGENTS.md](AGENTS.md) | AI-agent configuration |
 
 ---
 
