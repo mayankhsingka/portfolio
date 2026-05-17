@@ -25,47 +25,73 @@ export function DataFlowLines({ canvasRef, hoveredNodeId }: DataFlowLinesProps) 
   const calculateLines = useCallback(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
-    
+    const canvasRect = canvas.getBoundingClientRect();
+
     const newLines = PORTFOLIO_DATA.connections.map((conn) => {
       const fromEl = canvas.querySelector(`[data-node-id="${conn.from}"]`) as HTMLElement | null;
       const toEl = canvas.querySelector(`[data-node-id="${conn.to}"]`) as HTMLElement | null;
       if (!fromEl || !toEl) return null;
 
-      const canvasRect = canvas.getBoundingClientRect();
       const fromRect = fromEl.getBoundingClientRect();
       const toRect = toEl.getBoundingClientRect();
 
-      return {
-        x1: fromRect.left + fromRect.width / 2 - canvasRect.left,
-        y1: fromRect.top + fromRect.height / 2 - canvasRect.top,
-        x2: toRect.left + toRect.width / 2 - canvasRect.left,
-        y2: toRect.top + toRect.height / 2 - canvasRect.top,
-        fromId: conn.from,
-        toId: conn.to,
-      };
+      // Snap to the visible port that's closest to the other node.
+      // If `from` is left of `to`, wire leaves from its right port and enters `to` from the left.
+      const fromCenterX = fromRect.left + fromRect.width / 2;
+      const toCenterX = toRect.left + toRect.width / 2;
+      const fromIsLeft = fromCenterX <= toCenterX;
+
+      const x1 = (fromIsLeft ? fromRect.right : fromRect.left) - canvasRect.left;
+      const y1 = fromRect.top + fromRect.height / 2 - canvasRect.top;
+      const x2 = (fromIsLeft ? toRect.left : toRect.right) - canvasRect.left;
+      const y2 = toRect.top + toRect.height / 2 - canvasRect.top;
+
+      return { x1, y1, x2, y2, fromId: conn.from, toId: conn.to };
     }).filter(Boolean) as LineData[];
 
     setLines(newLines);
   }, [canvasRef]);
 
   useEffect(() => {
-    // Massive Performance Fix: 
-    // The relative coordinates inside the canvas DO NOT change during a drag interaction.
-    // We do NOT need a 60fps requestAnimationFrame loop.
-    // We only need to calculate the connections once on mount, and whenever the window resizes.
-    
-    // Initial calculation (slight delay to ensure DOM paint)
-    const timeout = setTimeout(() => calculateLines(), 100);
+    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
 
-    // Watch for window resizes
-    const handleResize = () => calculateLines();
-    window.addEventListener("resize", handleResize);
+    // rAF-coalesced recalculation — many mutations during a drag collapse into one frame.
+    let frame = 0;
+    const schedule = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        calculateLines();
+      });
+    };
+
+    // Initial measurement (after first paint so layout has settled).
+    const timeout = setTimeout(schedule, 100);
+
+    // Window resize.
+    window.addEventListener("resize", schedule);
+
+    // Manual signal from ArchitectureNode (drag, expand, clearance change).
+    window.addEventListener("system-node-moved", schedule);
+
+    // Catch-all: any node moved/resized/added/removed inside the canvas.
+    const observer = new MutationObserver(schedule);
+    observer.observe(canvas, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style", "data-node-id"],
+    });
 
     return () => {
       clearTimeout(timeout);
-      window.removeEventListener("resize", handleResize);
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("system-node-moved", schedule);
+      observer.disconnect();
     };
-  }, [calculateLines]);
+  }, [calculateLines, canvasRef]);
 
   useEffect(() => {
     // Battery Optimization: Pause animations when tab is not visible

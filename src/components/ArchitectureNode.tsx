@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSystemAudio } from "@/hooks/useSystemAudio";
 import { useScrambleText } from "@/hooks/useScrambleText";
 import { ScrambleText } from "@/components/ScrambleText";
@@ -21,6 +21,10 @@ interface ArchitectureNodeProps {
   onHover?: (id: string | null) => void;
 }
 
+function emitMoved() {
+  window.dispatchEvent(new CustomEvent("system-node-moved"));
+}
+
 export function ArchitectureNode({
   id,
   title,
@@ -36,6 +40,12 @@ export function ArchitectureNode({
   const { playSnap, playKeystroke } = useSystemAudio();
   const scrambledTitle = useScrambleText(title);
   const scrambledDesc = useScrambleText(description);
+
+  // Tell DataFlowLines to re-trace whenever this node finishes its expand/collapse animation.
+  useEffect(() => {
+    const t = setTimeout(emitMoved, 320);
+    return () => clearTimeout(t);
+  }, [expanded]);
 
   const isLocked = status === "LOCKED" || status === "CLASSIFIED";
   const isCore = id === "core";
@@ -67,6 +77,8 @@ export function ArchitectureNode({
         e.stopPropagation();
         playKeystroke();
       }}
+      onDrag={emitMoved}
+      onDragEnd={emitMoved}
       onClick={(e) => {
         e.stopPropagation();
         // Allow expanding even if locked to show the hint
@@ -174,10 +186,11 @@ export function ArchitectureNode({
           </motion.div>
         )}
         
-        {/* Connection port dot */}
-        <div className="absolute w-2 h-2 bg-black rounded-full -left-1 top-1/2 -translate-y-1/2" />
-        <div className="absolute w-2 h-2 bg-black rounded-full -right-1 top-1/2 -translate-y-1/2" />
       </motion.div>
+
+      {/* Connection ports — anchored to the OUTER node midpoint so DataFlowLines snaps cleanly */}
+      <div className="absolute w-2 h-2 bg-black rounded-full -left-1 top-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="absolute w-2 h-2 bg-black rounded-full -right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
     </motion.div>
   );
 }
