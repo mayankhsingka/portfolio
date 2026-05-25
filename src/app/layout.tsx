@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import { ShortcutOverlay } from "@/components/ShortcutOverlay";
 import { SystemContextMenu } from "@/components/SystemContextMenu";
@@ -7,6 +7,9 @@ import { OrbitalNav } from "@/components/OrbitalNav";
 import { CommandPalette } from "@/components/CommandPalette";
 import { MobileGlobalNav } from "@/components/mobile/MobileGlobalNav";
 import { ClearanceProvider } from "@/components/ClearanceProvider";
+import { DevOnly } from "@/components/shared/DevOnly";
+import { PersonaToggle } from "@/components/shared/PersonaToggle";
+import { PORTFOLIO_DATA } from "@/data/portfolio";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -18,23 +21,30 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mayankhsingka.vercel.app";
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  axes: ["opsz", "SOFT"],
+  display: "swap",
+});
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://himmatsingka.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Mayank Himmatsingka | System Blueprint",
-    template: "%s | Mayank Himmatsingka",
+    default: "Mayank Himmatsingka — Builder, Architect",
+    template: "%s · Mayank Himmatsingka",
   },
-  description: "Product Builder & System Architect. Shipping innovative products and scalable systems with extreme velocity. Explore the blueprint.",
-  keywords: ["Mayank Himmatsingka", "product builder", "system architect", "portfolio", "Next.js", "developer", "Manasya", "Producive"],
+  description: "Mayank Himmatsingka — software engineer building production systems like Manasya and Producive. Selected work, writing, and an interactive developer view.",
+  keywords: ["Mayank Himmatsingka", "software engineer", "architect", "portfolio", "Manasya", "Producive", "Rourkela", "India"],
   creator: "Mayank Himmatsingka",
   authors: [{ name: "Mayank Himmatsingka", url: SITE_URL }],
   openGraph: {
-    title: "Mayank Himmatsingka | System Blueprint",
-    description: "I build systems that solve real problems. 20yo product builder & system architect.",
+    title: "Mayank Himmatsingka — Builder, Architect",
+    description: "Software engineer and architect. I build software, and I study buildings.",
     url: SITE_URL,
-    siteName: "System Blueprint",
+    siteName: "Mayank Himmatsingka",
     locale: "en_US",
     type: "website",
     images: [
@@ -42,14 +52,14 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Mayank Himmatsingka — System Blueprint Portfolio",
+        alt: "Mayank Himmatsingka — Builder, Architect",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mayank Himmatsingka | System Blueprint",
-    description: "Product Builder & System Architect. Explore the blueprint.",
+    title: "Mayank Himmatsingka — Builder, Architect",
+    description: "Software engineer and architect. I build software, and I study buildings.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -76,7 +86,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${fraunces.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
@@ -84,25 +94,60 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
+                const persona = localStorage.getItem('user_persona') === 'dev' ? 'dev' : 'non-dev';
+                document.documentElement.setAttribute('data-persona', persona);
+                var tc = document.createElement('meta');
+                tc.setAttribute('name', 'theme-color');
+                tc.setAttribute('content', persona === 'dev' ? '#FAF3E0' : '#F5F0E6');
+                document.head.appendChild(tc);
                 const theme = localStorage.getItem('sys_theme');
-                if (theme) {
+                if (theme && persona === 'dev') {
                   document.documentElement.classList.add(theme);
-                } else if (localStorage.getItem('night_ops_engaged') === 'true') {
+                } else if (localStorage.getItem('night_ops_engaged') === 'true' && persona === 'dev') {
                   document.documentElement.classList.add('dark-ops');
                 }
-              } catch (e) {}
+              } catch (e) {
+                document.documentElement.setAttribute('data-persona', 'non-dev');
+              }
             `,
           }}
         />
       </head>
       <body className="h-full bg-grid-pattern overflow-hidden font-sans">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: PORTFOLIO_DATA.general.name,
+              url: SITE_URL,
+              jobTitle: "Software Engineer",
+              email: `mailto:${PORTFOLIO_DATA.general.contactEmail}`,
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Rourkela",
+                addressRegion: "Odisha",
+                addressCountry: "IN",
+              },
+              sameAs: [
+                PORTFOLIO_DATA.general.linkedinUrl,
+                PORTFOLIO_DATA.general.githubUrl,
+                "https://x.com/himmatsingka_m",
+              ],
+            }),
+          }}
+        />
         <ClearanceProvider>
           {children}
-          <ShortcutOverlay />
-          <SystemContextMenu />
-          <OrbitalNav />
-          <CommandPalette />
-          <MobileGlobalNav />
+          <DevOnly>
+            <ShortcutOverlay />
+            <SystemContextMenu />
+            <OrbitalNav />
+            <CommandPalette />
+            <MobileGlobalNav />
+          </DevOnly>
+          <PersonaToggle />
         </ClearanceProvider>
       </body>
     </html>

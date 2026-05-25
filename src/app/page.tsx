@@ -25,10 +25,9 @@ import { isProjectNode } from "@/data/types";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { applyAutoLayout } from "@/utils/autoLayout";
-import { Gatekeeper } from "@/components/Gatekeeper";
-import { CardMode } from "@/components/CardMode";
+import NonDevHome from "@/components/non-dev/NonDevHome";
 
-function HomeContent() {
+function DevHomeShell() {
   const { isMobile } = useDevice();
   const [hasBooted, setHasBooted] = useState(true);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -41,17 +40,8 @@ function HomeContent() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const delTimestamps = useRef<number[]>([]);
   const { level, notification, clearNotification, promoteToRoot } = useClearanceContext();
-  const [userPersona, setUserPersona] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check for persona on mount
-    const persona = localStorage.getItem("user_persona");
-    if (persona) {
-      setUserPersona(persona);
-    } else {
-      setUserPersona("unknown");
-    }
-
     const sessionBooted = sessionStorage.getItem("system_booted");
 
     let hasHighClearance = false;
@@ -153,10 +143,6 @@ function HomeContent() {
   }, [level]);
 
   // ─── MOBILE SHELL ───────────────────────────────────────────────
-  // Mobile always gets the PDA shell — the persona gate (Gatekeeper /
-  // CardMode) is a desktop-only flow. Keeping mobile out of it avoids
-  // recruiter-persona visitors landing on the sparse card stack instead
-  // of the rich PDA with their name, photo, and tabs.
   if (isMobile) {
     return (
       <>
@@ -166,21 +152,6 @@ function HomeContent() {
         </div>
       </>
     );
-  }
-
-  if (userPersona === "unknown") {
-    return (
-      <Gatekeeper
-        onComplete={(persona) => {
-          setUserPersona(persona);
-        }}
-      />
-    );
-  }
-
-  // If recruiter, render the cool swipeable 15-card summary mode
-  if (userPersona === "recruiter") {
-    return <CardMode />;
   }
 
   // ─── DESKTOP SHELL ──────────────────────────────────────────────
@@ -270,5 +241,20 @@ function HomeContent() {
 }
 
 export default function Home() {
-  return <HomeContent />;
+  // Non-dev is the front door. Returning visitors who switched to the dev view
+  // (persisted in localStorage) come back to it; everyone else lands non-dev.
+  // The layout's inline <head> script has already applied data-persona and any
+  // dev theme classes before paint, so there's nothing to re-apply here.
+  const [persona, setPersona] = useState<"dev" | "non-dev">("non-dev");
+
+  useEffect(() => {
+    try {
+      setPersona(localStorage.getItem("user_persona") === "dev" ? "dev" : "non-dev");
+    } catch {
+      setPersona("non-dev");
+    }
+  }, []);
+
+  if (persona === "dev") return <DevHomeShell />;
+  return <NonDevHome />;
 }
