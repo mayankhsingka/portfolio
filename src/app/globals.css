@@ -28,6 +28,13 @@
   --sys-white: #FAF3E0;
   --background: var(--sys-white);
   --foreground: var(--sys-black);
+
+  /* Non-dev (premium cream) palette */
+  --color-cream: #F5F0E6;
+  --color-cream-deep: #EBE3D2;
+  --color-ink: #1A1A1A;
+  --color-terracotta: #B8533A;
+  --color-terracotta-soft: #D08A6E;
 }
 
 /* Phase 1: Advanced Phosphor Themes */
@@ -52,6 +59,100 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-jetbrains);
+  --font-serif: var(--font-fraunces);
+}
+
+/* ======================================
+   NON-DEV (PREMIUM CREAM) MODE
+   Activated when <html data-persona="non-dev">.
+   Override-only: doesn't touch existing dev styles.
+   ====================================== */
+
+:root[data-persona="non-dev"] body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: 100vh;
+  font-family: var(--font-fraunces), Georgia, serif;
+  background-image: none !important;
+  background-size: auto !important;
+}
+
+:root[data-persona="non-dev"] ::selection {
+  background-color: var(--color-terracotta);
+  color: var(--color-cream);
+}
+
+/* Suppress dev-only filters on non-dev */
+:root[data-persona="non-dev"] body {
+  filter: none !important;
+}
+
+/* Non-dev anchor styling — terracotta on hover with left-to-right underline */
+:root[data-persona="non-dev"] .nd-link {
+  color: var(--color-ink);
+  background-image: linear-gradient(var(--color-terracotta), var(--color-terracotta));
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 200ms ease, color 200ms ease;
+  text-decoration: none;
+}
+
+:root[data-persona="non-dev"] .nd-link:hover,
+:root[data-persona="non-dev"] .nd-link:focus-visible {
+  background-size: 100% 1px;
+  color: var(--color-terracotta);
+}
+
+:root[data-persona="non-dev"] .nd-link:focus-visible {
+  outline: none;
+}
+
+/* Touch devices have no hover — show the underline at rest so links read as tappable */
+@media (hover: none) {
+  :root[data-persona="non-dev"] .nd-link {
+    background-size: 100% 1px;
+  }
+}
+
+/* Non-dev editorial form inputs — quiet underline style, terracotta on focus */
+:root[data-persona="non-dev"] .nd-input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.22);
+  border-radius: 0;
+  outline: none;
+  transition: border-color 200ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+:root[data-persona="non-dev"] .nd-input::placeholder {
+  color: rgba(26, 26, 26, 0.38);
+}
+
+:root[data-persona="non-dev"] .nd-input:focus,
+:root[data-persona="non-dev"] .nd-input:focus-visible {
+  border-bottom-color: var(--color-terracotta);
+  border-bottom-width: 2px;
+}
+
+/* Smooth in-page navigation + offset so the sticky bar never hides anchors */
+:root[data-persona="non-dev"] {
+  scroll-behavior: smooth;
+}
+
+:root[data-persona="non-dev"] [id] {
+  scroll-margin-top: 84px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-persona="non-dev"] {
+    scroll-behavior: auto;
+  }
 }
 
 body {
