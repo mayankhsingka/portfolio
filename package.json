@@ -5,7 +5,7 @@
   "description": "Brutalist, interactive personal site for Mayank Himmatsingka — terminal aesthetics, dossier-style navigation, internal memos.",
   "author": "Mayank Himmatsingka <mayankhsingka@gmail.com>",
   "license": "MIT",
-  "homepage": "https://mayankhimmatsingka.com",
+  "homepage": "https://himmatsingka.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mayankhsingka/portfolio.git"

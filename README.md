@@ -2,7 +2,7 @@
 
 A brutalist, interactive terminal-based portfolio engineered as an internal operations dashboard. Designed to deliver a high-impact, developer-focused experience on desktop and a professional Tactical PDA interface on mobile.
 
-**Live:** [mayankhimmatsingka.com](https://mayankhimmatsingka.com) *(or your deployed URL)*
+**Live:** [himmatsingka.com](https://himmatsingka.com)
 
 ---
 

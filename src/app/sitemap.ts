@@ -4,7 +4,7 @@ import { isProjectNode } from "@/data/types";
 import { getAllMemos } from "@/lib/memos";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://mayankhsingka.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://himmatsingka.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const shippedProjects = PORTFOLIO_DATA.nodes
