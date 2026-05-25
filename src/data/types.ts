@@ -22,6 +22,9 @@ export interface ProjectNode extends BaseNode {
   slug: string;
   sourceUrl: string;
   liveUrl: string;
+  /** Editorial preview shown on the non-dev Selected Work list. Optional —
+   *  the UI hides the slot until a real file exists at this path. */
+  image?: string;
   fileId: string;
   created: string;
   modified: string;
