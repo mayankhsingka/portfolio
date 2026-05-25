@@ -27,7 +27,7 @@ const CARDS = [
   // Summary
   { id: 12, title: "TIMELINE", type: "info", content: "Coding since the early 2020s. Evolving every day. Currently focused on full-stack mastery." },
   { id: 13, title: "AVAILABILITY", type: "info", content: "Open for impactful roles. Let's build systems that matter." },
-  { id: 14, title: "CONNECT", type: "link", content: "Email: mayank.hsingka@gmail.com\nLocation: Bangalore" },
+  { id: 14, title: "CONNECT", type: "link", content: "Email: mayankhsingka@gmail.com\nLocation: Rourkela, India" },
   { id: 15, title: "END OF FILE", type: "action", content: "You've read the summary. Ready to enter the raw system?" },
 ];
 

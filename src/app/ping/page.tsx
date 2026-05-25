@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { motion, MotionConfig } from "framer-motion";
 import { PageHeaderNav } from "@/components/PageHeaderNav";
 import { NumberPlate } from "@/components/NumberPlate";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 import { usePageScrollable } from "@/hooks/usePageScrollable";
+import { usePersona } from "@/hooks/usePersona";
+import { NonDevContactForm, ContactLinks } from "@/components/non-dev/NonDevContactForm";
 
 type Channel = {
   id: string;
@@ -286,7 +289,7 @@ function ContactForm() {
   );
 }
 
-export default function PingPage() {
+function PingDevView() {
   usePageScrollable();
 
   return (
@@ -410,4 +413,132 @@ export default function PingPage() {
       </div>
     </main>
   );
+}
+
+// ─── Non-dev editorial skin ──────────────────────────────────────────────────
+
+const ndEaseOut = [0.16, 1, 0.3, 1] as const;
+
+function PingNonDevView() {
+  usePageScrollable();
+
+  return (
+    <MotionConfig reducedMotion="user">
+    <main
+      className="w-full min-h-screen flex flex-col"
+      style={{
+        background: "var(--color-cream)",
+        color: "var(--color-ink)",
+        fontFamily: "var(--font-fraunces), Georgia, serif",
+      }}
+    >
+      {/* Slim top bar — back to home */}
+      <div
+        className="sticky top-0 z-30"
+        style={{
+          background: "rgba(245,240,230,0.82)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          borderBottom: "1px solid rgba(26,26,26,0.08)",
+        }}
+      >
+        <div className="px-6 md:px-20">
+          <div className="max-w-[720px] mx-auto w-full flex items-center justify-between py-3.5">
+            <Link href="/" className="nd-link text-[13px] sm:text-[14px]">
+              &larr; Mayank Himmatsingka
+            </Link>
+            <span
+              className="text-[11px] tracking-[0.2em] uppercase"
+              style={{ opacity: 0.5 }}
+            >
+              Contact
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-6 md:px-20 pt-16 md:pt-24 pb-24 flex-1">
+        <div className="max-w-[720px] mx-auto w-full">
+          {/* Hero */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: ndEaseOut }}
+          >
+            <div
+              className="text-[12px] tracking-[0.28em] uppercase mb-5"
+              style={{ color: "var(--color-terracotta)" }}
+            >
+              Get in touch
+            </div>
+            <h1
+              className="leading-[0.98] tracking-[-0.02em]"
+              style={{
+                fontSize: "clamp(44px, 9vw, 96px)",
+                fontWeight: 400,
+                fontVariationSettings: '"opsz" 144, "SOFT" 30',
+              }}
+            >
+              Let&apos;s talk.
+            </h1>
+            <p
+              className="mt-7 md:mt-8 text-[19px] md:text-[22px] leading-[1.5] max-w-[560px]"
+              style={{ opacity: 0.82 }}
+            >
+              Roles, freelance, founding-engineer conversations, or just comparing notes
+              on building well — I read every message and reply quickly.
+            </p>
+          </motion.div>
+
+          {/* Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.12, ease: ndEaseOut }}
+            className="mt-12 md:mt-16"
+          >
+            <NonDevContactForm />
+          </motion.div>
+
+          {/* Elsewhere */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: ndEaseOut }}
+            className="mt-14 md:mt-16 pt-8"
+            style={{ borderTop: "1px solid rgba(26,26,26,0.12)" }}
+          >
+            <div className="text-[12px] tracking-[0.2em] uppercase mb-4" style={{ opacity: 0.5 }}>
+              Elsewhere
+            </div>
+            <ContactLinks />
+            <p className="mt-6 text-[14px]" style={{ opacity: 0.5 }}>
+              Based in India · IST · usually replies within a day.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
+      <footer
+        className="px-6 md:px-20 py-10 text-[12px] tracking-[0.16em] uppercase"
+        style={{ opacity: 0.62 }}
+      >
+        <div className="max-w-[720px] mx-auto w-full flex flex-wrap items-center gap-x-6 gap-y-2">
+          <span>&copy; {new Date().getFullYear()} Mayank Himmatsingka</span>
+          <span style={{ color: "var(--color-terracotta)" }}>·</span>
+          <span>Rourkela, IN</span>
+        </div>
+      </footer>
+    </main>
+    </MotionConfig>
+  );
+}
+
+export default function PingPage() {
+  // Default to the editorial view so it server-renders for the primary (non-dev)
+  // audience with real content — no blank flash, better SEO. A returning dev
+  // visitor briefly sees this before usePersona swaps to the system view, the
+  // same way the home page resolves its persona.
+  const { persona } = usePersona();
+  return persona === "dev" ? <PingDevView /> : <PingNonDevView />;
 }
